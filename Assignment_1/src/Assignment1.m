@@ -15,90 +15,99 @@ set(groot, 'defaultLineLineWidth', 1);
 %% Ex 1
 clearvars; close all; clc
 
-% Function to be evaluated
-f = @(x) [x(2)^2 - x(1) - 2; -x(1)^2 + x(2) + 10];
+% Function 
+func = @(x) [x(2)^2 - x(1) - 2; -x(1)^2 + x(2) + 10];
 
-% Inverse Jacobian 
-invJ = @(x) (1/(4*x(1)*x(2)-1))*[1, -2*x(2);...
-                               2*x(1), -1];
+% Inverse Jacobian of the function
+invJ = @(x) (1/(4*x(1)*x(2)-1))*[1, -2*x(2); 2*x(1), -1];
 
-% Finding the first zero z1
-toll = 1e-8;          
+% Tolerance
+toll = 1e-8;  
+
+% Finding the first zero z1        
 x0 = [1 -4]';
-[t11, sol11, n11, fcnE11, c11] = newton2Danalytical(f, invJ, x0, toll);
-[t12, sol12, n12, fcnE12, c12] = newton2DfiniteDiff(f, x0, 'forward', toll);
-[t13, sol13, n13, fcnE13, c13] = newton2DfiniteDiff(f, x0, 'centered', toll);
+[t11, sol11, n11, fcnE11, c11] = newt2Da(func, x0, invJ, toll);
+[t12, sol12, n12, fcnE12, c12] = newt2Df(func, x0, 'forward', toll);
+[t13, sol13, n13, fcnE13, c13] = newt2Df(func, x0, 'centered', toll);
 
 % Finding the second zero z2
 x0 = [6 5]';
-[t21, sol21, n21, fcnE21, c21] = newton2Danalytical(f, invJ, x0, toll);
-[t22, sol22, n22, fcnE22, c22] = newton2DfiniteDiff(f, x0, 'forward', toll);
-[t23, sol23, n23, fcnE23, c23] = newton2DfiniteDiff(f, x0, 'centered', toll);
+[t21, sol21, n21, fcnE21, c21] = newt2Da(func, x0, invJ, toll);
+[t22, sol22, n22, fcnE22, c22] = newt2Df(func, x0, 'forward', toll);
+[t23, sol23, n23, fcnE23, c23] = newt2Df(func, x0, 'centered', toll);
 
-%%% PLOT ------------------------------------------------------------------
+%%% ----------------------------- PRINT DATA ------------------------------
+
+fprintf('*************** EXERCISE 1 ***************\n');
+fprintf('## Solutions (zero 1): \n');
+fprintf('Analytical solution:   [%2.15f, %2.15f]  \n', sol11);
+fprintf('Forward differences:   [%2.15f, %2.15f]  \n', sol12);
+fprintf('Centered differences:  [%2.15f, %2.15f]  \n\n', sol13);
+
+fprintf('## Solutions (zero 2): \n');
+fprintf('Analytical solution:   [%2.15f, %2.15f]  \n', sol21);
+fprintf('Forward differences:   [%2.15f, %2.15f]  \n', sol22);
+fprintf('Centered differences:  [%2.15f, %2.15f]  \n\n', sol23);
+
+fprintf('## Number of iterations: \n');
+fprintf('Analytical solution:   [%d, %d]  \n', n11, n21);
+fprintf('Forward differences:   [%d, %d]  \n', n12, n22);
+fprintf('Centered differences:  [%d, %d]  \n\n', n13, n23);
+
+fprintf('## Error w.r.t. analytical (zero 1): \n');
+fprintf('Analytical solution:   [-, -]  \n');
+fprintf('Forward differences:   [%2.15e, %2.15e]  \n', norm(sol11-sol12), norm(sol21-sol22));
+fprintf('Centered differences:  [%2.15e, %2.15e]  \n', norm(sol11-sol13), norm(sol21-sol23));
+
+
+%%% -------------------------------- PLOTS --------------------------------
 f1 = @(x1, x2) x2.^2 - x1 - 2;
 f2 = @(x1, x2) -x1.^2 + x2 + 10;
 
-% 3d surf plot of fx
-figure('Name', 'EX 1 - F1 function', 'NumberTitle', 'off');
+% Surface plot of the function f1
+fig = figure('Name', 'EX 1 - F1 function', 'NumberTitle', 'off');
 [X, Y] = meshgrid(linspace(-5, 5, 500), linspace(-4, 4, 500));
 colormap parula
 fp(1) = surf(X, Y, f1(X, Y), 'FaceAlpha', 0.7, 'EdgeColor', 'none'); grid on; hold on;
-[xxRK4, hh] = contour(X, Y, f1(X, Y), [0 0]); delete(hh);
-fp(2) = plot3(xxRK4(1, 2:end), xxRK4(2, 2:end), zeros(size(xxRK4(1, 2:end))), '--', 'LineWidth', 3, 'color', 'r');
+[xRK4, hh] = contour(X, Y, f1(X, Y), [0 0]); delete(hh);
+fp(2) = plot3(xRK4(1, 2:end), xRK4(2, 2:end), zeros(size(xRK4(1, 2:end))), '--', 'LineWidth', 3, 'color', 'r');
 surf([-5 5; -5 5], [-4 -4; 4 4], zeros(2, 2), 'FaceAlpha', 0.3, 'EdgeColor', 'none', 'FaceColor', 'k');
 ax = gca; ax.FontSize = 15;
 xlabel('$x_1$ $[-]$', 'FontSize', 20); ylabel('$x_2$ $[-]$', 'FontSize', 20);
-zlabel('$f_x(\mbox{\boldmath $x$})$ $[-]$', 'FontSize', 20);
+zlabel('$f_x(\mbox{\boldmath$x$})$ $[-]$', 'FontSize', 20);
 legend(fp, {'$f_x$', '$f_x = 0$'}, 'FontSize', 18, 'Location', 'best')
+save_fig(fig,'ex1_1');
 
-% 3d surf plot of fy
-figure('Name', 'EX 1 - F2 function', 'NumberTitle', 'off');
+% Surface plot of the function f2
+fig = figure('Name', 'EX 1 - F2 function', 'NumberTitle', 'off');
 [X, Y] = meshgrid(linspace(-5, 5, 500), linspace(-11, 8, 500));
 colormap parula
 fp(1) = surf(X, Y, f2(X, Y), 'FaceAlpha', 0.7, 'EdgeColor', 'none'); grid on; hold on;
-[xxRK4, hh] = contour(X, Y, f2(X, Y), [0 0]); delete(hh);
-fp(2) = plot3(xxRK4(1, 2:end), xxRK4(2, 2:end),zeros(size(xxRK4(1, 2:end))), '--', 'LineWidth', 3, 'color', 'r');
+[xRK4, hh] = contour(X, Y, f2(X, Y), [0 0]); delete(hh);
+fp(2) = plot3(xRK4(1, 2:end), xRK4(2, 2:end),zeros(size(xRK4(1, 2:end))), '--', 'LineWidth', 3, 'color', 'r');
 surf([-5 5;-5 5], [-11 -11;8 8], zeros(2, 2), 'FaceAlpha', 0.3, 'EdgeColor', 'none', 'FaceColor', 'k');
 ax = gca; ax.FontSize = 15;
-xlabel('$x_1$ $[-]$', 'FontSize', 20); ylabel('$x_2$ $[-]$', 'FontSize', 20);
+xlabel('$x_1$ $[-]$', 'FontSize', 20); 
+ylabel('$x_2$ $[-]$', 'FontSize', 20);
 zlabel('$f_y(\mbox{\boldmath $x$})$ $[-]$', 'FontSize', 20);
 legend(fp, {'$f_y$', '$f_y = 0$'}, 'FontSize', 18, 'Location', 'best')
+save_fig(fig,'ex1_2');
 
-% Solution
-figure('Name', 'EX 1 - Solution', 'NumberTitle', 'off');
+
+% Plot of the solution
+fig = figure('Name', 'EX 1 - Solution', 'NumberTitle', 'off');
 [X, Y] = meshgrid(linspace(-5, 7, 500), linspace(-8, 8, 500));
 contour(X, Y, f1(X, Y), [0 0], 'color', [0 0.45 0.74], 'LineWidth', 1.5); grid on; hold on;
 contour(X, Y, f2(X, Y), [0 0], '--', 'color', [0.85 0.33 0.10], 'LineWidth', 1.5);
 ax = gca; ax.FontSize = 15;
 plot(sol11(1), sol11(2), 'ko', 'MarkerSize', 6, 'MarkerFaceColor', 'y');
+text(sol11(1)+0.2, sol11(2)+0.5, '$\boldmath{z_1}$', 'FontSize', 17);
 plot(sol21(1), sol21(2), 'ks', 'MarkerSize', 6, 'MarkerFaceColor', 'y');
-xlabel('$x_1$ $[-]$', 'FontSize', 20); ylabel('$x_2$ $[-]$', 'FontSize', 20);
+text(sol21(1)+0.2, sol21(2)+0.8, '$\boldmath{z_2}$', 'FontSize', 17);
+xlabel('$x_1$ $[-]$', 'FontSize', 20); 
+ylabel('$x_2$ $[-]$', 'FontSize', 20);
 legend({'$f_x = 0$', '$f_y = 0$', 'zeros of $\mbox{\boldmath $f$}(\mbox{\boldmath $x$})$'}, 'FontSize', 15, 'Location', 'best')
-text(sol11(1)+0.2, sol11(2)+0.8, '$z_1$', 'FontSize', 17);
-text(sol21(1)+0.2, sol21(2)+0.8, '$z_2$', 'FontSize', 17);
-
-%%% PRINT DATA ------------------------------------------------------------
-fprintf('*************** EXERCISE 2 ***************\n');
-fprintf('## Solutions (z1): \n');
-fprintf('Analytical:            [%2.15e, %2.15f]  \n', sol11);
-fprintf('Forward differences:   [%2.15e, %2.15f]  \n', sol12);
-fprintf('Centered differences:  [%2.15e, %2.15f]  \n\n', sol13);
-
-fprintf('## Solutions (z2): \n');
-fprintf('Analytical:            [%2.15e, %2.15f]  \n', sol21);
-fprintf('Forward differences:   [%2.15e, %2.15f]  \n', sol22);
-fprintf('Centered differences:  [%2.15e, %2.15f]  \n\n', sol23);
-
-fprintf('## Number of iterations: \n');
-fprintf('Analytical:            [%d, %d]  \n', n11, n21);
-fprintf('Forward differences:   [%d, %d]  \n', n12, n22);
-fprintf('Centered differences:  [%d, %d]  \n\n', n13, n23);
-
-fprintf('## Error w.r.t. analytical (z1): \n');
-fprintf('Analytical:            [-, -]  \n');
-fprintf('Forward differences:   [%2.15e, %2.15e]  \n', norm(sol11-sol12), norm(sol21-sol22));
-fprintf('Centered differences:  [%2.15e, %2.15e]  \n', norm(sol11-sol13), norm(sol21-sol23));
+save_fig(fig,'ex1_3');
 
 
 
@@ -106,9 +115,10 @@ fprintf('Centered differences:  [%2.15e, %2.15e]  \n', norm(sol11-sol13), norm(s
 clearvars; close all; clc
 
 % Statement of the differential problem
-x0 = 1; tlim = [0 2];
-f    = @(t, x) x-2*t^2+2;
-uex  = @(t) 2*t.^2+4*t-exp(t)+2;
+x0   = 1; 
+tlim = [0 2];
+f    = @(t, x) x - 2*t^2 + 2;
+uex  = @(t) 2*t.^2 + 4*t - exp(t) + 2;
 hvec = [0.5 0.2 0.05 0.01];
 N    = length(hvec);
 
@@ -161,9 +171,9 @@ for i = 1:N_t
     err_fin_RK4_t(i) = abs(uex(tlim(2)) - Y(end));
 end
 
-%%% PLOT ------------------------------------------------------------------
+%%% -------------------------------- PLOTS --------------------------------
 % RK2 solution
-figure('Name', 'EX 2 - solution RK2', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 2 - solution RK2', 'NumberTitle', 'off');
 markerObj = {'square', 'diamond', '^', 'v'};
 lineSpecObj = {'--', '-.', ':'};
 legendStr = cell(N, 1);
@@ -181,9 +191,10 @@ xlabel('$t$ $[s]$', 'FontSize', 20); ylabel('$x$ $[-]$', 'FontSize', 20);
 legendStr{end+1} = '$x_{ex}$';
 ax = gca; ax.FontSize = 15;
 legend({legendStr{end} legendStr{1:end-1}}, 'FontSize', 14, 'Location', 'best');
+save_fig(fig,'ex2_1');
 
 % RK4 solution
-figure('Name', 'EX 2 - solution RK4', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 2 - solution RK4', 'NumberTitle', 'off');
 lineSpecObj = {'--', '-.', ':'};
 legendStr = cell(N, 1);
 T = linspace(tlim(1), tlim(2), 100);
@@ -201,9 +212,10 @@ legendStr{end+1} = '$x_{ex}$';
 ax = gca; ax.FontSize = 15;
 legend({legendStr{end} legendStr{1:end-1}}, 'FontSize', 14, 'Location', 'best');
 legendStr = legendStr(1:end-1);
+save_fig(fig,'ex2_2');
 
 % Global integration errors of RK2 and RK4
-figure('Name', 'EX 2 - global integration error', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 2 - global integration error', 'NumberTitle', 'off');
 loglog(hvec, globIntErrRK2, '-s'); grid on; hold on;
 loglog(hvec, globIntErrRK4, '-^');
 loglog(hvec, hvec.^2, '--');
@@ -212,9 +224,10 @@ ax = gca; ax.FontSize = 13;
 title('Global integration error', 'FontSize', 17);
 xlabel('$h$ $[-]$', 'FontSize', 18); ylabel('$||\mbox{\boldmath $x$}_{ex}-\mbox{\boldmath $x$}||_{\infty}$ $[-]$', 'FontSize', 18);
 legend({'RK2', 'RK4', '$h^2$', '$h^4$'}, 'FontSize', 14, 'Location', 'best');
+save_fig(fig,'ex2_3');
 
 % Stochastic analysis made upon time
-figure('Name', 'EX 2 - ERR vs TIME', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 2 - ERR vs TIME', 'NumberTitle', 'off');
 loglog(err_fin_RK2_t(3:end), compTimeRK2(3:end)*1000, 'o'); hold on; grid on;
 loglog(err_fin_RK4_t(3:end), compTimeRK4(3:end)*1000, 's');
 ax = gca; ax.FontSize = 13;
@@ -222,9 +235,10 @@ title('Error vs Time', 'FontSize', 17);
 xlabel('$||\mbox{\boldmath $x$}_{ex}(2)-\mbox{\boldmath $x$}(2)||$ $[-]$', 'FontSize', 18);
 ylabel('$CPU-time$ $[ms]$', 'FontSize', 18);
 legend({'RK2', 'RK4'}, 'FontSize', 14, 'Location', 'best');
+save_fig(fig,'ex2_4');
 
 % Local integration errors of RK2
-figure('Name', 'EX 2 - RK2 local integration error', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 2 - RK2 local integration error', 'NumberTitle', 'off');
 for i = 1:N
     if i == N
         semilogy(t_RK2{i}, locIntErrRK2{i}); hold on; grid on;
@@ -236,9 +250,10 @@ ax = gca; ax.FontSize = 13;
 title('RK2: local integration error', 'FontSize', 17);
 xlabel('$t [s]$', 'FontSize', 18); ylabel('$|x_{RK2}(t)-x(t)|$ $[-]$', 'FontSize', 18);
 legend(legendStr, 'FontSize', 14, 'Location', 'best');
+save_fig(fig,'ex2_5');
 
 % Local integration errors of RK4
-figure('Name', 'EX 2 - RK4 local integration error', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 2 - RK4 local integration error', 'NumberTitle', 'off');
 for i = 1:N
     if i == N
         semilogy(t_RK4{i}, locIntErrRK4{i}); hold on; grid on;
@@ -249,8 +264,8 @@ end
 ax = gca; ax.FontSize = 13;
 title('RK4: local integration error', 'FontSize', 17);
 xlabel('$t [s]$', 'FontSize', 18); ylabel('$|x_{RK4}(t)-x(t)|$', 'FontSize', 18);
-legend(legendStr, 'FontSize', 14, 'Location', 'best');
-
+legend(legendStr, 'FontSize', 14, 'Location', 'southeast');
+save_fig(fig,'ex2_6');
 
 
 %% EX 3
@@ -357,18 +372,18 @@ f = @(t) 2*t^2+4*t-exp(t)+2;
 hvec = [0.5 0.2 0.05 0.01];
 N = length(hvec);
 
-%%% PLOT ------------------------------------------------------------------
+%%% -------------------------------- PLOTS --------------------------------
 % h solutions
-figure('Name', 'EX 3 - h', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 3 - h', 'NumberTitle', 'off');
 index = find(alpha <= 0);
 plot(alphaVec*180/pi, hRK2, '-.', 'LineWidth', 1.5); grid on; hold on;
 plot(alphaU*180/pi, abs(R_RK4), 'LineWidth', 1.5);
 xlabel('$\alpha$ $[deg]$', 'FontSize', 18); ylabel('$h$ $[-]$', 'FontSize', 18);
 legend({'RK2', 'RK4'}, 'FontSize', 14, 'Location', 'best');
 title('Solution of the statement', 'FontSize', 17);
-
+save_fig(fig,'ex3_1');
 % Stable domains
-figure('Name', 'EX 3 - Regions', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 3 - Regions', 'NumberTitle', 'off');
 re = real(R_RK2);
 im = imag(R_RK2);
 fp(1) = plot(re, im, '-.', 'color', [0 0.45 0.74], 'LineWidth', 1.5); hold on; grid on;
@@ -379,31 +394,26 @@ im = imag(R_RK4);
 fp(2) = plot(re, im, 'color', [0.85 0.33 0.10], 'LineWidth', 1.5); hold on; grid on;
 im = -im;
 plot(re, im, 'color', [0.85 0.33 0.10], 'LineWidth', 1.5);
-fp(3) = plot(f(0)*hvec, zeros(N, 1), 's', 'MarkerSize', 6);
-fp(4) = plot(f(2)*hvec, zeros(N, 1), 'o', 'MarkerSize', 6); xlim([-3.5 5.5]);
 axis equal; ax = gca; addAxes(ax);
 xlabel('$Re\{h\lambda\}$', 'FontSize', 18); ylabel('$Im\{h\lambda\}$', 'FontSize', 18);
 legend(fp, {'RK2 Stability margin',...
-    'RK4 Stability margin',...
-    '$\{h_i\lambda\}$ of Ex. 3 at $t=0$ $s$',...
-    '$\{h_i\lambda\}$ of Ex. 3 at $t=2$ $s$'},...
-    'FontSize', 11, 'Location', 'southeast');
+    'RK4 Stability margin'},...
+    'FontSize', 11, 'Location', 'best');
 title('Stability regions', 'FontSize', 17);
-a2 = axes(); % box of figure 1
-a2.Position = [0.53 0.63 0.3 0.25];
-box on
-hold on; axis equal; grid on;
-re = real(R_RK2);
-im = imag(R_RK2);
-plot(re, im, '-.', 'color', [0 0.45 0.74]);
-plot(re, -im, '-.', 'color', [0 0.45 0.74]);
-re = real(R_RK4);
-im = imag(R_RK4);
-plot(re, im, 'color', [0.85 0.33 0.10]);
-plot(re, -im, 'color', [0.85 0.33 0.10]);
-plot(f(0)*hvec, zeros(N, 1), 's', 'MarkerSize', 6);
-plot(f(2)*hvec, zeros(N, 1), 'o', 'MarkerSize', 6);
-xlim([-0.1 0.1])
+% a2 = axes(); % box of figure 1
+% a2.Position = [0.53 0.63 0.3 0.25];
+% box on
+% hold on; axis equal; grid on;
+% re = real(R_RK2);
+% im = imag(R_RK2);
+% plot(re, im, '-.', 'color', [0 0.45 0.74]);
+% plot(re, -im, '-.', 'color', [0 0.45 0.74]);
+% re = real(R_RK4);
+% im = imag(R_RK4);
+% plot(re, im, 'color', [0.85 0.33 0.10]);
+% plot(re, -im, 'color', [0.85 0.33 0.10]);
+% xlim([-0.1 0.1])
+save_fig(fig,'ex3_2');
 
 %%% PRINT DATA ------------------------------------------------------------
 fprintf('*************** EXERCISE 3 ***************\n');
@@ -413,7 +423,7 @@ fprintf('RK4 method:   %2.15e  \n\n', h_RK4);
 
 
 
-%% EX 3
+%% EX 4
 clearvars; close all; clc
 
 % Statement of the problem
@@ -499,9 +509,9 @@ for i = 1:length(tolVec)
     [~, ~, ~, fcnE4(i)] = RK4(@(t, x) A(pi)*x, tlim, h_RK4{i}(end), x0);
 end
 
-%%% PLOT ------------------------------------------------------------------
+%%% -------------------------------- PLOTS --------------------------------
 % RK1 solutions
-figure('Name', 'EX 4 - RK1', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 4 - RK1', 'NumberTitle', 'off');
 lineSpecObj = {'-.', '--', ':'};
 for i = 1:length(tolVec)
     re = real(R_RK1{i});
@@ -534,9 +544,9 @@ for i = 1:length(tolVec)
     end
 end
 xlim([-2e-5 3e-5]); ax = gca; addAxes(ax);
-
+save_fig(fig,'ex4_1');
 % RK" solutions
-figure('Name', 'EX 4 - RK2', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 4 - RK2', 'NumberTitle', 'off');
 lineSpecObj = {'-.', '--', ':'};
 for i = 1:length(tolVec)
     re = real(R_RK2{i});
@@ -553,9 +563,9 @@ axis equal; ax = gca; addAxes(ax);
 legend(fp, {'Tol = $10^{-3}$', 'Tol = $10^{-4}$', 'Tol = $10^{-5}$', 'Tol = $10^{-6}$'}, 'FontSize', 14, 'Location', 'best');
 xlabel('$Re\{h\lambda\}$', 'FontSize', 18); ylabel('$Im\{h\lambda\}$', 'FontSize', 18);
 title('RK2', 'FontSize', 17);
-
+save_fig(fig,'ex4_2');
 % RK4 solutions
-figure('Name', 'EX 4 - RK4', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 4 - RK4', 'NumberTitle', 'off');
 lineSpecObj = {'-.', '--', ':'};
 for i = 1:length(tolVec)
     re = real(R_RK4{i});
@@ -572,16 +582,16 @@ axis equal; ax = gca; addAxes(ax);
 legend(fp, {'Tol = $10^{-3}$', 'Tol = $10^{-4}$', 'Tol = $10^{-5}$', 'Tol = $10^{-6}$'}, 'FontSize', 14, 'Location', 'best');
 xlabel('$Re\{h\lambda\}$', 'FontSize', 18); ylabel('$Im\{h\lambda\}$', 'FontSize', 18);
 title('RK4', 'FontSize', 17);
-
+save_fig(fig,'ex4_3');
 % Function evaluations vs tolerance plot
-figure('Name', 'EX 4 - f evaluations', 'NumberTitle', 'off');
+fig = figure('Name', 'EX 4 - f evaluations', 'NumberTitle', 'off');
 loglog(tolVec, fcnE1, '-s', 'LineWidth', 1.5); hold on;
 loglog(tolVec, fcnE2, '-^', 'LineWidth', 1.5)
 loglog(tolVec, fcnE4, '-o', 'LineWidth', 1.5); grid on;
 title('f evaluations vs Tolerance', 'FontSize', 17);
 xlabel('tol [-]', 'FontSize', 18); ylabel('f evaluations [-]', 'FontSize', 18);
 legend({'RK1', 'RK2', 'RK4'}, 'FontSize', 14, 'Location', 'best');
-
+save_fig(fig,'ex4_4');
 %% EX 4
 clearvars; close all; clc; warning off;
 
@@ -617,7 +627,7 @@ end
 warning on;
 
 
-%%% PLOT ------------------------------------------------------------------
+%%% -------------------------------- PLOTS --------------------------------
 % BI2_theta unstable domains
 figure('Name', 'EX 5 - BI2', 'NumberTitle', 'off');
 lineSpecObj = {'-.', '--', ':', '-'};
@@ -798,7 +808,7 @@ for i = 2:length(tVec)
     Y_analytical(:, i) = x_analytical(tVec(i));
 end
 
-%%% PLOT ------------------------------------------------------------------
+%%% -------------------------------- PLOTS --------------------------------
 % Stability/Instability domain
 figure('Name', 'EX 7 - Stability region', 'NumberTitle', 'off');
 re = real(R_RK4);
@@ -1092,7 +1102,7 @@ R_ABM3 = R_ABM3(ind);
 [~, ind] = sort(ABDF3);
 R_BDF3 = R_BDF3(ind);
 
-%%% PLOT ------------------------------------------------------------------
+%%% -------------------------------- PLOTS --------------------------------
 % AB3 solution
 figure('Name', 'EX 7 - AB3', 'NumberTitle', 'off');
 plot(t_AB3, Y_AB3(:, 1), '-.', 'LineWidth', 1.5); hold on; grid on;
@@ -1188,8 +1198,6 @@ function [N, H] = getNH(h, tlim)
 %   N           double [1x1]   modified number of points                [-]
 %   H           double [1x1]   modified step size                       [-]
 %
-% CALLED FUNCTIONS: [-]
-%
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
 %
@@ -1204,38 +1212,6 @@ H = tlim(2) - tVec(end);
 
 end
 
-function addAxes(ax)
-% addAxes - Useful function to plot the X and Y axis with scalatures.
-%
-% PROTOTYPE
-%   [N, H] = getNH(ax)
-%
-% INPUT:
-%   ax          axes [1x1]     handle to current axis                   [-]
-%
-% OUTPUT: [-]
-%
-% CALLED FUNCTIONS: [-]
-%
-% CONTRIBUTOR:
-%   Cucchi Lorenzo              10650070
-%
-% VERSIONS
-%   2023-10-30: Release
-%
-% -------------------------------------------------------------------------
-
-line([0 0], ax.YLim, 'color', [0 0 0 0.5], 'LineWidth', 0.1);
-line(ax.XLim, [0 0], 'color', [0 0 0 0.5], 'LineWidth', 0.1);
-l = 1/50 * abs(ax.YLim(2) - ax.YLim(1));
-for i = 1:1:length(ax.XTick)
-    line([ax.XTick(i) ax.XTick(i)], [0 l], 'color', [0 0 0 0.5], 'LineWidth', 0.1);
-end
-l = 1/50 * abs(ax.XLim(2) - ax.XLim(1));
-for i = 1:1:length(ax.YTick)
-    line([0 l], [ax.YTick(i) ax.YTick(i)], 'color', [0 0 0 0.5], 'LineWidth', 0.1);
-end
-end
 
 function value = nth_output(N, fcn, varargin)
 % nth_output - Useful function to retrieve the wanted output.
@@ -1251,8 +1227,6 @@ function value = nth_output(N, fcn, varargin)
 % OUTPUT:
 %   value       -            [-]     N-th output of function fcn        [-]
 %
-% CALLED FUNCTIONS: [-]
-%
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
 %
@@ -1264,70 +1238,7 @@ function value = nth_output(N, fcn, varargin)
 value = value{N};
 end
 
-function [t, sol, it, fcnE, cV] = bisectionMethod(f, a, b, toll)
-% bisectionMethod - Function to retrieve the solution of finding zero
-% problem of function f performing a bisection method algorithm.
-%
-% PROTOTYPE
-%   [t, sol, it, fcnE, cV] = bisectionMethod(f, a, b, toll)
-%
-% INPUT:
-%   f        fcn handle  [1x1]   function to evaluate                   [-]
-%   a        double      [1x1]   left end of the zero searching range   [-]
-%   b        double      [1x1]   right end of the zero searching range  [-]        
-%   toll     double      [1x1]   tollerance                             [-]
-%
-% OUTPUT:
-%   t        double      [1x1]   computational time needed              [s]
-%   sol      double      [1x1]   solution                               [-]
-%   it       double      [1x1]   number of iterations                   [-]
-%   fcnE     double      [1x1]   function evaluations                   [-]
-%   cV       double      [1xn]   vector of guessed solutions            [-]
-%
-% CALLED FUNCTIONS: [-]
-%
-% CONTRIBUTOR:
-%   Cucchi Lorenzo              10650070
-%
-% VERSIONS
-%   2023-10-30: Release
-%
-% -------------------------------------------------------------------------
 
-t0  = tic;
-
-err     = toll + 1;
-it      = 0;
-
-cV = nan(1, 1);
-
-flag = -1;
-if f(a) > 0
-    flag = 1;
-end
-
-while err > toll
-    c = (b + a)/2;
-    fc = f(c);
-    err = abs(fc);
-    
-    if fc*flag > 0
-        a = c;
-    else
-        b = c;
-    end
-
-    it = it + 1;
-    cV(it) = c;
-end
-
-fcnE = it + 1;
-
-sol = cV(it);
-
-t = toc(t0);
-
-end
 
 function [t, sol, it, fcnE, cV] = secantMethod(f, a, b, toll)
 % secantMethod - Function to retrieve the solution of finding zero
@@ -1348,8 +1259,6 @@ function [t, sol, it, fcnE, cV] = secantMethod(f, a, b, toll)
 %   it       double      [1x1]   number of iterations                   [-]
 %   fcnE     double      [1x1]   function evaluations                   [-]
 %   cV       double      [1xn]   vector of guessed solutions            [-]
-%
-% CALLED FUNCTIONS: [-]
 %
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
@@ -1411,8 +1320,6 @@ function [t, sol, it, fcnE, cV] = regulaFalsiMethod(f, a, b, toll)
 %   fcnE     double      [1x1]   function evaluations                   [-]
 %   cV       double      [1xn]   vector of guessed solutions            [-]
 %
-% CALLED FUNCTIONS: [-]
-%
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
 %
@@ -1463,18 +1370,18 @@ t = toc(t0);
 
 end
 
-function [t, sol, it, fcnE, cV] = newton2Danalytical(f, invJ, x, toll)
-% newton2Danalytical - Function to compute the zero of the multidimensional
+function [t, sol, it, fcnE, cV] = newt2Da(f, x, invJ, toll)
+% newt2Da - Function to compute the zero of the multidimensional
 % function described by f applying Newton's method with analytical inverse
 % Jacobian matrix described by invJ.
 %
 % PROTOTYPE
-%   [timeComp, sol, it, fcnE, cV] = newton2Danalytical(f, invJ, x, toll)
+%   [timeComp, sol, it, fcnE, cV] = newt2Da(f, invJ, x, toll)
 %
 % INPUT:
 %   f        fcn handle  [1x1]   function to evaluate                   [-]
-%   invJ     fcn handle  [1x1]   analytic inverse Jacobian              [-]
 %   x        double      [nx1]   starting guess                         [-]
+%   invJ     fcn handle  [1x1]   analytic inverse Jacobian              [-]
 %   toll     double      [1x1]   tollerance                             [-]
 %
 % OUTPUT:
@@ -1483,8 +1390,6 @@ function [t, sol, it, fcnE, cV] = newton2Danalytical(f, invJ, x, toll)
 %   it       double      [1x1]   number of iterations                   [-]
 %   fcnE     double      [1x1]   function evaluations                   [-]
 %   cV       double      [nxm]   vector of guessed solutions            [-]
-%
-% CALLED FUNCTIONS: [-]
 %
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
@@ -1498,11 +1403,10 @@ t0 = tic;
 err = toll + 1;
 it = 0;
 cV = nan(size(x));
-
 fx = f(x);
 
 while any(err > toll)
-     x = x - invJ(x)*fx;
+    x = x - invJ(x) * fx;
     fx = f(x);
     err = abs(fx);
     
@@ -1519,13 +1423,14 @@ t = toc(t0);
 
 end
 
-function [t, sol, it, fcnE, cV] = newton2DfiniteDiff(f, x, type, toll)
-% newton2DfiniteDiff - Function to compute the zero of the multidimensional
+
+function [t, sol, it, fcnE, cV] = newt2Df(f, x, type, toll)
+% newt2Df - Function to compute the zero of the multidimensional
 % function described by f applying Newton's method and finite differences
 % approximation for the computation of the Jacobian matrix
 %
 % PROTOTYPE
-%   [timeComp, sol, it, fcnE, cV] = newton2DfiniteDiff(f, x, type, toll)
+%   [timeComp, sol, it, fcnE, cV] = newt2Df(f, x, type, toll)
 %
 % INPUT:
 %   f        fcn handle  [1x1]   function to evaluate                   [-]
@@ -1539,8 +1444,6 @@ function [t, sol, it, fcnE, cV] = newton2DfiniteDiff(f, x, type, toll)
 %   it       double      [1x1]   number of iterations                   [-]
 %   fcnE     double      [1x1]   function evaluations                   [-]
 %   cV       double      [nxm]   vector of guessed solutions            [-]
-%
-% CALLED FUNCTIONS: [-]
 %
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
@@ -1556,31 +1459,42 @@ cV = nan(size(x));
 
 fx = f(x);
 
+if strcmp(type, 'forward')
+    check = true;
+else 
+    check = false;
+end
+
+
 while any(err > 1e-8)
+
     delta = sqrt(eps);
+    
     if abs(x(1)) > 1
         delta = delta*abs(x(1));
     end
     
-    if strcmp(type, 'forward')
+    if check
         J(:, 1) = ((f([x(1)+delta, x(2)]) - fx)/delta);
     else
         J(:, 1) = ((f([x(1)+delta, x(2)]) - f([x(1)-delta, x(2)]))/(2*delta));
     end
+
     delta = sqrt(eps);
+
     if abs(x(2)) > 1
         delta = delta*abs(x(2));
     end
     
-    if strcmp(type, 'forward')
+    if check
         J(:, 2) = ((f([x(1), x(2)+delta]) - fx)/delta);
     else
         J(:, 2) = ((f([x(1), x(2)+delta]) - f([x(1), x(2)-delta]))/(2*delta));
     end
+
     x = x - J\fx;
     fx = f(x);
     err = abs(fx);
-    
     it = it + 1;
     cV(:, it) = x;
     
@@ -1615,8 +1529,6 @@ function [t, Y, ct, fcnE] = RK1(f, tlim, h, x0)
 %   Y        double      [mxn]   solution                               [-]
 %   ct       double      [1x1]   computational time needed              [s]
 %   fcnE     double      [1x1]   function evaluations                   [-]
-%
-% CALLED FUNCTIONS: [-]
 %
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
@@ -1664,8 +1576,6 @@ function [t, Y, ct, fcnE] = RK2(f, tlim, h, x0)
 %   Y        double      [mxn]   solution                               [-]
 %   ct       double      [1x1]   computational time needed              [s]
 %   fcnE     double      [1x1]   function evaluations                   [-]
-%
-% CALLED FUNCTIONS: [-]
 %
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
@@ -1715,8 +1625,6 @@ function [t, Y, ct, fcnE] = RK4(f, tlim, h, x0)
 %   ct       double      [1x1]   computational time needed              [s]
 %   fcnE     double      [1x1]   function evaluations                   [-]
 %
-% CALLED FUNCTIONS: [-]
-%
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
 %
@@ -1762,8 +1670,6 @@ function F = FRK2(h, alpha)
 % OUTPUT:
 %   F        double     [2x2]   linear operator                         [-]
 %
-% CALLED FUNCTIONS: [-]
-%
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
 %
@@ -1789,8 +1695,6 @@ function F = FRK4(h, alpha)
 %
 % OUTPUT:
 %   F        double     [2x2]   linear operator                         [-]
-%
-% CALLED FUNCTIONS: [-]
 %
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
@@ -1823,8 +1727,6 @@ function [t, Y, ct] = AB3(f, tlim, h, x0)
 %   Y        double      [mxn]   solution                               [-]
 %   ct       double      [1x1]   computational time needed              [s]
 %
-% CALLED FUNCTIONS: [-]
-%
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
 %
@@ -1849,8 +1751,8 @@ for i = 2:3
 end
 
 for i = 4:N+1
-    Y(i, :) = Y(i-1, :)' + h*(23/12*f(t(i-1), Y(i-1, :)') - 16/12*f(t(i-2), Y(i-2, :)') + ...
-        5/12*f(t(i-3), Y(i-3, :)'));
+    Y(i, :) = Y(i-1, :)' + h*(23/12*f(t(i-1), Y(i-1, :)')...
+               - 16/12*f(t(i-2), Y(i-2, :)') + 5/12*f(t(i-3), Y(i-3, :)'));
 end
 ct = toc(t0);
 
@@ -1873,8 +1775,6 @@ function [t, Y, ct] = AM3(f, tlim, h, x0)
 %   t        double      [1x1]   time vector                            [s]
 %   Y        double      [mxn]   solution                               [-]
 %   ct       double      [1x1]   computational time needed              [s]
-%
-% CALLED FUNCTIONS: [-]
 %
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
@@ -1943,8 +1843,6 @@ function [t, Y, ct] = ABM3(f, tlim, h, x0)
 %   Y        double      [mxn]   solution                               [-]
 %   ct       double      [1x1]   computational time needed              [s]
 %
-% CALLED FUNCTIONS: [-]
-%
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
 %
@@ -1997,8 +1895,6 @@ function [t, Y, ct] = BDF3(f, tlim, h, x0)
 %   Y        double      [mxn]   solution                               [-]
 %   ct       double      [1x1]   computational time needed              [s]
 %
-% CALLED FUNCTIONS: [-]
-%
 % CONTRIBUTOR:
 %   Cucchi Lorenzo              10650070
 %
@@ -2047,3 +1943,71 @@ ct = toc(t0);
 
 end
 
+
+function addAxes(ax)
+% addAxes - Useful function to plot the X and Y axis with scalatures.
+%
+% PROTOTYPE
+%   [N, H] = getNH(ax)
+%
+% INPUT:
+%   ax          axes [1x1]     handle to current axis                   [-]
+%
+% OUTPUT: [-]
+%
+% CONTRIBUTOR:
+%   Cucchi Lorenzo              10650070
+%
+% VERSIONS
+%   2023-10-30: Release
+%
+% -------------------------------------------------------------------------
+
+line([0 0], ax.YLim, 'color', [0 0 0 0.5], 'LineWidth', 0.1);
+line(ax.XLim, [0 0], 'color', [0 0 0 0.5], 'LineWidth', 0.1);
+l = 1/50 * abs(ax.YLim(2) - ax.YLim(1));
+
+for i = 1:1:length(ax.XTick)
+    line([ax.XTick(i) ax.XTick(i)], [0 l], 'color', [0 0 0 0.5], 'LineWidth', 0.1);
+end
+
+l = 1/50 * abs(ax.XLim(2) - ax.XLim(1));
+
+for i = 1:1:length(ax.YTick)
+    line([0 l], [ax.YTick(i) ax.YTick(i)], 'color', [0 0 0 0.5], 'LineWidth', 0.1);
+end
+
+end
+
+
+
+function save_fig(fig,name)
+% save_fig - Function to save figure to pdf with correct sizing.
+%
+% PROTOTYPE
+%   [t, Y, ct] = BDF3(f, tlim, h, x0)
+%
+% INPUT:
+%   fig      figure      [1x1]   figure to save                         [-]
+%   name     double      [1x2]   str                                    [-]
+%
+% CONTRIBUTOR:
+%   Cucchi Lorenzo              10650070
+%
+% VERSIONS
+%   2023-10-30: Release
+%
+% -------------------------------------------------------------------------
+WHratio = fig.Position(3)/fig.Position(4); % retrieve current WHratio
+widthPos = 15;
+heightPos = widthPos/WHratio;
+
+set(fig,'Units','centimeters',...
+       'PaperUnits','centimeters',...
+       'PaperSize',[widthPos heightPos],...
+       'PaperPositionMode','auto',...
+       'InvertHardcopy', 'on');
+name = strcat('..\Report\gfx\',name);
+saveas(fig,name,'pdf')
+close(fig)
+end
