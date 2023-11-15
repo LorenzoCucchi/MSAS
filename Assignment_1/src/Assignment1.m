@@ -952,20 +952,25 @@ F_AB3 = @(h, alpha) [zeros(n, n) eye(n) zeros(n, n); ...
          zeros(n, n) zeros(n, n) eye(n); ...
          5/12*A(alpha)*h -4/3*A(alpha)*h (eye(n) + 23/12*A(alpha)*h)];
 
+% Command mldivide "\" is used instead of inv() since it's more efficient
+% and also more robust.
+
 % AM3
 F_AM3 = @(h, alpha) max(abs(eig([zeros(n, n) eye(n); ...
-         -inv(eye(n) - 5/12*h*A(alpha))*1/12*h*A(alpha), inv(eye(n) - 5/12*h*A(alpha))*(eye(n) + 2/3*h*A(alpha))])));
-
-     
+         -(eye(n) - 5/12*h*A(alpha))\eye(n)*1/12*h*A(alpha),...
+         (eye(n) - 5/12*h*A(alpha))\eye(n)*(eye(n) + 2/3*h*A(alpha))])));
+   
 % ABM3
 F_ABM3 = @(h, alpha) max(abs(eig([zeros(n, n) eye(n) zeros(n, n); ...
          zeros(n, n) zeros(n, n) eye(n); ...
-         25/144*(A(alpha)*h)^2, -(1/12*A(alpha)*h + 5/9*(A(alpha)*h)^2), (eye(n) + 13/12*A(alpha)*h + 115/144*(A(alpha)*h)^2)])));
+         25/144*(A(alpha)*h)^2, -(1/12*A(alpha)*h + 5/9*(A(alpha)*h)^2),...
+         (eye(n) + 13/12*A(alpha)*h + 115/144*(A(alpha)*h)^2)])));
 
 % BDF3
 F_BDF3 = @(h, alpha) max(abs(eig([zeros(n, n) eye(n) zeros(n, n); ...
          zeros(n, n) zeros(n, n) eye(n); ...
-         inv(eye(n) - 6/11*A(alpha)*h)*2/11, - inv(eye(n) - 6/11*A(alpha)*h)*9/11, inv(eye(n) - 6/11*A(alpha)*h)*18/11])));
+         eye(n)/(eye(n) - 6/11*A(alpha)*h)*2/11, - (eye(n) -...
+         6/11*A(alpha)*h)\eye(n)*9/11, ((eye(n) - 6/11*A(alpha)*h)\eye(n))*18/11])));
 
 % AM3 stability region
 N = 100;
@@ -1041,7 +1046,8 @@ alphaUABM3 = zeros(length(alphaVec), 1);
 alphaUBDF3 = zeros(length(alphaVec), 1);
 
 for i = 1:length(alphaVec)
-    lambda = eig(A(alphaVec(i))); lambda = lambda(1);
+    lambda = eig(A(alphaVec(i))); 
+    lambda = lambda(1);
     % AB3
     if sum(isnan(hAB3(i, :))) == 1
         hAB3_sorted(ctr) = hAB3(i, 2);
@@ -1064,7 +1070,8 @@ for i = 1:length(alphaVec)
         ctr = ctr + 1;
     end
     % ABM3
-    lambda = eig(A(alphaVec(i))); lambda = lambda(1);
+    lambda = eig(A(alphaVec(i))); 
+    lambda = lambda(1);
     if sum(isnan(hABM3(i, :))) == 1
         hABM3_sorted(ctr) = hABM3(i, 2);
         alphaUABM3(ctr) = alphaVec(i);
@@ -1086,7 +1093,8 @@ for i = 1:length(alphaVec)
         ctr = ctr + 1;
     end
     % BDF3
-    lambda = eig(A(alphaVec(i))); lambda = lambda(1);
+    lambda = eig(A(alphaVec(i))); 
+    lambda = lambda(1);
     if sum(isnan(hBDF3(i, :))) == 1
         hBDF3_sorted(ctr) = hBDF3(i, 2);
         alphaUBDF3(ctr) = alphaVec(i);
@@ -1229,7 +1237,7 @@ legend({'AB3 Stability margin', 'AM3 Stability Margin',...
 xlabel('$Re\{h\lambda\}$', 'FontSize', 18); 
 ylabel('$Im\{h\lambda\}$', 'FontSize', 18);
 save_fig(fig,'ex7_6');
-system('cd ../Report && pdflatex main.tex');
+%system('cd ../Report && pdflatex main.tex');
 
 %% Functions
 % All the fucntions have an intestation with the description of the
