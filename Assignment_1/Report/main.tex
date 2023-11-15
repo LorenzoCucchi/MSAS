@@ -94,7 +94,7 @@
 
 
 \title{MSAS -- Assignment \#1: Simulation} % Article title
-\author{\large {Lorenzo Cucchi}, {123456}}
+\author{\large {Lorenzo Cucchi}, {221732}}
 \date{}
 
 %--------------------------------------------------------------------------------
@@ -136,8 +136,7 @@ Which version is more accurate?
     \centering
     \includegraphics[width = 0.48\textwidth]{gfx/ex1_1.pdf}
     \includegraphics[width = 0.48\textwidth]{gfx/ex1_2.pdf}
-    \caption{Surf plot of function $f_x(\vec{x})=x_1^2+x_2-5$ (left) and function $f_y(\vec{x})=x_2^2-x_1$ (right).}
-    \label{fig:f1f2}
+    \caption{Surf plot of function $f_x(\vec{x})=x_2^2-x_1-2$ and function $f_y(\vec{x})=-x_1^2+x_2+10$.}\label{fig:ex1_1}
 \end{figure}
 The problem consists in finding the couple(s) $\{x_1, x_2\}$ which satisfy the relation $f(x_1,x_2)=[0, 0]^T$. In order to solve the problem using Newton's method, the analytical form or an approximation of the inverse Jacobian matrix $\vec{J^{-1}}$ is needed. In fact, according to Newton's method, the i-th iteration $\vec{x}_{i}$ is given by \autoref{eq:Jacobian}.
 \begin{equation}
@@ -145,17 +144,33 @@ The problem consists in finding the couple(s) $\{x_1, x_2\}$ which satisfy the r
     \label{eq:Jacobian}
 \end{equation}
 
-\begin{wrapfigure}[17]{r}{0.5\textwidth}
-\centering
-\vspace{-0.3cm}
-    \includegraphics[width = 0.5\textwidth]{gfx/ex1_3.pdf}
-    \caption{Zeros ($z_1$ and $z_2$) of the problem.}
-    \label{fig:ex1_solution}
+\begin{wrapfigure}[17]{l}{0.48\textwidth}
+    \centering
+    \vspace{-0.3cm}
+    
+        \includegraphics[width = 0.48\textwidth]{gfx/ex1_3.pdf}
+        \caption{Zeros ($z_1$ and $z_2$) of the problem.}\label{fig:ex1_2}
 \end{wrapfigure}
-The analytical form of the inverse Jacobian matrix is easily obtained through MATLAB symbolic toolbox after a few passages. On the other side, the approximated form of the Jacobian matrix is obtained through finite difference methods. In particular, first order \textit{forward} and \textit{centered} finite difference schemes are implemented. In this sense, the small increment $\delta$ which is applied in the finite difference methods follows the \textit{golden rule}: $\delta=\sqrt{eps}\cdot max(1, |\vec{x}|)$, where $eps$ is the machine epsilon. Furthermore, to improve code efficiency and accuracy, the Jacobian calculated with finite differences in never inverted; instead, the MATLAB command \texttt{backslash} "$\backslash$" is used.
+The analytical inverse Jacobian matrix can be efficiently obtained using the MATLAB symbolic toolbox 
+through a few simple steps. Notably, for cases with a straightforward structure, like this one, 
+manual calculation proves to be a faster alternative.
+ On the other side, the approximated form of the Jacobian matrix is obtained 
+through finite difference methods. In particular, first order \textit{forward} and \textit{centered} 
+finite difference schemes are implemented. In this sense, the small increment $\delta$ which is applied 
+in the finite difference methods follows the \textit{rule}: 
+$\delta=\sqrt{eps}\cdot max(1, |\vec{x}|)$, where $eps$ is the machine epsilon. 
+Furthermore, to improve code efficiency and accuracy, the Jacobian calculated with finite differences 
+is never inverted; instead, the MATLAB command \texttt{mldivide} or '$\backslash$' is used. 
 
-As \autoref{fig:ex1_solution} shows, there are two zeros of the function $\vec{f}$($\vec{x}$). Indeed, two appropriate initial guesses $\vec{x}_0$ must be found to make the algorithms converge at the two zeros. The initial guesses are therefore $x_{0,1}=[0, 2]^T$ and $x_{0,2}=[6, -4]^T$. The stopping criteria chosen is the accuracy of the function evaluated in $\vec{x}_i$: when both the absolute values of $f_x(\vec{x}_i)$ and $f_y(\vec{x}_i)$ are lower than a tolerance set to $1e-8$ the algorithm stops.
-Results reported in \autoref{tab:ex1_results} show that the three algorithms converge at very close values and take the same number of iterations: the error $||err||=||\vec{f}(\vec{x}_{end,analytical}) - \vec{f}(\vec{x}_{end,method})||$ is very low, suggesting the high accuracy of both the forward and centered differences approximations.
+As \autoref{fig:ex1_2} shows, there are two zeros of the function $\vec{f}$($\vec{x}$). 
+Indeed, two appropriate initial guesses $\vec{x}_0$ must be found to make the algorithms converge 
+at the two zeros. The initial guesses are therefore $x_{0,1}={[1, -4]}^T$ and $x_{0,2}={[6, 5]}^T$. 
+The stopping criteria chosen is the accuracy of the function evaluated in $\vec{x}_i$: when both 
+the absolute values of $f_x(\vec{x}_i)$ and $f_y(\vec{x}_i)$ are lower than a tolerance set to ${1e-8}$ 
+the algorithm stops. Results reported in \autoref{tab:ex1_results} show that the three algorithms 
+converge at very close values and take the same number of iterations: the error 
+$||err||=||\vec{f}(\vec{x}_{end,analytical}) - \vec{f}(\vec{x}_{end,method})||$ is very low, 
+suggesting the high accuracy of both the forward and centered differences approximations.
 \begin{table}[ht]
     \centering
     \begin{tabular}{l|c c c}
@@ -163,8 +178,8 @@ Results reported in \autoref{tab:ex1_results} show that the three algorithms con
         \midrule
         \midrule
         Analytical                  & [2.794695112889339, -2.189679226029504]$^T$  & 5 & -\\
-        Forward differences         & [2.794695112889365, -2.189679226029504]$^T$  & 5 & 4.1405e-14\\
-        Centered differences        & [2.794695112889314, -2.189679226029504]$^T$  & 5 & 2.6291e-14\\
+        Forward differences         & [2.794695112889365, -2.189679226029472]$^T$  & 5 & 4.1405e-14\\
+        Centered differences        & [2.794695112889314, -2.189679226029497]$^T$  & 5 & 2.6291e-14\\
         \toprule
     \end{tabular}
     \begin{tabular}{l|c c c}
@@ -175,8 +190,7 @@ Results reported in \autoref{tab:ex1_results} show that the three algorithms con
         Forward differences         & [3.513999235947627, 2.348190630240434]$^T$  & 5 & 1.3773e-14\\
         Centered differences        & [3.513999235947620, 2.348190630240424]$^T$  & 5 & 3.1401e-15\\
     \end{tabular}
-    \caption{Zeros found by the three proposed methods.}
-    \label{tab:ex1_results}
+    \caption{Zeros found by the three proposed methods.}\label{tab:ex1_results}
 \end{table}
 
 %--------------------------------------------------------------------------------
@@ -193,6 +207,7 @@ Results reported in \autoref{tab:ex1_results} show that the three algorithms con
 %--------------------------------------------------------------------------------
 
 \section{Numerical solution of ODE}
+
 \subsection*{Exercise 2}
 
 The Initial Value Problem $\dot x = x- 2t^2+2$, $x(0) = 1$, has analytic solution $x(t) = 2t^2 + 4t - e^t + 2$. 
@@ -214,18 +229,9 @@ The Initial Value Problem $\dot x = x- 2t^2+2$, $x(0) = 1$, has analytic solutio
     \label{fig:ex2_sol}
 \end{figure}
 
-The IVP problem in $t\in[0,2]$ for $h_1 = 0.5$, $h_2 = 0.2$, $h_3 = 0.05$ and $h_4 = 0.01$ is 
-first solved with RK2 and RK4 methods, as shown in (\autoref{fig:ex2_sol}), and then, the 
-integration errors are compared in \autoref{fig:ex2_locErr}. As depicted in the two figures, 
-the accuracy of the RK4 method is higher w.r.t. RK2 one, even with higher values of $h$. 
-The higher order of the RK4 method grants also an higher decrease order for the global 
-integration error, as shown in \autoref{fig:ex2_globErr} (left figure).
-
-By taking into consideration the trade-off between computational time and integration error, 
-the \autoref{fig:ex2_globErr} (right) shows that to accomplish the same accuracy on the final 
-value the RK4 method needs less time w.r.t. RK2 method. Indeed, the user should use RK4 method 
-regardless of the computational time since it is the most efficient on both the accuracy and 
-CPU-time needed.
+The initial value problem (IVP) over the interval $t\in[0,2]$ is solved using step sizes $h_1 = 0.5$, $h_2 = 0.2$, $h_3 = 0.05$, and $h_4 = 0.01$ with both RK2 and RK4 methods. The results are illustrated in (\autoref{fig:ex2_sol}). Subsequently, the integration errors are compared in \autoref{fig:ex2_locErr}. As evident from the figures, the RK4 method exhibits superior accuracy compared to RK2, even when using larger step sizes.
+The higher order of the RK4 method not only leads to increased accuracy but also results in a more substantial reduction in the global integration error, as demonstrated in \autoref{fig:ex2_globErr} (left).
+Considering the balance between computational time and integration error, \autoref{fig:ex2_globErr} (right) indicates that, to achieve the same level of accuracy in the final value, the RK4 method requires less time compared to the RK2 method. Therefore, the RK4 method is recommended irrespective of computational time considerations, as it proves to be the most efficient in terms of both accuracy and CPU time.
 
 \begin{figure}[ht]
     \centering
@@ -235,15 +241,13 @@ CPU-time needed.
     \label{fig:ex2_locErr}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width = 0.48\textwidth]{gfx/ex2_5.pdf}
     \includegraphics[width = 0.48\textwidth]{gfx/ex2_6.pdf}
     \caption{Global integration errors (left) and comparison between error and computational time of RK2 and RK4 methods (right).}
     \label{fig:ex2_globErr}
 \end{figure}
-
-
 
 \subsection*{Exercise 3}
 
@@ -293,10 +297,10 @@ imposing $\alpha=\pi$ with both $F_{RK2}$ and $F_{RK4}$.
     \label{tab:ex3_ris}
 \end{table}
 
-By solving the problem for $\alpha\in[0, \pi]$ the domain of numerical stability of bot RK2 
-and RK4 methods is retrieved and plotted in \autoref{fig:ex3_stab}. A shown in the figure, 
-the stability domains grow with increasing approximation order and higher-order algorithms 
-call for larger step sizes.
+Solving the problem for $\alpha\in[0, \pi]$  allows us to ascertain and visualize the numerical 
+stability domains for both RK2 and RK4 methods, as depicted in \autoref{fig:ex3_stab}. 
+As illustrated, the stability domains expand with higher approximation orders, 
+necessitating larger step sizes for higher-order algorithms.
 
 \begin{figure}[h]
     \centering
@@ -318,11 +322,11 @@ Consider the IVP $\dot{\vec x}=A(\alpha)\vec x$, $\vec x(0) = [1, 1]^T$, to be i
 \rightline{\small(4 points)}
 \medskip \hrule \medskip
 
-Results are shown in \autoref{fig:ex4_1} and in \autoref{fig:ex4_2}. As the figure depicts, higher order approximation 
-methods implies larger admissible values of step $h$. As a result, to grant the same tolerance 
-of the error $\left\|\vec x_{\rm an}(1)-\vec x_{\rm RK1}(1)\right\|_\infty$, higher order 
-methods can afford larger $h$ which results in less step in which the function must be 
-evaluated. Last figure of \autoref{fig:ex4_2} demonstrates this fact.
+The outcomes are illustrated in \autoref{fig:ex4_1} and \autoref{fig:ex4_2}. As observed in the figures, 
+the use of higher-order approximation methods allows for larger permissible values of the step size $h$. 
+Consequently, to maintain the same error tolerance $\left|\vec x_{\rm an}(1)-\vec x_{\rm RK1}(1)\right|_\infty$, 
+higher-order methods can accommodate larger $h$, resulting in fewer steps at which the function needs 
+to be evaluated, this observation is further exemplified in \autoref{fig:ex4_2}.
 \begin{figure}[h]
 \includegraphics[width=0.48\textwidth]{gfx/ex4_1.pdf}
     \includegraphics[width=0.48\textwidth]{gfx/ex4_2.pdf}
@@ -337,7 +341,6 @@ evaluated. Last figure of \autoref{fig:ex4_2} demonstrates this fact.
     \label{fig:ex4_2}
 \end{figure}
 
-
 \subsection*{Exercise 5}
 Consider the backinterpolation method $\textrm{BI2}_{0.4}$. 1) Derive the expression of the 
 linear operator $B_{\rm BI2_{0.4}}(h,\alpha)$ such that $\vec x_{k+1} = B_{\rm BI2_{0.4}}(h,\alpha) \vec x_k$. 2) 
@@ -348,7 +351,59 @@ of $\textrm{BI2}_{\theta}$ for the values of $\theta = [0.1,\, 0.3,\, 0.7,\, 0.9
 \rightline{\small(5 points)}
 \medskip \hrule \medskip
 
-\tr{\textit{Write your answer here}}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.48\textwidth]{gfx/ex5_1.pdf}
+    \includegraphics[width=0.50\textwidth]{gfx/ex5_2.pdf}
+    \caption{Unstable domains of BI2$_{\theta}$ for different $\theta$ values (left). Minimum step h for stability (right).}
+    \label{fig:ex5_sol}
+\end{figure}
+
+BI$_i$ backinterpolation methods are a special implicit Runge-Kutta (IRK) methods. In order to derive the expression of the 
+linear operator $B_{\rm BI2_{0.4}}(h,\alpha)$ such that $\vec x_{k+1} = B_{\rm BI2_{0.4}}(h,\alpha) \vec x_k$, a generic 
+iteration of RK2 with step h$\theta$ is derived:
+\begin{equation}
+    \begin{cases}
+        \vec{x}_{k+h\theta}^P = \vec{x}_k + \theta h\vec{f}(\vec{x}_k, t_k) \\
+        \vec{x}_{k+h\theta}^C = \vec{x}_k + \frac{\theta h}{2}[\vec{f}(\vec{x}_k, t_k) + \vec{f}(\vec{x}_{k+h\theta}^P, t_{k+h\theta})]
+\end{cases}
+\label{eq:syst}
+\end{equation}
+where, in our case, $\vec{f}(\vec{x}_k, t_k)= \vec{A}(\alpha)\vec{x}_k$. By substituting the latter and the first equation of \autoref{eq:syst} in the second one, what is obtained is the following:
+\begin{equation}
+    \vec{x}_{k+h\theta} = \vec{x}_k + \frac{\theta h}{2}\vec{A}(\alpha)\vec{x}_k + \frac{\theta h}{2}\vec{A}(\alpha)\vec{x}_k + \frac{\theta h}{2}\theta h \vec{A}^2(\alpha)
+\end{equation}
+Which can be rewritten as:
+\begin{equation}
+    \vec{x}_{k+h\theta} = (\vec{I} + h\theta\vec{A}(\alpha) + \frac{\theta^2h^2}{2}\vec{A}^2(\alpha))\vec{x}_k
+    \label{eq:eq1}
+\end{equation}
+The same procedure is performed to find the relation between $\vec{x}_{k+h\theta}$ and $\vec{x}_{k+1}$. In order to achieve that, the generic RK2 iteration with $-h(1-\theta)$ step is considered:
+\begin{equation}
+    \begin{cases}
+        \vec{x}_{k+h\theta}^P = \vec{x}_k - h(1-\theta)\vec{f}(\vec{x}_{k+1}, t_{k+1}) \\
+        \vec{x}_{k+h\theta}^C = \vec{x}_k - \frac{h(1-\theta)}{2}[\vec{f}(\vec{x}_{k+1}, t_{k+1}) + \vec{f}(\vec{x}_{k+h\theta}^P, t_{k+h\theta})]
+\end{cases}
+\label{eq:eq2}
+\end{equation}
+Following the procedure that allowed to find \autoref{eq:eq1}, \autoref{eq:eq2} becomes:
+\begin{equation}
+    \vec{x}_{k+h\theta} = (\vec{I} - h(1-\theta)\vec{A}(\alpha) + \frac{h^2(1-\theta)^2}{2}\vec{A}^2(\alpha))\vec{x}_{k+1}
+\end{equation}
+By comparing \autoref{eq:eq1} and \autoref{eq:eq2}:
+\begin{equation}
+    (\vec{I} + h\theta\vec{A}(\alpha) + \frac{\theta^2h^2}{2}\vec{A}^2(\alpha))\vec{x}_k = (\vec{I} - h(1-\theta)\vec{A}(\alpha) + \frac{h^2(1-\theta)^2}{2}\vec{A}^2(\alpha))\vec{x}_{k+1}
+\end{equation}
+By isolating $\vec{x}_{k+1}$:
+\begin{equation}
+    \vec{x}_{k+1} = (\vec{I} - h(1-\theta)\vec{A}(\alpha) + \frac{h^2(1-\theta)^2}{2}\vec{A}^2(\alpha))^{-1}(\vec{I} + h\theta\vec{A}(\alpha) + \frac{\theta^2h^2}{2}\vec{A}^2(\alpha))\vec{x}_k
+\end{equation}
+As a result, the linear operator $B_{\rm BI2_{\theta}}(h,\alpha)$ is obtained:
+\begin{equation}
+    B_{\rm BI2_{0.4}}(h,\alpha) = (\vec{I} - h(1-\theta)\vec{A}(\alpha) + \frac{h^2(1-\theta)^2}{2}\vec{A}^2(\alpha))^{-1}(\vec{I} + h\theta\vec{A}(\alpha) + \frac{\theta^2h^2}{2}\vec{A}^2(\alpha))
+\end{equation}
+By imposing $\theta = 0.4$ the linear operator $B_{\rm BI2_{0.4}}(h,\alpha)$ is obtained.
+Given the expression of the linear operator $B_{\rm BI2_{\theta}}(h,\alpha)$, it is possible to derive the domain of numerical stability of $BI2_{\theta}$ method with different $\theta$ values by solving ``Find $h\ge 0$ s.t.$\max\left(|{\rm eig}(BI2_{\theta}(h,\alpha))|\right) = 1$''. Results are shown in \autoref{fig:ex5_sol}.
 
 \subsection*{Exercise 6}
 
@@ -361,16 +416,43 @@ Consider the IVP $\dot{\vec x} = B \vec x$ with $B =[-180.5, 219.5; 179.5, -220.
     \item Discuss the results.
 \end{enumerate*}
 
-\rightline{\small(4 points)}
 \medskip \hrule \medskip
 
-\tr{\textit{Write your answer here}}
+\begin{wrapfigure}[18]{r}{0.55\textwidth}
+\centering
+    \includegraphics[width = 0.55\textwidth]{gfx/ex6_1.pdf}
+    \caption{Stable and unstable domains of RK4 and IEX4 methods.}
+    \label{fig:ex6}
+\end{wrapfigure}
+
+Imposing $h=0.1$, the problem $\dot{\vec x} = B \vec x$ is solved with both RK4 and IEX4 methods 
+and the obtained solutions are compared to the analytical one ($x_{analytical}=e^{\vec{B}t}$) in 
+\autoref{fig:ex6_1}. While the fourth order implicit extrapolation technique IEX4 approximates the 
+analytical solution with low errors, integration errors due to RK4 approximation diverges. 
+This is due to the eigenvalues of the matrix $\vec{B}$: $\lambda_i= [-1, -400]$. In particular, 
+the eigenvalue $\lambda_1= -1$ multiplied by the step $h=0.1$ lies in the unstable domain of the 
+RK4 method, making the associated component of the solution diverges from the analytical one. 
+Although the second eigenvalue lies in the stable domain of RK4, the solution still diverges since 
+the state equations are coupled. A different behaviour is found with IEX4 method: as 
+\autoref{fig:ex6} both the $h\lambda_i$ lie in the stable domain of the method, making the 
+solution converges to the analytical one with low integration errors.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.48\textwidth]{gfx/ex6_2.pdf}
+    \includegraphics[width=0.48\textwidth]{gfx/ex6_3.pdf}
+    \includegraphics[width=0.48\textwidth]{gfx/ex6_4.pdf}
+    \includegraphics[width=0.48\textwidth]{gfx/ex6_5.pdf}
+    \caption{Solutions obtained with RK4 and IEX4 methods and their respective errors compared with analytic solution.}
+    \label{fig:ex6_1}
+\end{figure}
+
 
 
 \subsection*{Exercise 7}
 
 Consider the two-dimensional IVP 
-$$\begin{bmatrix}\dot{x}_1 \\ \dot{x}_2\end{bmatrix}=\begin{bmatrix}-\frac{5}{2}\left[1+8\sin(t)\right]x_1 \\ (1-x_1)x_2+x_1\end{bmatrix}, \qquad \begin{bmatrix} x_1(t_0)\\ x_2(t_0)\end{bmatrix}=\begin{bmatrix} 1\\ 1\end{bmatrix}$$
+\[\begin{bmatrix}\dot{x}_1 \\ \dot{x}_2\end{bmatrix}=\begin{bmatrix}-\frac{5}{2}\left[1+8\sin(t)\right]x_1 \\ (1-x_1)x_2+x_1\end{bmatrix}, \qquad \begin{bmatrix} x_1(t_0)\\ x_2(t_0)\end{bmatrix}=\begin{bmatrix} 1\\ 1\end{bmatrix}\]
 \begin{enumerate*}[label=\arabic*)]
     \item Solve the IVP using AB3 in $t\in[0,3]$ for $h=0.1$;
     \item Repeat point 1) using AM3, ABM3, and BDF3;
@@ -381,8 +463,66 @@ $$\begin{bmatrix}\dot{x}_1 \\ \dot{x}_2\end{bmatrix}=\begin{bmatrix}-\frac{5}{2}
 \medskip \hrule \medskip
 
 
+\autoref{fig:ex7_1} shows the solution of the problem when a step size $h=0.1$ is adopted with AB3, AM3, ABM3 and BDF3 methods. As the figure depicts, the AB3 method suffers from integration instability on both the components $x$ and $y$. On the other side, AM3 and BDF3 methods can provide a reliable solution for the $x$ component but not for $y$, while ABM3 method seems to suffer from instability for the $x$ components between $t\simeq1.5$ s and $t\simeq=2.5$ s and the same problem encountered with the other methods for the $y$ component.
 
-\tr{\textit{Write your answer here}}
+In order to study such a behaviour, the linearized system is studied. Regarded as $\vec{x}_0$ the equilibrium solution, the problem is formulated as follows:
+\begin{equation}
+    \dot{\vec{x}} = \vec{f}(\vec{x}, t) \simeq \vec{f}(\vec{x}_0, t) + \left.\frac{\partial \vec{f}(\vec{x}, t)}{\partial \vec{x}} \right\rvert_{\vec{x}=\vec{x}_0}(\vec{x}-\vec{x}_0)
+    \label{eq:ex8}
+\end{equation}
+By definition, $\vec{f}(\vec{x}_0,t) = \vec{0}$. Furthermore, single $\vec{x}_0$ value is obtained by imposing $\dot{\vec{x}}=\vec{0}$: $\vec{x}_0$ = $[0, 0]^T$. As a result, \autoref{eq:ex8} becomes:
+\begin{equation}
+    \vec{f}(\vec{x}, t) \simeq \left.\frac{\partial \vec{f}(\vec{x}, t)}{\partial \vec{x}} \right\rvert_{\vec{x}=\vec{x}_0} \vec{x}
+    \label{eq:ex81}
+\end{equation}
+The partial derivative term in \autoref{eq:ex81} is the Jacobian matrix of function $\vec{f}(\vec{x}, t)$:
+\begin{equation}
+    \vec{J} = \vec{J}(\vec{x},t) = \begin{bmatrix}
+\frac{5}{2}\left[1+8\sin(t)\right] & 0\\
+1-y & 1-x
+\end{bmatrix}
+\end{equation}
+which, evaluated in $\vec{x}_0$, reads:
+\begin{equation}
+    \vec{J}(\vec{x}_0, t) = \begin{bmatrix}
+\frac{5}{2}\left[1+8\sin(t)\right] & 0\\
+1 & 1
+\end{bmatrix}
+\end{equation}
+As a result, the linearized problem reads:
+\begin{equation}
+    \dot{\vec{x}}=\begin{bmatrix}
+\frac{5}{2}\left[1+8\sin(t)\right] & 0\\
+1 & 1
+\end{bmatrix}\vec{x}
+\label{eq:ex82}
+\end{equation}
+and, thus, the eigenvalues can be evaluated at each instant of time $t$.
+Left plot of \autoref{fig:ex7_3} shows the evolution in time of the $h\lambda_i$ values associated to the linearized problem of \autoref{eq:ex82}. Looking at right plot of \autoref{fig:ex7_3}, the behaviour of the four proposed methods is characterized:
+\begin{itemize}
+    \item \textbf{AB3}: $h\lambda_y$ is never inside the method stability domain, so the $y$ component diverges. With the exception of little intervals at the beginning and at the end of the time-span, the same situation is encountered for $h\lambda_x$;
+    \item \textbf{AM3}: $h\lambda_y$ is never inside the method stability domain, so the $y$ component diverges. On the other side, the $h\lambda_x$ is always in the stable domain, resulting in the convergence of the $x$ component;
+    \item \textbf{ABM3}: the situation is the same encountered with AM3 method, except for the fact that for a small interval between $t\simeq1.5$ s and $t\simeq=2.5$ s the $h\lambda_x$ values are outside the stability domain;
+    \item \textbf{ABM3}: the situation is the same encountered with AM3 method.
+\end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.48\textwidth]{gfx/ex7_1.pdf}
+    \includegraphics[width=0.48\textwidth]{gfx/ex7_2.pdf}
+    \includegraphics[width=0.48\textwidth]{gfx/ex7_3.pdf}
+    \includegraphics[width=0.48\textwidth]{gfx/ex7_4.pdf}
+    \caption{Solutions obtained with AB3, AM3, ABM3 and BDF3 methods.}
+    \label{fig:ex7_1}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=0.48\textwidth]{gfx/ex7_5.pdf}
+    \includegraphics[width=0.48\textwidth]{gfx/ex7_6.pdf}
+    \caption{$h\lambda_i$ values of the linearized system (left). Stability and Instability domains of the proposed methods (right).}
+    \label{fig:ex7_3}
+\end{figure}
+
+\clearpage
 
 
 
