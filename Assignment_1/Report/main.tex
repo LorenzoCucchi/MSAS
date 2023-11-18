@@ -132,17 +132,19 @@ Which version is more accurate?
 \medskip  \hrule \medskip
 
 
+
+The problem consists in finding the couple(s) $\{x_1, x_2\}$ which satisfy the relation $f(x_1,x_2)=[0, 0]^T$. In order to solve the problem using Newton's method, the analytical form or an approximation of the inverse Jacobian matrix $\vec{J^{-1}}$ is needed. In fact, according to Newton's method, the i-th iteration $\vec{x}_{i}$ is given by \autoref{eq:Jacobian}.
+\begin{equation}
+    \vec{x}_{i} = \vec{x}_{i-1} - \vec{J^{-1}}(\vec{x}_{i-1}) \vec{f}(\vec{x}_{i-1})
+    \label{eq:Jacobian}
+\end{equation}
+
 \begin{figure}[h]
     \centering
     \includegraphics[width = 0.48\textwidth]{gfx/ex1_1.pdf}
     \includegraphics[width = 0.48\textwidth]{gfx/ex1_2.pdf}
     \caption{Surf plot of function $f_x(\vec{x})=x_2^2-x_1-2$ and function $f_y(\vec{x})=-x_1^2+x_2+10$.}\label{fig:ex1_1}
 \end{figure}
-The problem consists in finding the couple(s) $\{x_1, x_2\}$ which satisfy the relation $f(x_1,x_2)=[0, 0]^T$. In order to solve the problem using Newton's method, the analytical form or an approximation of the inverse Jacobian matrix $\vec{J^{-1}}$ is needed. In fact, according to Newton's method, the i-th iteration $\vec{x}_{i}$ is given by \autoref{eq:Jacobian}.
-\begin{equation}
-    \vec{x}_{i} = \vec{x}_{i-1} - \vec{J^{-1}}(\vec{x}_{i-1}) \vec{f}(\vec{x}_{i-1})
-    \label{eq:Jacobian}
-\end{equation}
 
 \begin{wrapfigure}[17]{l}{0.48\textwidth}
     \centering
@@ -190,7 +192,7 @@ suggesting the high accuracy of both the forward and centered differences approx
         Forward differences         & [3.513999235947627, 2.348190630240434]$^T$  & 5 & 1.3773e-14\\
         Centered differences        & [3.513999235947620, 2.348190630240424]$^T$  & 5 & 3.1401e-15\\
     \end{tabular}
-    \caption{Zeros found by the three proposed methods.}\label{tab:ex1_results}
+    \caption{Zeros and errors of the used methods.}\label{tab:ex1_results}
 \end{table}
 
 %--------------------------------------------------------------------------------
@@ -351,14 +353,6 @@ of $\textrm{BI2}_{\theta}$ for the values of $\theta = [0.1,\, 0.3,\, 0.7,\, 0.9
 \rightline{\small(5 points)}
 \medskip \hrule \medskip
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.48\textwidth]{gfx/ex5_1.pdf}
-    \includegraphics[width=0.50\textwidth]{gfx/ex5_2.pdf}
-    \caption{Unstable domains of BI2$_{\theta}$ for different $\theta$ values (left). Minimum step h for stability (right).}
-    \label{fig:ex5_sol}
-\end{figure}
-
 BI$_i$ backinterpolation methods are a special implicit Runge-Kutta (IRK) methods. In order to derive the expression of the 
 linear operator $B_{\rm BI2_{0.4}}(h,\alpha)$ such that $\vec x_{k+1} = B_{\rm BI2_{0.4}}(h,\alpha) \vec x_k$, a generic 
 iteration of RK2 with step h$\theta$ is derived:
@@ -369,7 +363,7 @@ iteration of RK2 with step h$\theta$ is derived:
 \end{cases}
 \label{eq:syst}
 \end{equation}
-where, in our case, $\vec{f}(\vec{x}_k, t_k)= \vec{A}(\alpha)\vec{x}_k$. By substituting the latter and the first equation of \autoref{eq:syst} in the second one, what is obtained is the following:
+where, in our case, $\vec{f}(\vec{x}_k, t_k)= \vec{A}(\alpha)\vec{x}_k$, by substituting this equation and the first equation of \autoref{eq:syst} in the second one, we obtain:
 \begin{equation}
     \vec{x}_{k+h\theta} = \vec{x}_k + \frac{\theta h}{2}\vec{A}(\alpha)\vec{x}_k + \frac{\theta h}{2}\vec{A}(\alpha)\vec{x}_k + \frac{\theta h}{2}\theta h \vec{A}^2(\alpha)
 \end{equation}
@@ -398,12 +392,20 @@ By isolating $\vec{x}_{k+1}$:
 \begin{equation}
     \vec{x}_{k+1} = (\vec{I} - h(1-\theta)\vec{A}(\alpha) + \frac{h^2(1-\theta)^2}{2}\vec{A}^2(\alpha))^{-1}(\vec{I} + h\theta\vec{A}(\alpha) + \frac{\theta^2h^2}{2}\vec{A}^2(\alpha))\vec{x}_k
 \end{equation}
-As a result, the linear operator $B_{\rm BI2_{\theta}}(h,\alpha)$ is obtained:
+The linear operator $B_{\rm BI2_{\theta}}(h,\alpha)$ is obtained:
 \begin{equation}
     B_{\rm BI2_{0.4}}(h,\alpha) = (\vec{I} - h(1-\theta)\vec{A}(\alpha) + \frac{h^2(1-\theta)^2}{2}\vec{A}^2(\alpha))^{-1}(\vec{I} + h\theta\vec{A}(\alpha) + \frac{\theta^2h^2}{2}\vec{A}^2(\alpha))
 \end{equation}
 By imposing $\theta = 0.4$ the linear operator $B_{\rm BI2_{0.4}}(h,\alpha)$ is obtained.
 Given the expression of the linear operator $B_{\rm BI2_{\theta}}(h,\alpha)$, it is possible to derive the domain of numerical stability of $BI2_{\theta}$ method with different $\theta$ values by solving ``Find $h\ge 0$ s.t.$\max\left(|{\rm eig}(BI2_{\theta}(h,\alpha))|\right) = 1$''. Results are shown in \autoref{fig:ex5_sol}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.48\textwidth]{gfx/ex5_1.pdf}
+    \includegraphics[width=0.50\textwidth]{gfx/ex5_2.pdf}
+    \caption{Unstable domains of BI2$_{\theta}$ for different $\theta$ values (left). Minimum step h for stability (right).}
+    \label{fig:ex5_sol}
+\end{figure}
 
 \subsection*{Exercise 6}
 
@@ -418,24 +420,30 @@ Consider the IVP $\dot{\vec x} = B \vec x$ with $B =[-180.5, 219.5; 179.5, -220.
 
 \medskip \hrule \medskip
 
-\begin{wrapfigure}[18]{r}{0.55\textwidth}
+\begin{wrapfigure}[17]{r}{0.52\textwidth}
 \centering
-    \includegraphics[width = 0.55\textwidth]{gfx/ex6_1.pdf}
-    \caption{Stable and unstable domains of RK4 and IEX4 methods.}
-    \label{fig:ex6}
+    \includegraphics[width = 0.52\textwidth]{gfx/ex6_1.pdf}
+    \caption{Stable and unstable domains of RK4 and IEX4 methods.}\label{fig:ex6}
 \end{wrapfigure}
 
-Imposing $h=0.1$, the problem $\dot{\vec x} = B \vec x$ is solved with both RK4 and IEX4 methods 
-and the obtained solutions are compared to the analytical one ($x_{analytical}=e^{\vec{B}t}$) in 
-\autoref{fig:ex6_1}. While the fourth order implicit extrapolation technique IEX4 approximates the 
-analytical solution with low errors, integration errors due to RK4 approximation diverges. 
-This is due to the eigenvalues of the matrix $\vec{B}$: $\lambda_i= [-1, -400]$. In particular, 
-the eigenvalue $\lambda_1= -1$ multiplied by the step $h=0.1$ lies in the unstable domain of the 
-RK4 method, making the associated component of the solution diverges from the analytical one. 
-Although the second eigenvalue lies in the stable domain of RK4, the solution still diverges since 
-the state equations are coupled. A different behaviour is found with IEX4 method: as 
-\autoref{fig:ex6} both the $h\lambda_i$ lie in the stable domain of the method, making the 
-solution converges to the analytical one with low integration errors.
+By setting $h=0.1$, the solution to the differential equation $\dot{\vec x} = B \vec x$ 
+is obtained using both the Runge-Kutta fourth order (RK4) and Implicit Extrapolation 
+fourth order (IEX4) methods. The achieved solutions are then compared against the 
+analytical solution $x_{\text{analytical}}=e^{\vec{B}t}$, as depicted in \autoref{fig:ex6_1}.
+Notably, the RK4 method exhibits divergence in integration errors, attributed to the 
+eigenvalues of the matrix $\vec{B}$, specifically $\lambda_i= [-1, -400]$. 
+The instability arises from the fact that the eigenvalue $\lambda_1= -1$, 
+when multiplied by the step size $h=0.1$, falls into the unstable region of 
+the RK4 method. Consequently, the associated component of the solution deviates 
+significantly from the analytical trajectory. Despite the second eigenvalue lying 
+within the stable domain of RK4, the coupled nature of the state equations 
+amplifies the divergence. In contrast, the IEX4 method displays a more favorable 
+behavior. As illustrated in \autoref{fig:ex6}, both $h\lambda_i$ values for the 
+eigenvalues lie within the stable domain of the method. This characteristic enables 
+the solution to converge towards the analytical solution with minimal integration 
+errors. The efficacy of IEX4 in handling the coupled nature of the state equations 
+stands out, presenting a marked improvement over the RK4 method in this particular 
+scenario.
 
 \begin{figure}[h]
     \centering
@@ -443,11 +451,9 @@ solution converges to the analytical one with low integration errors.
     \includegraphics[width=0.48\textwidth]{gfx/ex6_3.pdf}
     \includegraphics[width=0.48\textwidth]{gfx/ex6_4.pdf}
     \includegraphics[width=0.48\textwidth]{gfx/ex6_5.pdf}
-    \caption{Solutions obtained with RK4 and IEX4 methods and their respective errors compared with analytic solution.}
-\label{fig:ex6_1}
+    \caption{Solutions obtained with RK4 and IEX4 methods and their respective errors 
+    compared with analytic solution.}\label{fig:ex6_1}
 \end{figure}
-
-
 
 \subsection*{Exercise 7}
 
