@@ -29,14 +29,14 @@ invJ = @(x) (1/(4*x(1)*x(2)-1))*[1, -2*x(2); 2*x(1), -1];
 % Tolerance
 toll = 1e-8;  
 
-% Finding the first zero z1        
+% First zero
 x1 = [1 -4]';
 % Analytical method, netwon finite forward, newton finite centered
 [sol1a, n1a] = newtAn(func, x1, invJ, toll);
 [sol1f, n1f] = newtFF(func, x1, toll);
 [sol1c, n1c] = newtFC(func, x1, toll);
 
-% Finding the second zero z2
+% Second zero
 x2 = [6 5]';
 % Analytical method, netwon finite forward, newton finite centered
 [sol2a, n2a] = newtAn(func, x2, invJ, toll);
@@ -56,16 +56,16 @@ fprintf('newtFF:   [%2.15f, %2.15f]  \n', sol1f);
 fprintf('newtFC:   [%2.15f, %2.15f]  \n\n', sol1c);
 fprintf('Second zero: \n');
 fprintf('newtAn:   [%2.15f, %2.15f]  \n', sol2a);
-fprintf('newtFC:   [%2.15f, %2.15f]  \n', sol2f);
-fprintf('newtFF:   [%2.15f, %2.15f]  \n\n', sol2c);
+fprintf('newtFF:   [%2.15f, %2.15f]  \n', sol2f);
+fprintf('newtFC:   [%2.15f, %2.15f]  \n\n', sol2c);
 fprintf('Iterations: \n');
 fprintf('newtAn:   [%d, %d]  \n', n1a, n2a);
-fprintf('newtFC:   [%d, %d]  \n', n1f, n2f);
-fprintf('newtFF:   [%d, %d]  \n\n', n1c, n2c);
+fprintf('newtFF:   [%d, %d]  \n', n1f, n2f);
+fprintf('newtFC:   [%d, %d]  \n\n', n1c, n2c);
 fprintf('Errors: \n');
 fprintf('newtAn:   [-, -]  \n');
-fprintf('newtFC:   [%2.15e, %2.15e]  \n', err_1f, err_2f);
-fprintf('newtFF:   [%2.15e, %2.15e]  \n', err_1c, err_2c);
+fprintf('newtFF:   [%2.15e, %2.15e]  \n', err_1f, err_2f);
+fprintf('newtFC:   [%2.15e, %2.15e]  \n', err_1c, err_2c);
 
 
 %%% -------------------------------- PLOTS --------------------------------
@@ -90,7 +90,7 @@ xlabel('$x_1$ $[-]$', 'FontSize', 20);
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
 zlabel('$f_x(\mbox{\boldmath$x$})$ $[-]$', 'FontSize', 20);
 legend(fp, {'$f_x$', '$f_x = 0$'}, 'FontSize', 18, 'Location', 'best')
-save_fig(fig,'ex1_1');
+% save_fig(fig,'ex1_1');
 
 % Surface plot of the function f2
 fig = figure();
@@ -108,7 +108,7 @@ xlabel('$x_1$ $[-]$', 'FontSize', 20);
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
 zlabel('$f_y(\mbox{\boldmath $x$})$ $[-]$', 'FontSize', 20);
 legend(fp, {'$f_y$', '$f_y = 0$'}, 'FontSize', 18, 'Location', 'best')
-save_fig(fig,'ex1_2');
+% save_fig(fig,'ex1_2');
 
 
 % Plot of the solution
@@ -127,8 +127,8 @@ text(sol2a(1)+0.2, sol2a(2)+0.8, '$\boldmath{z_2}$', 'FontSize', 17);
 xlabel('$x_1$ $[-]$', 'FontSize', 20); 
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
 legend({'$f_x = 0$', '$f_y = 0$', 'zeros of $\mbox{\boldmath $f$}(\mbox{\boldmath $x$})$'}, 'FontSize', 15, 'Location', 'best')
-save_fig(fig,'ex1_3');
-system('cd ../Report && pdflatex main.tex > NUL');
+% save_fig(fig,'ex1_3');
+% system('cd ../Report && pdflatex main.tex > NUL');
 
 
 %% EX 2
@@ -150,18 +150,9 @@ N_t = length(hvec_t);
 
 % Solution
 % Pre-allocation
-y_rk2 = cell(N, 1);
-t_rk2 = cell(N, 1);
-y_rk4 = cell(N, 1);
-t_rk4 = cell(N, 1);
-loc_err_rk2  = cell(N, 1);
-glob_err_rk2 = zeros(N, 1);
-loc_err_rk4  = cell(N, 1);
-glob_err_rk4 = zeros(N, 1);
-comp_t_rk2   = zeros(N_t, 1);
-err_rk2_t    = zeros(N_t, 1);
-comp_t_rk4   = zeros(N_t, 1);
-err_rk4_t    = zeros(N_t, 1);
+[y_rk2,t_rk2,y_rk4,t_rk4,loc_err_rk2,loc_err_rk4] = deal(cell(N,1));
+[glob_err_rk2,glob_err_rk4] = deal(zeros(N,1));
+[comp_t_rk2,comp_t_rk4,err_rk2_t,err_rk4_t]   = deal(zeros(N_t, 1));
 
 for i = 1:N
     % Solution
@@ -186,7 +177,7 @@ end
 % RK2 solution
 fig = figure();
 markerObj = {'square', 'diamond', '^', 'v'};
-lineSpecObj = {'--', '-.', ':'};
+line_opt = {'--', '-.', ':'};
 legendStr = cell(N, 1);
 T = linspace(t(1), t(2), 100);
 plot(T, u_an(T), 'LineWidth', 2); grid on; hold on;
@@ -194,7 +185,7 @@ for i = 1:N
     if i == 1
         plot(t_rk2{i}, y_rk2{i}, '-s', 'LineWidth', 0.8);
     else
-        plot(t_rk2{i}, y_rk2{i}, lineSpecObj{i-1}, 'LineWidth', 0.8);
+        plot(t_rk2{i}, y_rk2{i}, line_opt{i-1}, 'LineWidth', 0.8);
     end
     legendStr{i} = strcat('$h=', string(h(i)), '$');
 end
@@ -207,7 +198,7 @@ legend({legendStr{end} legendStr{1:end-1}}, 'FontSize', 14, 'Location', 'best');
 
 % RK4 solution
 fig = figure();
-lineSpecObj = {'--', '-.', ':'};
+line_opt = {'--', '-.', ':'};
 legendStr = cell(N, 1);
 T = linspace(t(1), t(2), 100);
 plot(T, u_an(T), 'LineWidth', 2); 
@@ -217,7 +208,7 @@ for i = 1:N
     if i == 1
         plot(t_rk4{i}, y_rk4{i}, '-s', 'LineWidth', 0.8);
     else
-        plot(t_rk4{i}, y_rk4{i}, lineSpecObj{i-1}, 'LineWidth', 0.8);
+        plot(t_rk4{i}, y_rk4{i}, line_opt{i-1}, 'LineWidth', 0.8);
     end
     legendStr{i} = strcat('$h=', string(h(i)), '$');
 end
@@ -305,14 +296,14 @@ A = @(alpha) [0 1; -1 2*cos(alpha)];
 FRK2 = @(h,alpha) eye(2) + h*A(alpha) + 0.5*h^2*A(alpha)^2;
 
 fun_RK2 = @(h) max(abs(eig(FRK2(h, alpha)))) - 1;
-[hrk2] = secantMethod(fun_RK2, 3, 6, toll);
+[hrk2] = secant(fun_RK2, 3, 6, toll);
 
 % RK4 solution
 FRK4 = @(h,alpha) eye(2) + h*A(alpha) + 0.5*h^2*A(alpha)^2 +...
     1/6*h^3*A(alpha)^3 + 1/24*h^4*A(alpha)^4;
 
 fun_RK4 = @(h) max(abs(eig(FRK4(h, alpha)))) - 1;
-[hrk4] = secantMethod(fun_RK4, 3, 6, toll);
+[hrk4] = secant(fun_RK4, 3, 6, toll);
 
 % Alpha vector [0,pi] used to create and plot the solutions.
 alpha_v = [linspace(0, 80*pi/180, 1/5*N), linspace(80*pi/180, pi/2, 3/5*N),...
@@ -325,16 +316,17 @@ it = 1;
 for alpha = alpha_v
     fun = @(h) max(abs(eig(FRK2(h, alpha)))) - 1;
     lambda = eig(A(alpha));
-    [h_rk2(it)] = secantMethod(fun, 3, 6, toll);
+    [h_rk2(it)] = secant(fun, 3, 6, toll);
     r_rk2(it) = h_rk2(it)*lambda(1);
     it = it + 1;
 end
 
-h_max = 3;
-corr = 2;
+
 % It's not possible to find the complete solution in the rhp with the same
 % method as rk2, it's necessary to search for multiple solution and order
 % them to show them correcty.
+h_max = 3;
+corr = 2;
 [r_rk4,alphaU] = solveStabilityRegion(FRK4, alpha_v, A, h_max, corr);
 
 %%% -------------------------------- PLOTS --------------------------------
@@ -382,19 +374,13 @@ title('Stability regions', 'FontSize', 17);
 
 %% EX 4
 clearvars; close all; clc
-
 % Statement of the problem
 x0 = [1 1]';
 A = @(alpha) [0 1; -1 2*cos(alpha)];
 t_int = [0 1];
-
+t_d = diff(t_int);
 % Analytical solution
 x_an = @(t, alpha) expm(t*A(alpha))*x0;
-
-%%% NEEDED FUNCTIONS ------------------------------------------------------
-% function to find h and N values for the ode functions
-getN = @(h) nth_output(1, @getNH, h, t_int);
-getHbar = @(h) nth_output(2, @getNH, h, t_int);
 
 % Linear operator of the methods
 F_RK1 = @(h, alpha) eye(length(x0)) + h*A(alpha);
@@ -402,89 +388,62 @@ F_RK2 = @(h, alpha) eye(length(x0)) + h*A(alpha) + (h^2)/2*A(alpha)^2;
 F_RK4 = @(h, alpha) eye(length(x0)) + h*A(alpha) + (h^2)/2*A(alpha)^2 ...
                             + ((h^3)/6)*A(alpha)^3 + ((h^4)/24)*A(alpha)^4;
 
-% Solution functions with the three methods
-x_RK1 = @(h, alpha) F_RK1(getHbar(h), alpha)*(F_RK1(h, alpha)^getN(h))*x0;
-x_RK2 = @(h, alpha) F_RK2(getHbar(h), alpha)*(F_RK2(h, alpha)^getN(h))*x0;
-x_RK4 = @(h, alpha) F_RK4(getHbar(h), alpha)*(F_RK4(h, alpha)^getN(h))*x0;
-
-% Functions to be solved
-fun1 = @(h, alpha, toll) norm(x_an(t_int(2), alpha) - x_RK1(h, alpha), 'inf') - toll;
-fun2 = @(h, alpha, toll) norm(x_an(t_int(2), alpha) - x_RK2(h, alpha), 'inf') - toll;
-fun4 = @(h, alpha, toll) norm(x_an(t_int(2), alpha) - x_RK4(h, alpha), 'inf') - toll;
-
 %%% CALCULATIONS ----------------------------------------------------------
 % Pre-allocation
 alpha_v = linspace(0, pi, 100);
 tolVec = [1e-3, 1e-4, 1e-5, 1e-6];
 
-h_rk1 = cell(length(tolVec), 1);
-h_rk2 = cell(length(tolVec), 1);
-h_rk4 = cell(length(tolVec), 1);
-
-R_RK1 = cell(length(tolVec), 1);
-r_rk2 = cell(length(tolVec), 1);
-R_RK4 = cell(length(tolVec), 1);
-
-feval1 = zeros(length(tolVec), 1);
-feval2 = zeros(length(tolVec), 1);
-feval4 = zeros(length(tolVec), 1);
-
-opt = optimoptions('fsolve', 'Display', 'none');
+[h_rk1, h_rk2, h_rk4, r_rk1, r_rk2, r_rk4] = deal(cellfun(@(x)...
+    zeros(length(alpha_v), 1), cell(length(tolVec), 1), 'UniformOutput', false));
+% get the actual number of iterations given h
+N = @(h) (t_int(2)-rem(t_d, h))/h;
 
 % Loop to find all the h values that zeroed the functions fun(i)
 for i = 1:length(tolVec)
     toll = tolVec(i);
-    h_rk1{i} = zeros(length(alpha_v), 1);
-    h_rk2{i} = zeros(length(alpha_v), 1);
-    h_rk4{i} = zeros(length(alpha_v), 1);
-
-    R_RK1{i} = zeros(length(alpha_v), 1);
-    r_rk2{i} = zeros(length(alpha_v), 1);
-    R_RK4{i} = zeros(length(alpha_v), 1);
-
-    F11 = @(h, alpha) fun1(h, alpha, toll);
-    F12 = @(h, alpha) fun2(h, alpha, toll);
-    F14 = @(h, alpha) fun4(h, alpha, toll);
-    
     for j = 1:length(alpha_v)
-        F21 = @(h) F11(h, alpha_v(j));
-        F22 = @(h) F12(h, alpha_v(j));
-        F24 = @(h) F14(h, alpha_v(j));
+        a_v = alpha_v(j);
+        x_fan = x_an(t_int(2), a_v);
         
-        h_rk1{i}(j) = fsolve(F21, 5e-5, opt);
-        h_rk2{i}(j) = fzero(F22, [5e-6, 1]);
-        h_rk4{i}(j) = fzero(F24, [5e-6, 1]);
+        fun1 = @(h) norm(x_fan - F_RK1(rem(t_d, h), a_v)*(F_RK1(h, a_v)^N(h))*x0, 'inf') - toll;
+        fun2 = @(h) norm(x_fan - F_RK2(rem(t_d, h), a_v)*(F_RK2(h, a_v)^N(h))*x0, 'inf') - toll;
+        fun4 = @(h) norm(x_fan - F_RK4(rem(t_d, h), a_v)*(F_RK4(h, a_v)^N(h))*x0, 'inf') - toll;
+        
+        h_rk1{i}(j) = fsolve(fun1, 5e-5, optimoptions('fsolve', 'Display', 'none'));
+        h_rk2{i}(j) = fzero(fun2, [5e-6, 1]);
+        h_rk4{i}(j) = fzero(fun4, [5e-6, 1]);
         
         lambda = eig(A(alpha_v(j))); 
-        lambda = lambda(1);
-        R_RK1{i}(j) = h_rk1{i}(j)*lambda;
-        r_rk2{i}(j) = h_rk2{i}(j)*lambda;
-        R_RK4{i}(j) = h_rk4{i}(j)*lambda;
+        r_rk1{i}(j) = h_rk1{i}(j)*lambda(1);
+        r_rk2{i}(j) = h_rk2{i}(j)*lambda(1);
+        r_rk4{i}(j) = h_rk4{i}(j)*lambda(1);
     end
     
 end
 
+[feval1, feval2, feval4] = deal(zeros(length(tolVec), 1));
+A_pi = A(pi);
 % Obtain function evaluations number
 for i = 1:length(tolVec)
     toll = tolVec(i);
-    [~, ~, ~, feval1(i)] = RK1(@(t, x) A(pi)*x, t_int, h_rk1{i}(end), x0);
-    [~, ~, ~, feval2(i)] = RK2(@(t, x) A(pi)*x, t_int, h_rk2{i}(end), x0);
-    [~, ~, ~, feval4(i)] = RK4(@(t, x) A(pi)*x, t_int, h_rk4{i}(end), x0);
+    [~, ~, ~, feval1(i)] = RK1(@(t, x) A_pi*x, t_int, h_rk1{i}(end), x0);
+    [~, ~, ~, feval2(i)] = RK2(@(t, x) A_pi*x, t_int, h_rk2{i}(end), x0);
+    [~, ~, ~, feval4(i)] = RK4(@(t, x) A_pi*x, t_int, h_rk4{i}(end), x0);
 end
 
 %%% -------------------------------- PLOTS --------------------------------
 % RK1 solutions
 fig = figure();
-lineSpecObj = {'-.', '--', ':'};
+line_opt = {'-.', '--', ':'};
 for i = 1:length(tolVec)
-    re = real(R_RK1{i});
-    im = imag(R_RK1{i});
+    re = real(r_rk1{i});
+    im = imag(r_rk1{i});
     reL = [re; re(end:-1:1)];
     imL = [im; -im(end:-1:1)];
     if i == 1
         fp(i) = plot(reL, imL, 'LineWidth', 1.5); hold on; grid on;
     else
-        fp(i) = plot(reL, imL, lineSpecObj{i-1}, 'LineWidth', 1.5);
+        fp(i) = plot(reL, imL, line_opt{i-1}, 'LineWidth', 1.5);
     end
 end
 axis equal; 
@@ -500,14 +459,14 @@ a2.Position = [0.18 0.17 0.25 0.25];
 box on
 hold on; axis equal; grid on;
 for i = 1:length(tolVec)
-    re = real(R_RK1{i});
-    im = imag(R_RK1{i});
+    re = real(r_rk1{i});
+    im = imag(r_rk1{i});
     reL = [re; re(end:-1:1)];
     imL = [im; -im(end:-1:1)];
     if i == 1
         fp(i) = plot(reL, imL, 'LineWidth', 1.5); hold on; grid on;
     else
-        fp(i) = plot(reL, imL, lineSpecObj{i-1}, 'LineWidth', 1.5);
+        fp(i) = plot(reL, imL, line_opt{i-1}, 'LineWidth', 1.5);
     end
 end
 xlim([-2e-5 3e-5]); 
@@ -519,7 +478,7 @@ line(ax.XLim, [0 0], 'color', [0 0 0 0.5], 'LineWidth', 0.1);
 
 % RK2 solutions
 fig = figure();
-lineSpecObj = {'-.', '--', ':'};
+line_opt = {'-.', '--', ':'};
 for i = 1:length(tolVec)
     re = real(r_rk2{i});
     im = imag(r_rk2{i});
@@ -528,7 +487,7 @@ for i = 1:length(tolVec)
     if i == 1
         fp(i) = plot(reL, imL, 'LineWidth', 1.5); hold on; grid on;
     else
-        fp(i) = plot(reL, imL, lineSpecObj{i-1}, 'LineWidth', 1.5);
+        fp(i) = plot(reL, imL, line_opt{i-1}, 'LineWidth', 1.5);
     end
 end
 axis equal; 
@@ -544,16 +503,16 @@ title('RK2', 'FontSize', 17);
 
 % RK4 solutions
 fig = figure();
-lineSpecObj = {'-.', '--', ':'};
+line_opt = {'-.', '--', ':'};
 for i = 1:length(tolVec)
-    re = real(R_RK4{i});
-    im = imag(R_RK4{i});
+    re = real(r_rk4{i});
+    im = imag(r_rk4{i});
     reL = [re; re(end:-1:1)];
     imL = [im; -im(end:-1:1)];
     if i == 1
         fp(i) = plot(reL, imL, 'LineWidth', 1.5); hold on; grid on;
     else
-        fp(i) = plot(reL, imL, lineSpecObj{i-1}, 'LineWidth', 1.5);
+        fp(i) = plot(reL, imL, line_opt{i-1}, 'LineWidth', 1.5);
     end
 end
 axis equal; 
@@ -590,14 +549,10 @@ theta_v = [0.4 0.1 0.3 0.7 0.9];
 F_BI = @(h, a, th) (eye(2) - (1 - th)*h*A(a) + ...
     ((((1 - th)*h)^2)/2)*A(a)^2)\(eye(2) + th*h*A(a) + (((th*h)^2)/2)*A(a)^2);
 
-h_v = zeros(length(alpha_v),length(theta_v));
-R_v = zeros(length(alpha_v),length(theta_v));
-re = zeros(length(alpha_v),length(theta_v));
-im = zeros(length(alpha_v),length(theta_v));
-reL = zeros(length(alpha_v)*2,length(theta_v));
-imL = zeros(length(alpha_v)*2,length(theta_v));
-alphaL = cell(length(theta_v), 1);
-RL = cell(length(theta_v), 1);
+[h_v,R_v,re,im] = deal(zeros(length(alpha_v),length(theta_v)));
+[reL, imL] = deal(zeros(length(alpha_v)*2,length(theta_v)));
+[alphaL, RL] = deal(cell(length(theta_v), 1));
+
 
 % Calculations for every theta saving the result in a cell for each theta
 % in order to be plotted
@@ -636,7 +591,7 @@ legend({'$\theta=0.4$','$\theta=0.1$','$\theta=0.3$','$\theta=0.7$','$\theta=0.9
 xlabel('$Re\{h\lambda\}$', 'FontSize', 18); 
 ylabel('$Im\{h\lambda\}$', 'FontSize', 18);
 title('Unstable regions of $BI2_{\theta}$', 'FontSize', 17);
-save_fig(fig,'ex5_1');
+%save_fig(fig,'ex5_1');
 
 % h solutions
 fig = figure();
@@ -650,7 +605,7 @@ legend({'$\theta=0.4$','$\theta=0.1$','$\theta=0.3$','$\theta=0.7$','$\theta=0.9
 xlabel('$\alpha$ [deg]', 'FontSize', 18); 
 ylabel('$h$ [-]', 'FontSize', 18);
 title('Minimum $h$ for stability', 'FontSize', 17);
-save_fig(fig,'ex5_2');
+%save_fig(fig,'ex5_2');
 %system('cd ../Report && pdflatex main.tex > NUL');
 
 %% EX 6
@@ -1061,23 +1016,12 @@ it = 0;
 f_x = f(x);
 
 while any(err > 1e-8)
+    J = zeros(2);
+    delta = sqrt(eps).*min(abs(x), 1);
 
-    delta = sqrt(eps);
+    J(:, 1) = ((f([x(1)+delta(1), x(2)]) - f_x)/delta(1));
+    J(:, 2) = ((f([x(1), x(2)+delta(2)]) - f_x)/delta(2));
     
-    if abs(x(1)) > 1
-        delta = delta*abs(x(1));
-    end
-    
-    J(:, 1) = ((f([x(1)+delta, x(2)]) - f_x)/delta);
-    
-    delta = sqrt(eps);
-
-    if abs(x(2)) > 1
-        delta = delta*abs(x(2));
-    end
-    
-    J(:, 2) = ((f([x(1), x(2)+delta]) - f_x)/delta);
-
     x = x - J\f_x;
     f_x = f(x);
     err = abs(f_x);
@@ -1125,23 +1069,12 @@ it = 0;
 f_x = f(x);
 
 while any(err > 1e-8)
+    J = zeros(2);
+    delta = sqrt(eps).* min(abs(x), 1);
 
-    delta = sqrt(eps);
+    J(:, 1) = ((f([x(1)+delta(1), x(2)]) - f([x(1)-delta(1), x(2)]))/(2*delta(1)));
+    J(:, 2) = ((f([x(1), x(2)+delta(2)]) - f([x(1), x(2)-delta(2)]))/(2*delta(2)));
     
-    if abs(x(1)) > 1
-        delta = delta*abs(x(1));
-    end
-
-    J(:, 1) = ((f([x(1)+delta, x(2)]) - f([x(1)-delta, x(2)]))/(2*delta));
-
-    delta = sqrt(eps);
-
-    if abs(x(2)) > 1
-        delta = delta*abs(x(2));
-    end
-
-    J(:, 2) = ((f([x(1), x(2)+delta]) - f([x(1), x(2)-delta]))/(2*delta));
-
     x = x - J\f_x;
     f_x = f(x);
     err = abs(f_x);
@@ -1150,71 +1083,12 @@ while any(err > 1e-8)
 end
 sol = x;
 
-
 end
 
-
-function [N, H] = getNH(h, t_int)
-% GETNH - Retrieve modified N and H values for ode operators with non-integer step size.
+function [sol] = secant(f, a, b, toll)
+% secant - Retrieve the solution of finding zero using the secant method.
 %
-%   [N, H] = GETNH(h, t_int)
-%
-% INPUT:
-%   h      - Double [1x1] representing the step size.
-%   t_int   - Double [1x2] specifying the time vector limits [initial, final].
-%
-% OUTPUT:
-%   N      - Double [1x1] representing the modified number of points.
-%   H      - Double [1x1] representing the modified step size.
-%
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
-%
-% DESCRIPTION:
-%   GETNH retrieves modified N (number of points) and H (step size) values
-%   for ode operators when the input step size 'h' is not an integer.
-%
-% -------------------------------------------------------------------------
-
-tVec = t_int(1):h:t_int(2);
-N = length(tVec) - 1;
-H = t_int(2) - tVec(end);
-
-end
-
-
-function value = nth_output(N, fcn, varargin)
-% NTH_OUTPUT - Retrieve the N-th output from a function with multiple outputs.
-%
-%   value = NTH_OUTPUT(N, fcn, varargin)
-%
-% INPUT:
-%   N        - Double [1x1] representing the index of the desired output.
-%   fcn      - Function handle [1x1] for the function with multiple outputs.
-%   varargin - Cell array [1xn] representing inputs required by the function.
-%
-% OUTPUT:
-%   value    - Output of the N-th index from the function fcn.
-%
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
-%
-% DESCRIPTION:
-%   NTH_OUTPUT is a utility function to retrieve the N-th output from a function
-%   that has multiple outputs. This function simplifies the extraction process
-%   when calling functions with varargout.
-%
-% -------------------------------------------------------------------------
-[value{1:N}] = fcn(varargin{:});
-value = value{N};
-end
-
-
-
-function [sol] = secantMethod(f, a, b, toll)
-% SECANTMETHOD - Retrieve the solution of finding zero using the secant method.
-%
-%   [t, sol, it, feval, cV] = SECANTMETHOD(f, a, b, toll)
+%   [t, sol, it, feval, cV] = secant(f, a, b, toll)
 %
 % INPUT:
 %   f        - Function handle [1x1] for evaluating the objective function.
@@ -1229,7 +1103,7 @@ function [sol] = secantMethod(f, a, b, toll)
 %   Cucchi Lorenzo (ID: 10650070)
 %
 % DESCRIPTION:
-%   SECANTMETHOD retrieves the solution of finding zero using the secant
+%   secant retrieves the solution of finding zero using the secant
 %   method. The function iteratively updates the solution based on the secant
 %   approximation until the convergence tolerance is met.
 %
@@ -1332,7 +1206,7 @@ function [t, Y, ct, feval] = RK2(ode, t_int, h, x0)
 
 t0 = tic;
 
-N = round((t_int(2) - t_int(1))/h);
+N = round(diff(t_int)/h);
 t = linspace(t_int(1), t_int(2), N+1);
 Y = [x0, zeros(length(x0), N)];
 
@@ -1379,7 +1253,7 @@ function [t, Y, ct, feval] = RK4(ode, t_int, h, x0)
 
 t0 = tic;
 
-N = round((t_int(2) - t_int(1))/h);
+N = round(diff(t_int)/h);
 t = linspace(t_int(1), t_int(2), N+1);
 Y = [x0, zeros(length(x0), N)];
 feval = 0;
