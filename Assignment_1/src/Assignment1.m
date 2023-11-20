@@ -18,6 +18,7 @@ set(groot, 'defaulttextinterpreter', 'latex');
 set(groot, 'defaultLegendInterpreter', 'latex');
 set(groot, 'defaultLegendInterpreter', 'latex');
 set(groot, 'defaultLineLineWidth', 1.5);
+set(gca, 'box', 'on')
 
 %% Ex 1
 clearvars; close all; clc
@@ -90,7 +91,7 @@ xlabel('$x_1$ $[-]$', 'FontSize', 20);
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
 zlabel('$f_x(\mbox{\boldmath$x$})$ $[-]$', 'FontSize', 20);
 legend(fp, {'$f_x$', '$f_x = 0$'}, 'FontSize', 18, 'Location', 'best')
-% save_fig(fig,'ex1_1');
+save_fig(fig,'ex1_1');
 
 % Surface plot of the function f2
 fig = figure();
@@ -108,7 +109,7 @@ xlabel('$x_1$ $[-]$', 'FontSize', 20);
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
 zlabel('$f_y(\mbox{\boldmath $x$})$ $[-]$', 'FontSize', 20);
 legend(fp, {'$f_y$', '$f_y = 0$'}, 'FontSize', 18, 'Location', 'best')
-% save_fig(fig,'ex1_2');
+save_fig(fig,'ex1_2');
 
 
 % Plot of the solution
@@ -127,8 +128,8 @@ text(sol2a(1)+0.2, sol2a(2)+0.8, '$\boldmath{z_2}$', 'FontSize', 17);
 xlabel('$x_1$ $[-]$', 'FontSize', 20); 
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
 legend({'$f_x = 0$', '$f_y = 0$', 'zeros of $\mbox{\boldmath $f$}(\mbox{\boldmath $x$})$'}, 'FontSize', 15, 'Location', 'best')
-% save_fig(fig,'ex1_3');
-% system('cd ../Report && pdflatex main.tex > NUL');
+save_fig(fig,'ex1_3');
+system('cd ../Report && pdflatex main.tex > NUL');
 
 
 %% EX 2
@@ -527,9 +528,11 @@ title('RK4', 'FontSize', 17);
 
 % Function evaluations vs tolerance plot
 fig = figure();
-loglog(tolVec, feval1, '-s', 'LineWidth', 1.5); hold on;
+loglog(tolVec, feval1, '-s', 'LineWidth', 1.5); 
+hold on;
 loglog(tolVec, feval2, '-^', 'LineWidth', 1.5)
-loglog(tolVec, feval4, '-o', 'LineWidth', 1.5); grid on;
+loglog(tolVec, feval4, '-o', 'LineWidth', 1.5); 
+grid on;
 title('f evaluations vs Tolerance', 'FontSize', 17);
 xlabel('tol [-]', 'FontSize', 18); 
 ylabel('f evaluations [-]', 'FontSize', 18);
@@ -585,13 +588,14 @@ x_lim = xlim;
 xlim([x_lim(1)-0.5 x_lim(2)+0.5]);
 axis equal; 
 ax = gca; 
+set(ax,'box','on')
 line([0 0], ax.YLim, 'color', [0 0 0 0.5], 'LineWidth', 0.1);
 line(ax.XLim, [0 0], 'color', [0 0 0 0.5], 'LineWidth', 0.1);
 legend({'$\theta=0.4$','$\theta=0.1$','$\theta=0.3$','$\theta=0.7$','$\theta=0.9$'}, 'FontSize', 14, 'Location', 'best');
 xlabel('$Re\{h\lambda\}$', 'FontSize', 18); 
 ylabel('$Im\{h\lambda\}$', 'FontSize', 18);
 title('Unstable regions of $BI2_{\theta}$', 'FontSize', 17);
-%save_fig(fig,'ex5_1');
+save_fig(fig,'ex5_1');
 
 % h solutions
 fig = figure();
@@ -600,12 +604,14 @@ grid on;
 for i = 1:length(theta_v)
    plot(alphaL{i}, abs(RL{i}),'LineWidth', 1.5);
 end
+ax = gca;
+set(ax,'box','on')
 xlim([0 180]);
 legend({'$\theta=0.4$','$\theta=0.1$','$\theta=0.3$','$\theta=0.7$','$\theta=0.9$'}, 'FontSize', 14, 'Location', 'best');
 xlabel('$\alpha$ [deg]', 'FontSize', 18); 
 ylabel('$h$ [-]', 'FontSize', 18);
 title('Minimum $h$ for stability', 'FontSize', 17);
-%save_fig(fig,'ex5_2');
+save_fig(fig,'ex5_2');
 %system('cd ../Report && pdflatex main.tex > NUL');
 
 %% EX 6
@@ -679,7 +685,7 @@ plot(reTot_IEX4, imTot_IEX4, 'LineWidth', 1.5);
 fill(reTot_RK4, imTot_RK4, 'b', 'FaceAlpha', 0.4);
 fill(reTot_IEX4, imTot_IEX4, 'r', 'FaceAlpha', 0.4);
 plot(eig_B(1), 0, 'kx', 'markerSize', 10);
-plot(eig_B(2), 0, 'ko', 'markerSize', 10, 'markerFaceColor', 'g');
+plot(eig_B(2), 0, 'ko', 'markerSize', 10);
 x_lim = xlim; 
 xlim([x_lim(1)-0.5 x_lim(2)+0.5]);
 y_lim = ylim; 
@@ -707,7 +713,7 @@ plot(eig_B(1), 0, 'kx', 'markerSize', 10);
 ax = gca;
 ax.XLim = [-0.8 0.8];
 ax.YLim = [-0.5 0.5];
-%save_fig(fig,'ex6_1');
+save_fig(fig,'ex6_1');
 
 % RK4 solution
 fig =  figure();
@@ -715,11 +721,11 @@ plot(t_rk4, y_rk4(:, 1), 'LineWidth', 1.5);
 grid on; 
 hold on;
 plot(t_rk4, y_rk4(:, 2), '--', 'LineWidth', 1.5);
-legend({'$x_1$', '$x_2$'}, 'FontSize', 14, 'Location', 'best');
+legend({'$x_1$', '$x_2$'}, 'FontSize', 16, 'Location', 'best');
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('$x$ [-]', 'FontSize', 18);
 title('RK4 - solution', 'FontSize', 17);
-%save_fig(fig,'ex6_2');
+save_fig(fig,'ex6_2');
 
 % IEX4 solution
 fig = figure();
@@ -727,11 +733,11 @@ plot(t_rk4, y_IEX4(1, :), 'LineWidth', 1.5);
 grid on; 
 hold on;
 plot(t_rk4, y_IEX4(2, :), '--', 'LineWidth', 1.5);
-legend({'$x_1$', '$x_2$'}, 'FontSize', 14, 'Location', 'best');
+legend({'$x_1$', '$x_2$'}, 'FontSize', 16, 'Location', 'best');
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('$x$ [-]', 'FontSize', 18);
 title('IEX4 - solution', 'FontSize', 17);
-%save_fig(fig,'ex6_4');
+save_fig(fig,'ex6_4');
 
 % RK4 local integration error
 fig = figure();
@@ -740,24 +746,24 @@ grid on;
 hold on;
 semilogy(t_v, abs(y_an(2, :) - y_rk4(:, 2)'), '--', 'LineWidth', 1.5);
 legend({'Error on first component', 'Error on second component'},...
-    'FontSize', 14, 'Location', 'best');
+    'FontSize', 16, 'Location', 'best');
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('Error [-]', 'FontSize', 18);
 title('Error between analytical and RK4 method', 'FontSize', 17);
-%save_fig(fig,'ex6_3');
+save_fig(fig,'ex6_3');
 
 % IEX4 local integration error
 fig = figure();
 semilogy(t_v, abs(y_an(1, :) - y_IEX4(1, :)), 'LineWidth', 1.5); 
 grid on; 
 hold on;
-semilogy(t_v, abs(y_an(2, :) - y_IEX4(2, :)), '-.', 'LineWidth', 1.5);
+semilogy(t_v, abs(y_an(2, :) - y_IEX4(2, :)), '--', 'LineWidth', 1.5);
 legend({'Error on first component', 'Error on second component'},...
-    'FontSize', 14, 'Location', 'best');
+    'FontSize', 16, 'Location', 'best');
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('Error [-]', 'FontSize', 18);
 title('Error between analytical and IEX4 method', 'FontSize', 17);
-%save_fig(fig,'ex6_5');
+save_fig(fig,'ex6_5');
 %system('cd ../Report && pdflatex main.tex > NUL');
 
 %% EX 7
@@ -787,7 +793,7 @@ F_AM3 = @(h, alpha) max(abs(eig([zeros(n, n) eye(n); ...
          (eye(n) - 5/12*h*A(alpha))\eye(n)*(eye(n) + 2/3*h*A(alpha))])));
 % For the stability region code from Ex3 and Ex6 is reused
 % AM3 stability region
-N = 1000;
+N = 500;
 alpha_v = linspace(pi, 0, N);
 R_AM3 = zeros(N, 1);
 hGuess = 5;
@@ -854,42 +860,42 @@ plot(t_AB3, Y_AB3(:, 2), 'LineWidth', 1.5);
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('$\mbox{\boldmath $x$}$ [-]', 'FontSize', 18);
 title('AB3', 'FontSize', 17);
-legend('$x$', '$y$', 'FontSize', 14, 'Location', 'best');
+legend('$x_1$', '$x_2$', 'FontSize', 14, 'Location', 'best');
 ylim([-5 5])
-%save_fig(fig,'ex7_1');
+save_fig(fig,'ex7_1');
 
 % AM3 solution
 fig = figure('Name', 'EX 7 - AM3', 'NumberTitle', 'off');
-plot(t_AB3, Y_AM3(:, 1), '-.', 'LineWidth', 1.5); hold on; grid on;
-plot(t_AB3, Y_AM3(:, 2), 'LineWidth', 1.5);
+plot(t_AM3, Y_AM3(:, 1), '-.', 'LineWidth', 1.5); hold on; grid on;
+plot(t_AM3, Y_AM3(:, 2), 'LineWidth', 1.5);
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('$\mbox{\boldmath $x$}$ [-]', 'FontSize', 18);
 title('AM3', 'FontSize', 17);
-legend('$x$', '$y$', 'FontSize', 14, 'Location', 'best');
+legend('$x_1$', '$x_2$', 'FontSize', 14, 'Location', 'best');
 ylim([-5 5])
-%save_fig(fig,'ex7_2');
+save_fig(fig,'ex7_2');
 
 % ABM3 solution
 fig = figure('Name', 'EX 7 - ABM3', 'NumberTitle', 'off');
-plot(t_AB3, Y_ABM3(:, 1), '-.', 'LineWidth', 1.5); hold on; grid on;
-plot(t_AB3, Y_ABM3(:, 2), 'LineWidth', 1.5);
+plot(t_ABM3, Y_ABM3(:, 1), '-.', 'LineWidth', 1.5); hold on; grid on;
+plot(t_ABM3, Y_ABM3(:, 2), 'LineWidth', 1.5);
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('$\mbox{\boldmath $x$}$ [-]', 'FontSize', 18);
 title('ABM3', 'FontSize', 17);
-legend('$x$', '$y$', 'FontSize', 14, 'Location', 'best');
+legend('$x_1$', '$x_2$', 'FontSize', 14, 'Location', 'best');
 ylim([-5 5])
-%save_fig(fig,'ex7_3');
+save_fig(fig,'ex7_3');
 
 % BDF3 solution
 fig = figure('Name', 'EX 7 - BDF3', 'NumberTitle', 'off');
-plot(t_AB3, Y_BDF3(:, 1), '-.', 'LineWidth', 1.5); hold on; grid on;
-plot(t_AB3, Y_BDF3(:, 2), 'LineWidth', 1.5);
+plot(t_BDF3, Y_BDF3(:, 1), '-.', 'LineWidth', 1.5); hold on; grid on;
+plot(t_BDF3, Y_BDF3(:, 2), 'LineWidth', 1.5);
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('$\mbox{\boldmath $x$}$ [-]', 'FontSize', 18);
 title('BDF3', 'FontSize', 17);
-legend('$x$', '$y$', 'FontSize', 14, 'Location', 'best');
+legend('$x_1$', '$x_2$', 'FontSize', 14, 'Location', 'best');
 ylim([-5 5])
-%save_fig(fig,'ex7_4');
+save_fig(fig,'ex7_4');
 
 % Real system eigenvalues
 M = @(t) [-5/2*(1 + 8*sin(t)) 0; 1 1];
@@ -903,8 +909,8 @@ plot(t_AB3, lambda(1, :), 'LineWidth', 1.5);
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('$h\lambda_i$ [-]', 'FontSize', 18);
 title('$h\lambda_i$ of the linearized system', 'FontSize', 17);
-legend('$\lambda_x$', '$\lambda_y$', 'FontSize', 14, 'Location','best');
-% save_fig(fig,'ex7_5');
+legend('$\lambda_{x_1}$', '$\lambda_{x_2}$', 'FontSize', 14, 'Location','best');
+save_fig(fig,'ex7_5');
 
 % Stability/Instability domains
 fig = figure('Name', 'EX 7 - Stability region', 'NumberTitle', 'off');
@@ -925,7 +931,7 @@ legend({'AB3 Stability margin', 'AM3 Stability margin',...
     'FontSize', 12, 'Location', 'southeast');
 xlabel('$Re\{h\lambda\}$', 'FontSize', 18); 
 ylabel('$Im\{h\lambda\}$', 'FontSize', 18);
-% save_fig(fig,'ex7_6');
+save_fig(fig,'ex7_6');
 %system('cd ../Report && pdflatex main.tex');
 
 %% Functions
@@ -995,10 +1001,8 @@ function [sol, it] = newtFF(f, x, toll)
 %   toll     - Double [1x1] specifying the tolerance for convergence.
 %
 % OUTPUT:
-%   t        - Double [1x1] representing the computational time needed in seconds.
 %   sol      - Double [nx1] representing the solution.
 %   it       - Double [1x1] indicating the number of iterations.
-%   feval     - Double [1x1] representing the number of function evaluations.
 %
 % CREATOR:
 %   Cucchi Lorenzo (ID: 10650070)
@@ -1404,7 +1408,7 @@ k1 = h / 12 * [23; -16; 5];
 k2 = h / 12 * [5/2; 8; -1];
 
 % First 2 steps are obtained with RK4 method
-[~, y, ~, ~] = RK4(f, [0 2*h], h, x0);
+[~, y, ~, ~] = RK4(f, [0 3*h], h, x0);
 
 for i = 4:N+1
      xp = y(i-1, :)' + k1(1) * f(t(i-1), y(i-1, :)') + ...

@@ -176,24 +176,25 @@ suggesting the high accuracy of both the forward and centered differences approx
 \begin{table}[ht]
     \centering
     \begin{tabular}{l|c c c}
-        \textbf{Method} & \mbox{\boldmath $z_1$} & \textbf{Iterations} &  \mbox{\boldmath $||err||$} \\
+        \textbf{Method} & \mbox{\boldmath$z_1$} & \textbf{Iterations} &  \mbox{\boldmath$||err||$} \\
         \midrule
         \midrule
-        Analytical                  & [2.794695112889339, -2.189679226029504]$^T$  & 5 & -\\
-        Forward differences         & [2.794695112889365, -2.189679226029472]$^T$  & 5 & 4.1405e-14\\
-        Centered differences        & [2.794695112889314, -2.189679226029497]$^T$  & 5 & 2.6291e-14\\
+        Analytical                  & [2.794695112889339, -2.189679226029504]  & 5 & -\\
+        Forward differences         & [2.794695112889379, -2.189679226029503]  & 5 & 3.9563e-14\\
+        Centered differences        & [2.794695112889374, -2.189679226029529]  & 5 & 4.2384e-14\\
         \toprule
     \end{tabular}
     \begin{tabular}{l|c c c}
-        \textbf{Method} & \mbox{\boldmath $z_2$} & \textbf{Iterations} &  \mbox{\boldmath $||err||$} \\
+        \textbf{Method} & \mbox{\boldmath$z_2$} & \textbf{Iterations} &  \mbox{\boldmath$||err||$} \\
         \midrule
         \midrule
-        Analytical                  & [3.513999235947622, 2.348190630240421]$^T$  & 5 & -\\
-        Forward differences         & [3.513999235947627, 2.348190630240434]$^T$  & 5 & 1.3773e-14\\
-        Centered differences        & [3.513999235947620, 2.348190630240424]$^T$  & 5 & 3.1401e-15\\
+        Analytical                  & [3.513999235947622, 2.348190630240421]  & 5 & -\\
+        Forward differences         & [3.513999235947627, 2.348190630240434]  & 5 & 5.1789e-15\\
+        Centered differences        & [3.513999235947622, 2.348190630240424]  & 5 & 2.2204e-15\\
     \end{tabular}
     \caption{Zeros and errors of the used methods.}\label{tab:ex1_results}
 \end{table}
+
 
 %--------------------------------------------------------------------------------
 %       IMPLICIT EQUATION
@@ -302,8 +303,8 @@ imposing $\alpha=\pi$ with both $F_{RK2}$ and $F_{RK4}$.
 Solving the problem for $\alpha\in[0, \pi]$  allows us to ascertain and visualize the numerical 
 stability domains for both RK2 and RK4 methods, as depicted in \autoref{fig:ex3_stab}. 
 As illustrated, the stability domains expand with higher approximation orders, 
-necessitating larger step sizes for higher-order algorithms.
-
+necessitating larger step sizes for higher-order algorithms. The stability domains noticeably 
+expand with higher approximation orders.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.49\textwidth]{gfx/ex3_2.pdf}
@@ -329,13 +330,13 @@ the use of higher-order approximation methods allows for larger permissible valu
 Consequently, to maintain the same error tolerance $\left|\vec x_{\rm an}(1)-\vec x_{\rm RK1}(1)\right|_\infty$, 
 higher-order methods can accommodate larger $h$, resulting in fewer steps at which the function needs 
 to be evaluated, this observation is further exemplified in \autoref{fig:ex4_2}.
-\begin{figure}[h]
+\begin{figure}[ht]
 \includegraphics[width=0.48\textwidth]{gfx/ex4_1.pdf}
     \includegraphics[width=0.48\textwidth]{gfx/ex4_2.pdf}
     \caption{Five locus of solutions for RK1 (left) and RK2 (right) methods.}
     \label{fig:ex4_1}
 \end{figure}
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.48\textwidth]{gfx/ex4_3.pdf}
     \includegraphics[width=0.48\textwidth]{gfx/ex4_4.pdf}
@@ -397,14 +398,16 @@ The linear operator $B_{\rm BI2_{\theta}}(h,\alpha)$ is obtained:
     B_{\rm BI2_{0.4}}(h,\alpha) = (\vec{I} - h(1-\theta)\vec{A}(\alpha) + \frac{h^2(1-\theta)^2}{2}\vec{A}^2(\alpha))^{-1}(\vec{I} + h\theta\vec{A}(\alpha) + \frac{\theta^2h^2}{2}\vec{A}^2(\alpha))
 \end{equation}
 By imposing $\theta = 0.4$ the linear operator $B_{\rm BI2_{0.4}}(h,\alpha)$ is obtained.
-Given the expression of the linear operator $B_{\rm BI2_{\theta}}(h,\alpha)$, it is possible to derive the domain of numerical stability of $BI2_{\theta}$ method with different $\theta$ values by solving ``Find $h\ge 0$ s.t.$\max\left(|{\rm eig}(BI2_{\theta}(h,\alpha))|\right) = 1$''. Results are shown in \autoref{fig:ex5_sol}.
+Given the expression of the linear operator $B_{\rm BI2_{\theta}}(h,\alpha)$, it is possible 
+to derive the domain of numerical stability of $BI2_{\theta}$ method with different $\theta$ 
+values by solving ``Find $h\ge 0$ s.t.$\max\left(|{\rm eig}(BI2_{\theta}(h,\alpha))|\right) = 1$''.
+ Results are shown in \autoref{fig:ex5_sol}, where the stability domains are depicted in the $(h\lambda)$-plane.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.48\textwidth]{gfx/ex5_1.pdf}
     \includegraphics[width=0.50\textwidth]{gfx/ex5_2.pdf}
-    \caption{Unstable domains of BI2$_{\theta}$ for different $\theta$ values (left). Minimum step h for stability (right).}
-    \label{fig:ex5_sol}
+    \caption{Unstable domains of BI2$_{\theta}$ for different $\theta$ values and inimum step h for stabilit.}\label{fig:ex5_sol}
 \end{figure}
 
 \subsection*{Exercise 6}
@@ -420,11 +423,11 @@ Consider the IVP $\dot{\vec x} = B \vec x$ with $B =[-180.5, 219.5; 179.5, -220.
 
 \medskip \hrule \medskip
 
-\begin{wrapfigure}[17]{r}{0.52\textwidth}
-\centering
-    \includegraphics[width = 0.52\textwidth]{gfx/ex6_1.pdf}
-    \caption{Stable and unstable domains of RK4 and IEX4 methods.}\label{fig:ex6}
-\end{wrapfigure}
+%\begin{wrapfigure}[16]{r}{0.52\textwidth}
+%\centering
+%    \includegraphics[width = 0.52\textwidth]{gfx/ex6_1.pdf}
+%    \caption{Stable and unstable domains of RK4 and IEX4 methods.}\label{fig:ex6}
+%\end{wrapfigure}
 
 By setting $h=0.1$, the solution to the differential equation $\dot{\vec x} = B \vec x$ 
 is obtained using both the Runge-Kutta fourth order (RK4) and Implicit Extrapolation 
@@ -432,7 +435,7 @@ fourth order (IEX4) methods. The achieved solutions are then compared against th
 analytical solution $x_{\text{analytical}}=e^{\vec{B}t}$, as depicted in \autoref{fig:ex6_1}.
 Notably, the RK4 method exhibits divergence in integration errors, attributed to the 
 eigenvalues of the matrix $\vec{B}$, specifically $\lambda_i= [-1, -400]$. 
-The instability arises from the fact that the eigenvalue $\lambda_1= -1$, 
+The instability arises from the fact that the eigenvalue $\lambda_2$, 
 when multiplied by the step size $h=0.1$, falls into the unstable region of 
 the RK4 method. Consequently, the associated component of the solution deviates 
 significantly from the analytical trajectory. Despite the second eigenvalue lying 
@@ -442,19 +445,24 @@ behavior. As illustrated in \autoref{fig:ex6}, both $h\lambda_i$ values for the
 eigenvalues lie within the stable domain of the method. This characteristic enables 
 the solution to converge towards the analytical solution with minimal integration 
 errors. The efficacy of IEX4 in handling the coupled nature of the state equations 
-stands out, presenting a marked improvement over the RK4 method in this particular 
-scenario.
+stands out, presenting a marked improvement over the RK4 method.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.48\textwidth]{gfx/ex6_2.pdf}
-    \includegraphics[width=0.48\textwidth]{gfx/ex6_3.pdf}
-    \includegraphics[width=0.48\textwidth]{gfx/ex6_4.pdf}
-    \includegraphics[width=0.48\textwidth]{gfx/ex6_5.pdf}
+        \includegraphics[width = 0.7\textwidth]{gfx/ex6_1.pdf}
+        \caption{Stable and unstable domains of RK4 and IEX4 methods.}\label{fig:ex6}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.495\textwidth]{gfx/ex6_2.pdf}
+    \includegraphics[width=0.495\textwidth]{gfx/ex6_3.pdf}
+    \includegraphics[width=0.495\textwidth]{gfx/ex6_4.pdf}
+    \includegraphics[width=0.495\textwidth]{gfx/ex6_5.pdf}
     \caption{Solutions obtained with RK4 and IEX4 methods and their respective errors 
     compared with analytic solution.}\label{fig:ex6_1}
 \end{figure}
-
+\clearpage
 \subsection*{Exercise 7}
 
 Consider the two-dimensional IVP 
@@ -468,10 +476,23 @@ Consider the two-dimensional IVP
 \rightline{\small(5 points)}
 \medskip \hrule \medskip
 
-
-\autoref{fig:ex7_1} shows the solution of the problem when a step size $h=0.1$ is adopted with AB3, AM3, ABM3 and BDF3 methods. As the figure depicts, the AB3 method suffers from integration instability on both the components $x$ and $y$. On the other side, AM3 and BDF3 methods can provide a reliable solution for the $x$ component but not for $y$, while ABM3 method seems to suffer from instability for the $x$ components between $t\simeq1.5$ s and $t\simeq=2.5$ s and the same problem encountered with the other methods for the $y$ component.
-
-In order to study such a behaviour, the linearized system is studied. Regarded as $\vec{x}_0$ the equilibrium solution, the problem is formulated as follows:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.48\textwidth]{gfx/ex7_1.pdf}
+    \includegraphics[width=0.48\textwidth]{gfx/ex7_2.pdf}
+    \includegraphics[width=0.48\textwidth]{gfx/ex7_3.pdf}
+    \includegraphics[width=0.48\textwidth]{gfx/ex7_4.pdf}
+    \caption{Solutions obtained with AB3, AM3, ABM3 and BDF3 methods.}
+    \label{fig:ex7_1}
+\end{figure}
+\autoref{fig:ex7_1} displays the results of the numerical solution obtained using a step size $h=0.1$ is adopted with AB3, 
+AM3, ABM3 and BDF3 methods. The figure reveals that the AB3 method suffers from integration instability 
+on both the components $x_1$ and $x_2$. On the other side, AM3 and BDF3 methods can provide a reliable 
+solution for the $x_1$ component but not for $x_2$. Notably, the ABM3 method seems to suffer from instability 
+in the $x_1$ components during the time interval $t\simeq1.5$ s to $t\simeq=2.5$ s and the same problem encountered 
+with the other methods for the $x_2$ component.
+In order to study such a behaviour, the linearized system is studied. Regarded as $\vec{x}_0$ the 
+equilibrium solution, the problem is formulated as follows:
 \begin{equation}
     \dot{\vec{x}} = \vec{f}(\vec{x}, t) \simeq \vec{f}(\vec{x}_0, t) + \left.\frac{\partial \vec{f}(\vec{x}, t)}{\partial \vec{x}} \right\rvert_{\vec{x}=\vec{x}_0}(\vec{x}-\vec{x}_0)
     \label{eq:ex8}
@@ -488,14 +509,7 @@ The partial derivative term in \autoref{eq:ex81} is the Jacobian matrix of funct
 1-y & 1-x
 \end{bmatrix}
 \end{equation}
-which, evaluated in $\vec{x}_0$, reads:
-\begin{equation}
-    \vec{J}(\vec{x}_0, t) = \begin{bmatrix}
-\frac{5}{2}\left[1+8\sin(t)\right] & 0\\
-1 & 1
-\end{bmatrix}
-\end{equation}
-As a result, the linearized problem reads:
+the linearized problem in $\vec{x}_0$ is:
 \begin{equation}
     \dot{\vec{x}}=\begin{bmatrix}
 \frac{5}{2}\left[1+8\sin(t)\right] & 0\\
@@ -504,22 +518,15 @@ As a result, the linearized problem reads:
 \label{eq:ex82}
 \end{equation}
 and, thus, the eigenvalues can be evaluated at each instant of time $t$.
-Left plot of \autoref{fig:ex7_3} shows the evolution in time of the $h\lambda_i$ values associated to the linearized problem of \autoref{eq:ex82}. Looking at right plot of \autoref{fig:ex7_3}, the behaviour of the four proposed methods is characterized:
+Left plot of \autoref{fig:ex7_3} shows the evolution in time of the $h\lambda_i$ values associated to the 
+linearized problem of \autoref{eq:ex82}. Looking at right plot of \autoref{fig:ex7_3}, the behaviour of 
+the four proposed methods is characterized:
 \begin{itemize}
-    \item \textbf{AB3}: $h\lambda_y$ is never inside the method stability domain, so the $y$ component diverges. With the exception of little intervals at the beginning and at the end of the time-span, the same situation is encountered for $h\lambda_x$;
-    \item \textbf{AM3}: $h\lambda_y$ is never inside the method stability domain, so the $y$ component diverges. On the other side, the $h\lambda_x$ is always in the stable domain, resulting in the convergence of the $x$ component;
-    \item \textbf{ABM3}: the situation is the same encountered with AM3 method, except for the fact that for a small interval between $t\simeq1.5$ s and $t\simeq=2.5$ s the $h\lambda_x$ values are outside the stability domain;
-    \item \textbf{ABM3}: the situation is the same encountered with AM3 method.
+    \item \textbf{AB3}: $h\lambda_{x_2}$ is never inside the method stability domain, so the $x_2$ component diverges. With the exception of little intervals at the beginning and at the end of the time-span, the same situation is encountered for $h\lambda_x$;
+    \item \textbf{AM3}: $h\lambda_{x_2}$ is never inside the method stability domain, so the $x_2$ component diverges. On the other side, the $h\lambda_x$ is always in the stable domain, resulting in the convergence of the $x$ component;
+    \item \textbf{ABM3}: the situation is the same encountered with AM3 method, except for the fact that for a small interval between $t\simeq1.0$ s and $t\simeq=2.0$ s the $h\lambda_x$ values are outside the stability domain;
+    \item \textbf{BDF3}: the instability of the $x_2$ component is encountered for the whole time-span, while the $x_1$ component is stable for all the time-span. This is due to the instability region being almost entirely limited to the positive real axis.
 \end{itemize}
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.48\textwidth]{gfx/ex7_1.pdf}
-    \includegraphics[width=0.48\textwidth]{gfx/ex7_2.pdf}
-    \includegraphics[width=0.48\textwidth]{gfx/ex7_3.pdf}
-    \includegraphics[width=0.48\textwidth]{gfx/ex7_4.pdf}
-    \caption{Solutions obtained with AB3, AM3, ABM3 and BDF3 methods.}
-    \label{fig:ex7_1}
-\end{figure}
 
 \begin{figure}[h]
     \includegraphics[width=0.48\textwidth]{gfx/ex7_5.pdf}
@@ -527,6 +534,10 @@ Left plot of \autoref{fig:ex7_3} shows the evolution in time of the $h\lambda_i$
     \caption{$h\lambda_i$ values of the linearized system (left). Stability and Instability domains of the proposed methods (right).}
     \label{fig:ex7_3}
 \end{figure}
+
+
+
+
 
 \clearpage
 
