@@ -5,18 +5,16 @@
 % Student ID:      221732
 %
 % Comments: every exercise is divide in two parts, the first to solve the
-%           exercise questions and the second to plot and print data. The
-%           first section contains the graphics setup that needs to be
-%           executed when the file is opened.
+%           exercise questions and the second to plot and print data.
            
 
 
 %% Graphics Setup
 % Set parameters for desired style of plots
-set(groot, 'defaultAxesTickLabelInterpreter', 'latex');
 set(groot, 'defaulttextinterpreter', 'latex');
 set(groot, 'defaultLegendInterpreter', 'latex');
 set(groot, 'defaultLegendInterpreter', 'latex');
+set(groot, 'defaultAxesTickLabelInterpreter', 'latex');
 set(groot, 'defaultLineLineWidth', 1.5);
 set(gca, 'box', 'on')
 
@@ -44,7 +42,7 @@ x2 = [6 5]';
 [sol2f, n2f] = newtFF(func, x2, toll);
 [sol2c, n2c] = newtFC(func, x2, toll);
 
-%%% ----------------------------- PRINT DATA ------------------------------
+% PRINT DATA
 err_1f = norm(sol1a-sol1f);
 err_2f = norm(sol2a-sol2f);
 err_1c = norm(sol1a-sol1c);
@@ -69,7 +67,7 @@ fprintf('newtFF:   [%2.15e, %2.15e]  \n', err_1f, err_2f);
 fprintf('newtFC:   [%2.15e, %2.15e]  \n', err_1c, err_2c);
 
 
-%%% -------------------------------- PLOTS --------------------------------
+% PLOTS 
 
 f1 = @(x1, x2) x2.^2 - x1 - 2;
 f2 = @(x1, x2) -x1.^2 + x2 + 10;
@@ -91,7 +89,7 @@ xlabel('$x_1$ $[-]$', 'FontSize', 20);
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
 zlabel('$f_x(\mbox{\boldmath$x$})$ $[-]$', 'FontSize', 20);
 legend(fp, {'$f_x$', '$f_x = 0$'}, 'FontSize', 18, 'Location', 'best')
-save_fig(fig,'ex1_1');
+% save_fig(fig,'ex1_1');
 
 % Surface plot of the function f2
 fig = figure();
@@ -109,7 +107,7 @@ xlabel('$x_1$ $[-]$', 'FontSize', 20);
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
 zlabel('$f_y(\mbox{\boldmath $x$})$ $[-]$', 'FontSize', 20);
 legend(fp, {'$f_y$', '$f_y = 0$'}, 'FontSize', 18, 'Location', 'best')
-save_fig(fig,'ex1_2');
+% save_fig(fig,'ex1_2');
 
 
 % Plot of the solution
@@ -128,8 +126,7 @@ text(sol2a(1)+0.2, sol2a(2)+0.8, '$\boldmath{z_2}$', 'FontSize', 17);
 xlabel('$x_1$ $[-]$', 'FontSize', 20); 
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
 legend({'$f_x = 0$', '$f_y = 0$', 'zeros of $\mbox{\boldmath $f$}(\mbox{\boldmath $x$})$'}, 'FontSize', 15, 'Location', 'best')
-save_fig(fig,'ex1_3');
-system('cd ../Report && pdflatex main.tex > NUL');
+% save_fig(fig,'ex1_3');
 
 
 %% EX 2
@@ -281,7 +278,6 @@ xlabel('$||\mbox{\boldmath $x$}_{ex}(2)-\mbox{\boldmath $x$}(2)||$ $[-]$', 'Font
 ylabel('$CPU-time$ $[ms]$', 'FontSize', 18);
 legend({'RK2', 'RK4'}, 'FontSize', 14, 'Location', 'best');
 %save_fig(fig,'ex2_6');
-%system('cd ../Report && pdflatex main.tex > NUL');
 
 %% EX 3
 clearvars; close all; clc
@@ -322,7 +318,6 @@ for alpha = alpha_v
     it = it + 1;
 end
 
-
 % It's not possible to find the complete solution in the rhp with the same
 % method as rk2, it's necessary to search for multiple solution and order
 % them to show them correcty.
@@ -330,8 +325,7 @@ h_max = 3;
 corr = 2;
 [r_rk4,alphaU] = solveStabilityRegion(FRK4, alpha_v, A, h_max, corr);
 
-%%% -------------------------------- PLOTS --------------------------------
-
+% pltos and prints
 fprintf('EXERCISE 3\n\n');
 fprintf('Solutions (h): \n');
 fprintf('RK2:   [%2.15e]  \n', hrk2);
@@ -370,7 +364,7 @@ ylabel('$Im\{h\lambda\}$', 'FontSize', 18);
 legend(fp,{'RK2','RK4'},'FontSize', 11, 'Location', 'best');
 title('Stability regions', 'FontSize', 17);
 %save_fig(fig,'ex3_2');
-%system('cd ../Report && pdflatex main.tex > NUL');
+
 
 
 %% EX 4
@@ -389,7 +383,6 @@ F_RK2 = @(h, alpha) eye(length(x0)) + h*A(alpha) + (h^2)/2*A(alpha)^2;
 F_RK4 = @(h, alpha) eye(length(x0)) + h*A(alpha) + (h^2)/2*A(alpha)^2 ...
                             + ((h^3)/6)*A(alpha)^3 + ((h^4)/24)*A(alpha)^4;
 
-%%% CALCULATIONS ----------------------------------------------------------
 % Pre-allocation
 alpha_v = linspace(0, pi, 100);
 tolVec = [1e-3, 1e-4, 1e-5, 1e-6];
@@ -432,7 +425,7 @@ for i = 1:length(tolVec)
     [~, ~, ~, feval4(i)] = RK4(@(t, x) A_pi*x, t_int, h_rk4{i}(end), x0);
 end
 
-%%% -------------------------------- PLOTS --------------------------------
+% PLOTS 
 % RK1 solutions
 fig = figure();
 line_opt = {'-.', '--', ':'};
@@ -538,7 +531,6 @@ xlabel('tol [-]', 'FontSize', 18);
 ylabel('f evaluations [-]', 'FontSize', 18);
 legend({'RK1', 'RK2', 'RK4'}, 'FontSize', 14, 'Location', 'best');
 %save_fig(fig,'ex4_4');
-%system('cd ../Report && pdflatex main.tex > NUL');
 
 %% EX 5
 clearvars; close all; clc; warning off;
@@ -578,7 +570,7 @@ for i = 1:length(theta_v)
     alphaL{i} = [alpha(1:ind); 90; alpha(ind+1:end)];
 end
 
-%%% -------------------------------- PLOTS --------------------------------
+% PLOTS 
 % BI2_theta unstable domains
 fig = figure();
 hold on; 
@@ -612,7 +604,7 @@ xlabel('$\alpha$ [deg]', 'FontSize', 18);
 ylabel('$h$ [-]', 'FontSize', 18);
 title('Minimum $h$ for stability', 'FontSize', 17);
 save_fig(fig,'ex5_2');
-%system('cd ../Report && pdflatex main.tex > NUL');
+
 
 %% EX 6
 clearvars; close all; clc
@@ -629,7 +621,7 @@ f = @(t, x) B*x;
 [t_rk4, y_rk4, ~, ~] = RK4(f, t_int, 0.1, x0);
 N = 1000;
 A = @(alpha) [0 1; -1 2*cos(alpha)];
-% ------------------------- Solution with IEX4 --------------------------
+% Solution with IEX4 
 % step
 h = 0.1;
 t_v = t_int(1):h:t_int(2);
@@ -654,7 +646,8 @@ re_RK4 = real(R_RK4);
 im_RK4 = imag(R_RK4);
 reTot_RK4 = [re_RK4; re_RK4(end:-1:1)];
 imTot_RK4 = [im_RK4; -im_RK4(end:-1:1)];
-%  ----------------------- IEX4 instability domain ----------------------
+
+%  IEX4 instability domain
 hIEX4  = zeros(length(alpha_v), 1);
 R_IEX4 = zeros(length(alpha_v), 1);
 
@@ -675,7 +668,8 @@ re_IEX4 = real(R_IEX4);
 im_IEX4 = imag(R_IEX4);
 reTot_IEX4 = [re_IEX4; re_IEX4(end:-1:1)];
 imTot_IEX4 = [im_IEX4; -im_IEX4(end:-1:1)];
-%%% -------------------------------- PLOTS -----------------------------
+
+% PLOTS
 % Stability/Instability domain
 fig = figure();
 plot(reTot_RK4, imTot_RK4, '-.', 'LineWidth', 1.5); 
@@ -713,7 +707,7 @@ plot(eig_B(1), 0, 'kx', 'markerSize', 10);
 ax = gca;
 ax.XLim = [-0.8 0.8];
 ax.YLim = [-0.5 0.5];
-save_fig(fig,'ex6_1');
+% save_fig(fig,'ex6_1');
 
 % RK4 solution
 fig =  figure();
@@ -725,7 +719,7 @@ legend({'$x_1$', '$x_2$'}, 'FontSize', 16, 'Location', 'best');
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('$x$ [-]', 'FontSize', 18);
 title('RK4 - solution', 'FontSize', 17);
-save_fig(fig,'ex6_2');
+% save_fig(fig,'ex6_2');
 
 % IEX4 solution
 fig = figure();
@@ -737,7 +731,7 @@ legend({'$x_1$', '$x_2$'}, 'FontSize', 16, 'Location', 'best');
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('$x$ [-]', 'FontSize', 18);
 title('IEX4 - solution', 'FontSize', 17);
-save_fig(fig,'ex6_4');
+% save_fig(fig,'ex6_4');
 
 % RK4 local integration error
 fig = figure();
@@ -750,7 +744,7 @@ legend({'Error on first component', 'Error on second component'},...
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('Error [-]', 'FontSize', 18);
 title('Error between analytical and RK4 method', 'FontSize', 17);
-save_fig(fig,'ex6_3');
+% save_fig(fig,'ex6_3');
 
 % IEX4 local integration error
 fig = figure();
@@ -763,8 +757,8 @@ legend({'Error on first component', 'Error on second component'},...
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('Error [-]', 'FontSize', 18);
 title('Error between analytical and IEX4 method', 'FontSize', 17);
-save_fig(fig,'ex6_5');
-%system('cd ../Report && pdflatex main.tex > NUL');
+% save_fig(fig,'ex6_5');
+
 
 %% EX 7
 clearvars; close all; clc
@@ -783,7 +777,7 @@ f = @(t, x) [-5/2*(1 + 8*sin(t))*x(1);...
 [t_ABM3, Y_ABM3] = ABM3(f, t_int, h, x0);
 [t_BDF3, Y_BDF3] = BDF3(f, t_int, h, x0);
 
-%%% STABILITY DOMAIN --------------------------------------------------------
+% STABILITY DOMAIN 
 A = @(alpha) [0 1; -1 2*cos(alpha)];
 n = size(x0, 1);
 
@@ -853,7 +847,8 @@ re_BDF3 = real(R_BDF3);
 im_BDF3 = imag(R_BDF3);
 reTot_BDF3 = [re_BDF3; re_BDF3(end:-1:1)];
 imTot_BDF3 = [im_BDF3; -im_BDF3(end:-1:1)];
-%%% -------------------------------- PLOTS ------------------------------
+
+% PLOTS
 % AB3 solution
 fig = figure('Name', 'EX 7 - AB3', 'NumberTitle', 'off');
 plot(t_AB3, Y_AB3(:, 1), '-.', 'LineWidth', 1.5); hold on; grid on;
@@ -894,7 +889,7 @@ plot(t_ABM3, Y_ABM3(:, 1),'-.');
 ax = gca;
 ax.XLim = [1  2.5];
 ax.YLim = [-0.2 0.2];
-save_fig(fig,'ex7_3');
+% save_fig(fig,'ex7_3');
 
 % BDF3 solution
 fig = figure('Name', 'EX 7 - BDF3', 'NumberTitle', 'off');
@@ -961,40 +956,24 @@ line([real(min(lambda(2,:))) real(max(lambda(2,:)))], [0 0], 'color', 'red', 'Li
 ax = gca;
 ax.XLim = [-2.5  0.5];
 ax.YLim = [-0.4 0.4];
-save_fig(fig,'ex7_6');
+% save_fig(fig,'ex7_6');
 %system('cd ../Report && pdflatex main.tex');
 
 %% Functions
-
-% All the functions have an intestation with the description of the
-% function and the definition of inputs and outputs. It's possible to use
-% the "help" command to retrieve informations about each function
-%
-% Most of the functions return the time of execution, this is done inside 
-% of the function in order to evaluate only the algorithm and execlude time
-% used for the function call. This was used during the design phase
-% together with MATLAB Profiler app.
-
-%%% ------------------------------ EX-1 ---------------------------------
+% for all the functions implementations vectorization is used as much as
+% possible in order to optimize execution efficiency
 
 function [sol, it] = newtAn(f, x, invJ, toll)
 % newtAn - Computes the zero of a multidimensional function using Newton's method.
 %
-%   [t, sol, it, feval] = newtAn(f, x, invJ, toll)
+%   [t, sol, it] = newtAn(f, x, invJ, toll)
 %
-% INPUT:
 %   f        - Function handle [1x1] for evaluating the objective function.
 %   x        - Double [nx1] representing the starting guess.
 %   invJ     - Function handle [1x1] for the analytic inverse Jacobian matrix.
 %   toll     - Double [1x1] specifying the tolerance for convergence.
-%
-% OUTPUT:
-%   t        - Double [1x1] representing the computational time needed in seconds.
 %   sol      - Double [nx1] representing the solution.
 %   it       - Double [1x1] indicating the number of iterations.
-%
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
 %
 % DESCRIPTION:
 %   newtAn computes the zero of a multidimensional function using Newton's
@@ -1025,23 +1004,16 @@ function [sol, it] = newtFF(f, x, toll)
 %
 %   [t, sol, it, feval] = newtFF(f, x, toll)
 %
-% INPUT:
 %   f        - Function handle [1x1] for evaluating the objective function.
 %   x        - Double [nx1] representing the starting guess.
 %   toll     - Double [1x1] specifying the tolerance for convergence.
-%
-% OUTPUT:
 %   sol      - Double [nx1] representing the solution.
 %   it       - Double [1x1] indicating the number of iterations.
-%
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
 %
 % DESCRIPTION:
 %   newtFF computes the zero of a multidimensional function using
 %   Newton's method. The Jacobian matrix is approximated using finite forward
-%   differences. The function iteratively updates the solution until the
-%   convergence tolerance is met.
+%   differences. 
 %
 % -------------------------------------------------------------------------
 % The initial error needs to be greater then the toll
@@ -1075,25 +1047,16 @@ function [sol, it] = newtFC(f, x, toll)
 %
 %   [t, sol, it, feval] = newtFC(f, x, toll)
 %
-% INPUT:
 %   f        - Function handle [1x1] for evaluating the objective function.
 %   x        - Double [nx1] representing the starting guess.
 %   toll     - Double [1x1] specifying the tolerance for convergence.
-%
-% OUTPUT:
-%   t        - Double [1x1] computational time needed in seconds.
 %   sol      - Double [nx1] representing the solution.
 %   it       - Double [1x1] indicating the number of iterations.
-%   feval     - Double [1x1] representing the number of function evaluations.
-%
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
 %
 % DESCRIPTION:
 %   newtFC computes the zero of a multidimensional function using
 %   Newton's method. The Jacobian matrix is approximated using centered
-%   finite differences. The function iteratively updates the solution until
-%   the convergence tolerance is met.
+%   finite differences.
 %
 % -------------------------------------------------------------------------
 
@@ -1124,17 +1087,11 @@ function [sol] = secant(f, a, b, toll)
 %
 %   [t, sol, it, feval, cV] = secant(f, a, b, toll)
 %
-% INPUT:
 %   f        - Function handle [1x1] for evaluating the objective function.
 %   a        - Double [1x1] representing the left end of the zero searching range.
 %   b        - Double [1x1] representing the right end of the zero searching range.
 %   toll     - Double [1x1] specifying the tolerance for convergence.
-%
-% OUTPUT:
 %   sol      - Double [1x1] representing the solution.
-%
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
 %
 % DESCRIPTION:
 %   secant retrieves the solution of finding zero using the secant
@@ -1167,26 +1124,18 @@ function [t, Y, ct, feval] = RK1(f, t_int, h, x0)
 %
 %   [t, Y, ct, feval] = RK1(f, t_int, h, x0)
 %
-% INPUT:
 %   f      - Function handle [1x1] for evaluating the ordinary differential equation (ODE).
 %   t_int   - Double [1x2] specifying the time vector limits [initial, final].
 %   h      - Double [1x1] representing the step size.
 %   x0     - Double [nx1] representing the initial value(s).
-%
-% OUTPUT:
 %   t      - Double [1xN] representing the time vector.
 %   Y      - Double [mxN] representing the solution matrix.
 %   ct     - Double [1x1] representing the computational time needed in seconds.
 %   feval   - Double [1x1] representing the number of function evaluations.
 %
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
-%
 % DESCRIPTION:
 %   RK1 solves the ordinary differential equation (ODE) problem described by
-%   the function f using the first-order Runge-Kutta (RK1) approximation. The
-%   function iteratively updates the solution based on the RK1 method until
-%   the specified final time is reached.
+%   the function f using the first-order Runge-Kutta (RK1) approximation.ù
 %
 % -------------------------------------------------------------------------
 
@@ -1215,26 +1164,18 @@ function [t, Y, ct, feval] = RK2(ode, t_int, h, x0)
 %
 %   [t, Y, ct, feval] = RK2(f, t_int, h, x0)
 %
-% INPUT:
 %   ode      - Function handle [1x1] for evaluating the ordinary differential equation (ODE).
 %   t_int   - Double [1x2] specifying the time vector limits [initial, final].
 %   h      - Double [1x1] representing the step size.
 %   x0     - Double [nx1] representing the initial value(s).
-%
-% OUTPUT:
 %   t      - Double [1xN] representing the time vector.
 %   Y      - Double [mxN] representing the solution matrix.
 %   ct     - Double [1x1] representing the computational time needed in seconds.
 %   feval   - Double [1x1] representing the number of function evaluations.
 %
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
-%
 % DESCRIPTION:
 %   RK2 solves the ordinary differential equation (ODE) problem described by
-%   the function f using the second-order Runge-Kutta (RK2) approximation. The
-%   function iteratively updates the solution based on the RK2 method until
-%   the specified final time is reached.
+%   the function f using the second-order Runge-Kutta (RK2) approximation.
 %
 % -------------------------------------------------------------------------
 
@@ -1262,26 +1203,18 @@ function [t, Y, ct, feval] = RK4(ode, t_int, h, x0)
 %
 %   [t, Y, ct, feval] = RK4(f, t_int, h, x0)
 %
-% INPUT:
 %   ode      - Function handle [1x1] for evaluating the ordinary differential equation (ODE).
 %   t_int   - Double [1x2] specifying the time vector limits [initial, final].
 %   h      - Double [1x1] representing the step size.
 %   x0     - Double [nx1] representing the initial value(s).
-%
-% OUTPUT:
 %   t      - Double [1xN] representing the time vector.
 %   Y      - Double [mxN] representing the solution matrix.
 %   ct     - Double [1x1] representing the computational time needed in seconds.
 %   feval   - Double [1x1] representing the number of function evaluations.
 %
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
-%
 % DESCRIPTION:
-%   RK2 solves the ordinary differential equation (ODE) problem described by
-%   the function f using the second-order Runge-Kutta (RK2) approximation. The
-%   function iteratively updates the solution based on the RK2 method until
-%   the specified final time is reached.
+%   RK4 solves the ordinary differential equation (ODE) problem described by
+%   the function f using the fourth-order Runge-Kutta (RK4). 
 %
 % -------------------------------------------------------------------------
 
@@ -1313,26 +1246,18 @@ end
 function [t, Y] = AB3(f, t_int, h, x0)
 % AB3 - Solve the ODE problem using the third-order Adams-Bashforth (AB3) method.
 %
-%   [t, Y, ct] = AB3(f, t_int, h, x0)
+%   [t, Y] = AB3(f, t_int, h, x0)
 %
-% INPUT:
 %   f      - Function handle [1x1] for evaluating the ordinary differential equation (ODE).
 %   t_int   - Double [1x2] specifying the time vector limits [initial, final].
 %   h      - Double [1x1] representing the step size.
 %   x0     - Double [nx1] representing the initial value(s).
-%
-% OUTPUT:
 %   t      - Double [1xN] representing the time vector.
 %   Y      - Double [mxN] representing the solution matrix.
-%
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
 %
 % DESCRIPTION:
 %   AB3 solves the ordinary differential equation (ODE) problem described by
 %   the function f using the third-order Adams-Bashforth (AB3) approximation.
-%   The function iteratively updates the solution until the specified final
-%   time is reached.
 %
 % -------------------------------------------------------------------------
 
@@ -1370,8 +1295,6 @@ function [t, y] = AM3(f, t_int, h, x0)
 % DESCRIPTION:
 %   AM3 solves the ordinary differential equation (ODE) problem described by
 %   the function f using the third-order Adams-Moulton (AM3) approximation.
-%   The function iteratively updates the solution until the specified final
-%   time is reached.
 %
 % -------------------------------------------------------------------------
 
@@ -1408,27 +1331,19 @@ end
 function [t, y] = ABM3(f, t_int, h, x0)
 % ABM3 - Solve the ODE problem using the third-order Adams-Bashforth-Moulton (ABM3) method.
 %
-%   [t, Y, ct] = ABM3(f, t_int, h, x0)
+%   [t, Y] = ABM3(f, t_int, h, x0)
 %
-% INPUT:
 %   f      - Function handle [1x1] for evaluating the ordinary differential equation (ODE).
 %   t_int   - Double [1x2] specifying the time vector limits [initial, final].
 %   h      - Double [1x1] representing the step size.
 %   x0     - Double [nx1] representing the initial value(s).
-%
-% OUTPUT:
 %   t      - Double [1xN] representing the time vector.
 %   Y      - Double [mxN] representing the solution matrix.
-%   ct     - Double [1x1] representing the computational time needed in seconds.
-%
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
 %
 % DESCRIPTION:
 %   ABM3 solves the ordinary differential equation (ODE) problem described by
 %   the function f using the third-order Adams-Bashforth-Moulton (ABM3)
-%   approximation. The function iteratively updates the solution until the
-%   specified final time is reached.
+%   approximation.
 %
 % -------------------------------------------------------------------------
 
@@ -1457,25 +1372,17 @@ function [t, y] = BDF3(f, t_int, h, x0)
 %
 %   [t, Y, ct] = BDF3(f, t_int, h, x0)
 %
-% INPUT:
 %   f      - Function handle [1x1] for evaluating the ordinary differential equation (ODE).
 %   t_int   - Double [1x2] specifying the time vector limits [initial, final].
 %   h      - Double [1x1] representing the step size.
 %   x0     - Double [nx1] representing the initial value(s).
-%
-% OUTPUT:
 %   t      - Double [1xN] representing the time vector.
 %   Y      - Double [mxN] representing the solution matrix.
-%   ct     - Double [1x1] representing the computational time needed in seconds.
-%
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
 %
 % DESCRIPTION:
 %   BDF3 solves the ordinary differential equation (ODE) problem described by
 %   the function f using the third-order Backward Differentiation Formula (BDF3)
-%   approximation. The function iteratively updates the solution until the
-%   specified final time is reached.
+%   approximation.
 %
 % -------------------------------------------------------------------------
 
@@ -1515,7 +1422,6 @@ function [R_F,alphaU] = solveStabilityRegion(F, alpha_v, A, h_max, corr)
 % PROTOTYPE
 %   [R_F, alphaU] = solveStabilityRegion(F, alpha_v, A, h_max, corr)
 %
-% INPUT:
 %   F         - Function handle [1x1] for the linear operator as a function
 %               of step size and parameter alpha.
 %   alpha_v  - Double [1xM] array specifying the parameter values.
@@ -1523,16 +1429,11 @@ function [R_F,alphaU] = solveStabilityRegion(F, alpha_v, A, h_max, corr)
 %   h_max     - Double [1x1] representing the maximum step size to explore.
 %   corr      - Double [1x1] representing the correction term for stability
 %               region computation.
-%
-% OUTPUT:
 %   R_F       - Double [1x(M+1)] array representing the computed radii of the
 %               stability region for each alpha and one additional point at
 %               alpha = pi/2.
 %   alphaU    - Double [1x(M+1)] array representing the corresponding alpha
 %               values for each point in R_F.
-%
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
 %
 % DESCRIPTION:
 %   solveStabilityRegion computes the stability region for a given linear
@@ -1612,12 +1513,8 @@ function save_fig(fig,name)
 % PROTOTYPE
 %   save_fig(fig, name)
 %
-% INPUT:
 %   fig      - Figure [1x1] to be saved.
 %   name     - String [1xN] specifying the desired name of the saved file.
-%
-% CREATOR:
-%   Cucchi Lorenzo (ID: 10650070)
 %
 % DESCRIPTION:
 %   save_fig saves the given figure to a PDF file with correct sizing. It
