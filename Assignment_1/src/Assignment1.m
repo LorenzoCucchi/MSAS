@@ -847,7 +847,8 @@ F_BDF3 = @(h, alpha) max(abs(eig([zeros(n, n) eye(n) zeros(n, n); ...
          eye(n)/(eye(n) - 6/11*A(alpha)*h)*2/11, - (eye(n) -...
          6/11*A(alpha)*h)\eye(n)*9/11, ((eye(n) - 6/11*A(alpha)*h)\eye(n))*18/11])));
 hm_BDF3 = 6;
-[R_BDF3,~] = solveStabilityRegion(F_BDF3, alpha_v, A, 6, -5);
+[R_BDF3,~] = solveStabilityRegion(F_BDF3, alpha_v, A, 6, -6);
+R_BDF3 = R_BDF3([1,3:end]); %remove a zero that creates problem to the plots
 re_BDF3 = real(R_BDF3);
 im_BDF3 = imag(R_BDF3);
 reTot_BDF3 = [re_BDF3; re_BDF3(end:-1:1)];
@@ -862,7 +863,7 @@ ylabel('$\mbox{\boldmath $x$}$ [-]', 'FontSize', 18);
 title('AB3', 'FontSize', 17);
 legend('$x_1$', '$x_2$', 'FontSize', 14, 'Location', 'best');
 ylim([-5 5])
-save_fig(fig,'ex7_1');
+% save_fig(fig,'ex7_1');
 
 % AM3 solution
 fig = figure('Name', 'EX 7 - AM3', 'NumberTitle', 'off');
@@ -873,7 +874,7 @@ ylabel('$\mbox{\boldmath $x$}$ [-]', 'FontSize', 18);
 title('AM3', 'FontSize', 17);
 legend('$x_1$', '$x_2$', 'FontSize', 14, 'Location', 'best');
 ylim([-5 5])
-save_fig(fig,'ex7_2');
+% save_fig(fig,'ex7_2');
 
 % ABM3 solution
 fig = figure('Name', 'EX 7 - ABM3', 'NumberTitle', 'off');
@@ -884,6 +885,15 @@ ylabel('$\mbox{\boldmath $x$}$ [-]', 'FontSize', 18);
 title('ABM3', 'FontSize', 17);
 legend('$x_1$', '$x_2$', 'FontSize', 14, 'Location', 'best');
 ylim([-5 5])
+a2 = axes();
+a2.Position = [0.19 0.19 0.4000 0.2500];
+box on
+hold on; 
+grid on;
+plot(t_ABM3, Y_ABM3(:, 1),'-.');
+ax = gca;
+ax.XLim = [1  2.5];
+ax.YLim = [-0.2 0.2];
 save_fig(fig,'ex7_3');
 
 % BDF3 solution
@@ -895,7 +905,7 @@ ylabel('$\mbox{\boldmath $x$}$ [-]', 'FontSize', 18);
 title('BDF3', 'FontSize', 17);
 legend('$x_1$', '$x_2$', 'FontSize', 14, 'Location', 'best');
 ylim([-5 5])
-save_fig(fig,'ex7_4');
+% save_fig(fig,'ex7_4');
 
 % Real system eigenvalues
 M = @(t) [-5/2*(1 + 8*sin(t)) 0; 1 1];
@@ -904,13 +914,15 @@ for i = 1:length(t_AB3)
     lambda(:, i) = eig(M(t_AB3(i)))*0.1;
 end
 fig = figure('Name', 'EX 7 - Real system eigenvalues', 'NumberTitle', 'off');
-plot(t_AB3, lambda(2, :), 'LineWidth', 1.5); grid on; hold on;
+plot(t_AB3, lambda(2, :), 'LineWidth', 1.5); 
+grid on; 
+hold on;
 plot(t_AB3, lambda(1, :), 'LineWidth', 1.5);
 xlabel('Time [s]', 'FontSize', 18); 
 ylabel('$h\lambda_i$ [-]', 'FontSize', 18);
 title('$h\lambda_i$ of the linearized system', 'FontSize', 17);
 legend('$\lambda_{x_1}$', '$\lambda_{x_2}$', 'FontSize', 14, 'Location','best');
-save_fig(fig,'ex7_5');
+% save_fig(fig,'ex7_5');
 
 % Stability/Instability domains
 fig = figure('Name', 'EX 7 - Stability region', 'NumberTitle', 'off');
@@ -920,17 +932,35 @@ grid on;
 plot(reTot_AM3, imTot_AM3, '-.', 'LineWidth', 1.5);
 plot(reTot_ABM3, imTot_ABM3, ':', 'LineWidth', 1.5);
 plot(reTot_BDF3, imTot_BDF3);
-x_lim = xlim; xlim([x_lim(1)-0.5 x_lim(2)+0.5]);
-y_lim = ylim; ylim([y_lim(1)-0.5 y_lim(2)+0.5]);
+line([real(min(lambda(2,:))) real(max(lambda(2,:)))], [0 0], 'color', 'red', 'LineWidth', 2);
+plot(mean(lambda(1,:)), 0, 'ko', 'markerSize', 5);
+x_lim = xlim; 
+xlim([x_lim(1)-0.5 x_lim(2)+0.1]);
+y_lim = ylim; 
+ylim([y_lim(1)-0.5 y_lim(2)+0.5]);
 axis equal; 
 ax = gca; 
 line([0 0], ax.YLim, 'color', [0 0 0 0.5], 'LineWidth', 0.1);
 line(ax.XLim, [0 0], 'color', [0 0 0 0.5], 'LineWidth', 0.1);
-legend({'AB3 Stability margin', 'AM3 Stability margin',...
-    'ABM3 Stability region', 'BDF3 Instability region'},...
-    'FontSize', 12, 'Location', 'southeast');
+legend({'AB3 Stability', 'AM3 Stability',...
+    'ABM3 Stability', 'BDF3 Instability','$\lambda_{x1}$','$\lambda_{x2}$'},...
+    'FontSize', 10, 'Location', 'southeast');
 xlabel('$Re\{h\lambda\}$', 'FontSize', 18); 
 ylabel('$Im\{h\lambda\}$', 'FontSize', 18);
+a2 = axes();
+a2.Position = [0.56 0.7 0.31 0.21];
+box on
+hold on; 
+grid on;
+plot(reTot_AB3, imTot_AB3, 'LineWIdth', 1.5); 
+plot(reTot_AM3, imTot_AM3, '-.', 'LineWidth', 1.5);
+plot(reTot_ABM3, imTot_ABM3, ':', 'LineWidth', 1.5);
+plot(reTot_BDF3, imTot_BDF3);
+plot(mean(lambda(1,:)), 0, 'ko', 'markerSize', 5);
+line([real(min(lambda(2,:))) real(max(lambda(2,:)))], [0 0], 'color', 'red', 'LineWidth', 2);
+ax = gca;
+ax.XLim = [-2.5  0.5];
+ax.YLim = [-0.4 0.4];
 save_fig(fig,'ex7_6');
 %system('cd ../Report && pdflatex main.tex');
 
@@ -1405,7 +1435,7 @@ function [t, y] = ABM3(f, t_int, h, x0)
 N = (t_int(2) - t_int(1))/h;
 t = linspace(t_int(1), t_int(2), N+1);
 k1 = h / 12 * [23; -16; 5];
-k2 = h / 12 * [5/2; 8; -1];
+k2 = h / 12 * [5; 8; -1];
 
 % First 2 steps are obtained with RK4 method
 [~, y, ~, ~] = RK4(f, [0 3*h], h, x0);

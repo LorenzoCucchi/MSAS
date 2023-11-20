@@ -280,7 +280,7 @@ first equation of \autoref{eq:wow} in the second one it is obtained:
 \end{equation}
 By rearranging:
 \begin{equation}
-    \vec{x}_{k+1} = (\vec{I} + h\vec{A}(\alpha) + \frac{h^2}{2}\vec{A}^2(\alpha))\vec{x}_k = \vec{F}_{RK2}(h,\alpha)\vec{x}_k
+    \vec{F}_{RK2}(h,\alpha)\vec{x}_k = \vec{x}_{k+1} = (\vec{I} + h\vec{A}(\alpha) + \frac{h^2}{2}\vec{A}^2(\alpha))\vec{x}_k 
 \end{equation}
 The same procedure can be performed to find $F_{RK4}$:
 \begin{equation}
@@ -519,19 +519,28 @@ the linearized problem in $\vec{x}_0$ is:
 \end{equation}
 and, thus, the eigenvalues can be evaluated at each instant of time $t$.
 Left plot of \autoref{fig:ex7_3} shows the evolution in time of the $h\lambda_i$ values associated to the 
-linearized problem of \autoref{eq:ex82}. Looking at right plot of \autoref{fig:ex7_3}, the behaviour of 
-the four proposed methods is characterized:
-\begin{itemize}
-    \item \textbf{AB3}: $h\lambda_{x_2}$ is never inside the method stability domain, so the $x_2$ component diverges. With the exception of little intervals at the beginning and at the end of the time-span, the same situation is encountered for $h\lambda_x$;
-    \item \textbf{AM3}: $h\lambda_{x_2}$ is never inside the method stability domain, so the $x_2$ component diverges. On the other side, the $h\lambda_x$ is always in the stable domain, resulting in the convergence of the $x$ component;
-    \item \textbf{ABM3}: the situation is the same encountered with AM3 method, except for the fact that for a small interval between $t\simeq1.0$ s and $t\simeq=2.0$ s the $h\lambda_x$ values are outside the stability domain;
-    \item \textbf{BDF3}: the instability of the $x_2$ component is encountered for the whole time-span, while the $x_1$ component is stable for all the time-span. This is due to the instability region being almost entirely limited to the positive real axis.
-\end{itemize}
+linearized problem of \autoref{eq:ex82}. Looking at the right plot of \autoref{fig:ex7_3}, the stability behaviour of 
+the four proposed methods is characterized, in the plot are also repored the eigenvalues in the $h\lambda$ plane. 
+The $h\lambda_{x_2}$ eigenvalue is constant and it's positive, this causes the instability of all the methods analyzed
+as it's possible to see from the stability regions of the various method in \autoref{fig:ex7_3}. The $h\lambda_{x_1}$ 
+eigenvalue varies with time but it's always negative, the AB3 method is stable for a small interval of time at the 
+start and then the eigenvalue exits from its stability region, the AM3 method is stable for the whole time-span since
+its stability region contains all the possible values of $h\lambda_{x_1}$, the same happens for the BDF3 which is stable
+for all the space except for the marked instability region on the positive real axis. The ABM3 method is partially stable
+since its stability region contains the eigenvalue except for an small interval between $t\simeq0.8$ s and $t\simeq=2.3$ s 
+as reported on \autoref{fig:ex7_3}.
+
+%\begin{itemize}
+%    \item \textbf{AB3}: $h\lambda_{x_2}$ is never inside the method stability domain, so the $x_2$ component diverges. With the exception of little intervals at the beginning and at the end of the time-span, the same situation is encountered for $h\lambda_x$;
+%    \item \textbf{AM3}: $h\lambda_{x_2}$ is never inside the method stability domain, so the $x_2$ component diverges. On the other side, the $h\lambda_{x_1}$ is always in the stable domain, resulting in the convergence of the $x$ component;
+%    \item \textbf{ABM3}: the situation is the same encountered with AM3 method, except for the fact that for a small interval between $t\simeq0.8$ s and $t\simeq=2.3$ s the $h\lambda_{x_1}$ values are outside the stability domain;
+%    \item \textbf{BDF3}: the instability of the $x_2$ component is encountered for the whole time-span, while the $x_1$ component is stable for all the time-span. This is due to the instability region being almost entirely limited to the positive real axis.
+%\end{itemize}
 
 \begin{figure}[h]
-    \includegraphics[width=0.48\textwidth]{gfx/ex7_5.pdf}
-    \includegraphics[width=0.48\textwidth]{gfx/ex7_6.pdf}
-    \caption{$h\lambda_i$ values of the linearized system (left). Stability and Instability domains of the proposed methods (right).}
+    \includegraphics[width=0.495\textwidth]{gfx/ex7_5.pdf}
+    \includegraphics[width=0.495\textwidth]{gfx/ex7_6.pdf}
+    \caption{$h\lambda_i$ values of the linearized system (left). Stability and Instability domains (right).}
     \label{fig:ex7_3}
 \end{figure}
 
