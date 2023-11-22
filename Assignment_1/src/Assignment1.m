@@ -16,7 +16,7 @@ set(groot, 'defaultLegendInterpreter', 'latex');
 set(groot, 'defaultLegendInterpreter', 'latex');
 set(groot, 'defaultAxesTickLabelInterpreter', 'latex');
 set(groot, 'defaultLineLineWidth', 1.5);
-set(gca, 'box', 'on')
+
 
 %% Ex 1
 clearvars; close all; clc
@@ -87,9 +87,9 @@ ax = gca;
 ax.FontSize = 15;
 xlabel('$x_1$ $[-]$', 'FontSize', 20); 
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
-zlabel('$f_x(\mbox{\boldmath$x$})$ $[-]$', 'FontSize', 20);
-legend(fp, {'$f_x$', '$f_x = 0$'}, 'FontSize', 18, 'Location', 'best')
-% save_fig(fig,'ex1_1');
+zlabel('$f_{x1}(\mbox{\boldmath$x$})$ $[-]$', 'FontSize', 20);
+legend(fp, {'$f_{x_1}$', '$f_{x_1} = 0$'}, 'FontSize', 18, 'Location', 'best')
+save_fig(fig,'ex1_1');
 
 % Surface plot of the function f2
 fig = figure();
@@ -105,9 +105,9 @@ ax = gca;
 ax.FontSize = 15;
 xlabel('$x_1$ $[-]$', 'FontSize', 20); 
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
-zlabel('$f_y(\mbox{\boldmath $x$})$ $[-]$', 'FontSize', 20);
-legend(fp, {'$f_y$', '$f_y = 0$'}, 'FontSize', 18, 'Location', 'best')
-% save_fig(fig,'ex1_2');
+zlabel('$f_{x_2}(\mbox{\boldmath $x$})$ $[-]$', 'FontSize', 20);
+legend(fp, {'$f_{x_2}$', '$f_{x_2} = 0$'}, 'FontSize', 18, 'Location', 'best')
+save_fig(fig,'ex1_2');
 
 
 % Plot of the solution
@@ -125,8 +125,8 @@ plot(sol2a(1), sol2a(2), 'ko', 'MarkerSize', 6, 'MarkerFaceColor', 'y');
 text(sol2a(1)+0.2, sol2a(2)+0.8, '$\boldmath{z_2}$', 'FontSize', 17);
 xlabel('$x_1$ $[-]$', 'FontSize', 20); 
 ylabel('$x_2$ $[-]$', 'FontSize', 20);
-legend({'$f_x = 0$', '$f_y = 0$', 'zeros of $\mbox{\boldmath $f$}(\mbox{\boldmath $x$})$'}, 'FontSize', 15, 'Location', 'best')
-% save_fig(fig,'ex1_3');
+legend({'$f_{x_1} = 0$', '$f_{x_2} = 0$', 'zeros of $\mbox{\boldmath $f$}(\mbox{\boldmath $x$})$'}, 'FontSize', 15, 'Location', 'best')
+save_fig(fig,'ex1_3');
 
 
 %% EX 2
