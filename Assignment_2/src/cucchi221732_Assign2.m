@@ -18,34 +18,35 @@ set(groot, 'defaultAxesTickLabelInterpreter', 'latex');
 set(groot, 'defaultLineLineWidth', 1.5);
 
 %% Ex 1
-clearvars; close all; clc
+clear all; close all; clc
 
 % Nozzle geometry
 geom.L = 0.5;
 geom.A = 1;
 
 % Inner layer
-thermal.k1 = 5;
+thermal.k1 = 1.5;
 geom.l1 = 4e-3;
 
 % Conductive layer
 thermal.k2 = 1500;
-geom.l2 = 15e-3;
-thermal.c2 = 850;
-thermal.rho2 = 1880;
+geom.l2 = 10e-3;
+thermal.c2 = 750;
+thermal.rho2 = 1830;
 
 % Interface
-thermal.k3 = 5;
-geom.l3 = 1e-3;
+% thermal.k3 = 0.14;
+% geom.l3 = 1e-3;
+thermal.R3 = 7e-3;
 
 % Insulator
 thermal.k4 = 0.07;
-geom.l4 = 10e-3;
+geom.l4 = 8e-3;
 thermal.c4 = 2100;
-thermal.rho4 = 480;
+thermal.rho4 = 485;
 
 % Outer coating
-thermal.k5 = 170;
+thermal.k5 = 160;
 geom.l5 = 2e-3;
 
 t_v = 0:1e-1:60;
@@ -56,7 +57,7 @@ thermal.To = 20;
 
 thermal.R1 = geom.l1/(geom.A*thermal.k1);
 thermal.R2 = geom.l2/(geom.A*thermal.k2);
-thermal.R3 = geom.l3/(geom.A*thermal.k3);
+% thermal.R3 = geom.l3/(geom.A*thermal.k3);
 thermal.R4 = geom.l4/(geom.A*thermal.k4);
 thermal.R5 = geom.l5/(geom.A*thermal.k5);
 thermal.C2 = thermal.rho2*geom.l2*geom.A*thermal.c2;
@@ -65,105 +66,143 @@ thermal.C4 = thermal.rho4*geom.l4*geom.A*thermal.c4;
 
 ode45_opts = odeset('RelTol',1e-12,'AbsTol',1e-12);
 
-mode.SN.IC = RHS.To*[1 1]';
-mode.MN.IC = RHS.To*[1 1 1 1]';
+casual.IC = RHS.To*[1 1]';
 
 [A,B] = StateSpace(thermal);
-mode.SN.eigA = eig(A);
-[~,mode.SN.sol] = ode45(@(t,X) A*X+B*[RHS.Ti(t) RHS.To]',t_v,mode.SN.IC,ode45_opts);
-mode.SN.sol = Temperatures(mode.SN.sol,thermal,RHS,t_v);
 
+% Eigenvalue calculation
+eigA = eig(A);
+fprintf("The matrix A eigenvalues are: [%0.3f,%0.3f]\n\n",eigA)
+[~,casual.sol] = ode45(@(t,X) A*X+B*[RHS.Ti(t) RHS.To]',t_v,casual.IC,ode45_opts);
+
+casual.sol = Temperatures(casual.sol,thermal,RHS,t_v);
+
+% Simscape solution
 mdl = 'cucchi221732_Assign2sim';
 
 simInp = Simulink.SimulationInput(mdl);
 simInp = simInp.setVariable('geom',geom,'Workspace',mdl);
 simInp = simInp.setVariable('thermal', thermal,'Workspace',mdl);
-out = sim(simInp);
+simIn = setModelParameter(simInp,"StopTime","60",'FixedStep','0.1');
+% start simulation
+out = sim(simIn);
 
 
+error = (out.singleSim.signals.values-casual.sol)./(casual.sol)*100;
 % Plots casual
  fig = figure();
  hold on
  grid minor
  axis padded
+ set(0,'DefaultAxesColorOrder',copper(6))
  p_nodes = [0 geom.l1/2 (geom.l2/2+geom.l1) (geom.l1+geom.l2)...
      (geom.l1+geom.l2+geom.l4/2) (geom.l1+geom.l2+geom.l4+geom.l5/2)...
      (geom.l1+geom.l2+geom.l4+geom.l5)];
- pp1 = plot(p_nodes,mode.SN.sol(1,:),'ks-','DisplayName','t $=0s$','MarkerSize',9);
- pp2 = plot(p_nodes,mode.SN.sol(6,:),'kd-','DisplayName','t $=0.5s$','MarkerSize',9);
- pp3 = plot(p_nodes,mode.SN.sol(101,:),'k^-','DisplayName','t $=10s$','MarkerSize',9);
- pp4 = plot(p_nodes,mode.SN.sol(201,:),'kv-','DisplayName','t $=20s$','MarkerSize',9);
- pp5 = plot(p_nodes,mode.SN.sol(301,:),'kp-','DisplayName','t $=30s$','MarkerSize',9);
- pp6 = plot(p_nodes,mode.SN.sol(end,:),'k*-','DisplayName','t $=60s$','MarkerSize',9);
- area([0 geom.l1],[1100 1100],'FaceColor','r','FaceAlpha',0.15,'EdgeColor','none');      
- text(0,1050,'Inner lining','Color','r','FontSize',17)
- area([geom.l1 geom.l1+geom.l2],[1100 1100],'FaceColor','b','FaceAlpha',0.15,'EdgeColor','none');      
- text(geom.l2,1050,'Conductor','Color','b','FontSize',17)
- area([geom.l1+geom.l2,  geom.l1+geom.l2+geom.l4],[1100 1100],'FaceColor','g','FaceAlpha',0.15,'EdgeColor','none');      
- text(geom.l1+geom.l2,1050,'Insulator','Color','g','FontSize',17)
- area([geom.l1+geom.l2+geom.l4,  geom.l1+geom.l2+geom.l4+geom.l5],[1100 1100],'FaceColor','m','FaceAlpha',0.15,'EdgeColor','none');      
- text(geom.l1+geom.l2+geom.l4,1050,'Outer coating','Color','m','FontSize',17)
+ pp1 = plot(p_nodes,casual.sol(1,:),'s-','DisplayName','t $=0s$','MarkerSize',9);
+ pp2 = plot(p_nodes,casual.sol(6,:),'d-','DisplayName','t $=0.5s$','MarkerSize',9);
+ pp3 = plot(p_nodes,casual.sol(101,:),'o-','DisplayName','t $=10s$','MarkerSize',9);
+ pp4 = plot(p_nodes,casual.sol(201,:),'^-','DisplayName','t $=20s$','MarkerSize',9);
+ pp5 = plot(p_nodes,casual.sol(301,:),'v-','DisplayName','t $=30s$','MarkerSize',9);
+ pp6 = plot(p_nodes,casual.sol(end,:),'>-','DisplayName','t $=60s$','MarkerSize',9);   
+ xline(0,'--')
+ xline(geom.l1,'--')    
+ xline([geom.l1+geom.l2],'--')
+ xline([geom.l1+geom.l2+geom.l4],'--')
+ xline([geom.l1+geom.l2+geom.l4+geom.l5],'--')
  xlabel('Node')
  ylabel('T [$^\circ$C]')
  legend(pp1.DisplayName,pp2.DisplayName,pp3.DisplayName,pp4.DisplayName,pp5.DisplayName,pp6.DisplayName,'Location','east')
  xticks(p_nodes)
  xticklabels({'i','1','2','3','4','5','o'})
-    
+ save_fig(fig,'ex1-1')
  % Plots acasual
  fig = figure();
  hold on
  grid minor
  axis padded
+ set(0,'DefaultAxesColorOrder',copper(6))
  p_nodes = [0 geom.l1/2 (geom.l2/2+geom.l1) (geom.l1+geom.l2)...
      (geom.l1+geom.l2+geom.l4/2) (geom.l1+geom.l2+geom.l4+geom.l5/2)...
      (geom.l1+geom.l2+geom.l4+geom.l5)];
- pp1 = plot(p_nodes,out.singleSim.signals.values(1,  :),'ks-','DisplayName','t $=0s$','MarkerSize',9);
- pp2 = plot(p_nodes,out.singleSim.signals.values(6, :),'kd-','DisplayName','t $=0.5s$','MarkerSize',9);
- pp3 = plot(p_nodes,out.singleSim.signals.values(101,:),'k^-','DisplayName','t $=10s$','MarkerSize',9);
- pp4 = plot(p_nodes,out.singleSim.signals.values(201,:),'kv-','DisplayName','t $=20s$','MarkerSize',9);
- pp5 = plot(p_nodes,out.singleSim.signals.values(301,:),'kp-','DisplayName','t $=30s$','MarkerSize',9);
- pp6 = plot(p_nodes,out.singleSim.signals.values(end,:),'k*-','DisplayName','t $=60s$','MarkerSize',9);
- area([0 geom.l1],[1100 1100],'FaceColor','r','FaceAlpha',0.15,'EdgeColor','none');      
- text(1.25,1050,'Inner lining','Color','r','FontSize',17)
- area([geom.l1 geom.l1+geom.l2],[1100 1100],'FaceColor','b','FaceAlpha',0.15,'EdgeColor','none');      
- text(2.80,1050,'Conductor','Color','b','FontSize',17)
- area([geom.l1+geom.l2,  geom.l1+geom.l2+geom.l4],[1100 1100],'FaceColor','g','FaceAlpha',0.15,'EdgeColor','none');      
- text(4.40,1050,'Insulator','Color','g','FontSize',17)
- area([geom.l1+geom.l2+geom.l4,  geom.l1+geom.l2+geom.l4+geom.l5],[1100 1100],'FaceColor','m','FaceAlpha',0.15,'EdgeColor','none');      
- text(5.65,1050,'Outer coating','Color','m','FontSize',17)
+ pp1 = plot(p_nodes,out.singleSim.signals.values(1,  :),'s-','DisplayName','t $=0s$','MarkerSize',9);
+ pp2 = plot(p_nodes,out.singleSim.signals.values(6, :),'d-','DisplayName','t $=0.5s$','MarkerSize',9);
+ pp3 = plot(p_nodes,out.singleSim.signals.values(101,:),'o-','DisplayName','t $=10s$','MarkerSize',9);
+ pp4 = plot(p_nodes,out.singleSim.signals.values(201,:),'^-','DisplayName','t $=20s$','MarkerSize',9);
+ pp5 = plot(p_nodes,out.singleSim.signals.values(301,:),'v-','DisplayName','t $=30s$','MarkerSize',9);
+ pp6 = plot(p_nodes,out.singleSim.signals.values(end,:),'>-','DisplayName','t $=60s$','MarkerSize',9);
+ xline(0,'--')
+ xline(geom.l1,'--')    
+ xline([geom.l1+geom.l2],'--')
+ xline([geom.l1+geom.l2+geom.l4],'--')
+ xline([geom.l1+geom.l2+geom.l4+geom.l5],'--')
  xlabel('Node')
  ylabel('T [$^\circ$C]')
  legend(pp1.DisplayName,pp2.DisplayName,pp3.DisplayName,pp4.DisplayName,pp5.DisplayName,pp6.DisplayName,'Location','east')
  xticks(p_nodes)
  xticklabels({'i','1','2','3','4','5','o'})
-    
+ save_fig(fig,'ex1-2')
+
  fig = figure();
  hold on
  grid minor
  axis padded
+ set(0,'DefaultAxesColorOrder',copper(6))
  p_nodes_m = [0 geom.l1/2 (geom.l2/3+geom.l1) (geom.l2*2/3+geom.l1) (geom.l1+geom.l2)...
      (geom.l1+geom.l2+geom.l4/3) (geom.l1+geom.l2+geom.l4*2/3) (geom.l1+geom.l2+geom.l4+geom.l5/2)...
      (geom.l1+geom.l2+geom.l4+geom.l5)];
- pp1 = plot(p_nodes_m,out.multiSim.signals.values(1, :),'ks-','DisplayName','t $=0s$','MarkerSize',9);
- pp2 = plot(p_nodes_m,out.multiSim.signals.values(6, :),'kd-','DisplayName','t $=0.5s$','MarkerSize',9);
- pp3 = plot(p_nodes_m,out.multiSim.signals.values(101,:),'k^-','DisplayName','t $=10s$','MarkerSize',9);
- pp4 = plot(p_nodes_m,out.multiSim.signals.values(201,:),'kv-','DisplayName','t $=20s$','MarkerSize',9);
- pp5 = plot(p_nodes_m,out.multiSim.signals.values(301,:),'kp-','DisplayName','t $=30s$','MarkerSize',9);
- pp6 = plot(p_nodes_m,out.multiSim.signals.values(end,:),'k*-','DisplayName','t $=60s$','MarkerSize',9);
- area([0 geom.l1],[1100 1100],'FaceColor','r','FaceAlpha',0.15,'EdgeColor','none');      
- text(1.25,1050,'Inner lining','Color','r','FontSize',17)
- area([geom.l1 geom.l1+geom.l2],[1100 1100],'FaceColor','b','FaceAlpha',0.15,'EdgeColor','none');      
- text(2.80,1050,'Conductor','Color','b','FontSize',17)
- area([geom.l1+geom.l2,  geom.l1+geom.l2+geom.l4],[1100 1100],'FaceColor','g','FaceAlpha',0.15,'EdgeColor','none');      
- text(4.40,1050,'Insulator','Color','g','FontSize',17)
- area([geom.l1+geom.l2+geom.l4,  geom.l1+geom.l2+geom.l4+geom.l5],[1100 1100],'FaceColor','m','FaceAlpha',0.15,'EdgeColor','none');      
- text(5.65,1050,'Outer coating','Color','m','FontSize',17)
+ pp1 = plot(p_nodes_m,out.multiSim.signals.values(1, :),'s-','DisplayName','t $=0s$','MarkerSize',9);
+ pp2 = plot(p_nodes_m,out.multiSim.signals.values(6, :),'d-','DisplayName','t $=0.5s$','MarkerSize',9);
+ pp3 = plot(p_nodes_m,out.multiSim.signals.values(101,:),'o-','DisplayName','t $=10s$','MarkerSize',9);
+ pp4 = plot(p_nodes_m,out.multiSim.signals.values(201,:),'^-','DisplayName','t $=20s$','MarkerSize',9);
+ pp5 = plot(p_nodes_m,out.multiSim.signals.values(301,:),'v-','DisplayName','t $=30s$','MarkerSize',9);
+ pp6 = plot(p_nodes_m,out.multiSim.signals.values(end,:),'>-','DisplayName','t $=60s$','MarkerSize',9);
+ xline(0,'--')
+ xline(geom.l1,'--')    
+ xline([geom.l1+geom.l2],'--')
+ xline([geom.l1+geom.l2+geom.l4],'--')
+ xline([geom.l1+geom.l2+geom.l4+geom.l5],'--')
  xlabel('Node')
  ylabel('T [$^\circ$C]')
  legend(pp1.DisplayName,pp2.DisplayName,pp3.DisplayName,pp4.DisplayName,pp5.DisplayName,pp6.DisplayName,'Location','east')
  xticks(p_nodes_m)
  xticklabels({'i','1','2','3','4','5','6','7','o'})
+ save_fig(fig,'ex1-3')
+ 
+ fig = figure()
+ hold on
+ grid minor
+ axis padded
+ color = copper(9);
+ pp1 = plot(out.tout,out.multiSim.signals.values(:,1),'Color',color(9,:),'DisplayName','Node i','MarkerSize',9);
+ pp2 = plot(out.tout,out.multiSim.signals.values(:,2),'Color',color(8,:),'DisplayName','Node 1','MarkerSize',9);
+ pp3 = plot(out.tout,out.multiSim.signals.values(:,3),'Color',color(7,:),'DisplayName','Node 2','MarkerSize',9);
+ pp4 = plot(out.tout,out.multiSim.signals.values(:,4),'Color',color(6,:),'DisplayName','Node 3','MarkerSize',9);
+ pp5 = plot(out.tout,out.multiSim.signals.values(:,5),'Color',color(5,:),'DisplayName','Node 4','MarkerSize',9);
+ pp6 = plot(out.tout,out.multiSim.signals.values(:,6),'Color',color(4,:),'DisplayName','Node 5','MarkerSize',9);
+ pp7 = plot(out.tout,out.multiSim.signals.values(:,7),'Color',color(3,:),'DisplayName','Node 6','MarkerSize',9);
+ pp8 = plot(out.tout,out.multiSim.signals.values(:,8),'Color',color(2,:),'DisplayName','Node 7','MarkerSize',9);
+ pp9 = plot(out.tout,out.multiSim.signals.values(:,9),'Color',color(1,:),'DisplayName','Node o','MarkerSize',9);
+ xlabel('Time [s]')
+ ylabel('T [$^\circ$C]')
+ legend(pp1.DisplayName,pp2.DisplayName,pp3.DisplayName,pp4.DisplayName,...
+     pp5.DisplayName,pp6.DisplayName,pp7.DisplayName,pp8.DisplayName,pp9.DisplayName,'Location','east')
+ save_fig(fig,'ex1-4')
 
+ fig = figure()
+ hold on
+ grid minor
+ axis padded
+ color = copper(7);
+ pp1 = plot(out.tout,error(:,2),'Color',color(6,:),'DisplayName','Node 1','MarkerSize',9);
+ pp2 = plot(out.tout,error(:,3),'Color',color(5,:),'DisplayName','Node 2','MarkerSize',9);
+ pp3 = plot(out.tout,error(:,4),'Color',color(4,:),'DisplayName','Node 3','MarkerSize',9);
+ pp4 = plot(out.tout,error(:,5),'Color',color(3,:),'DisplayName','Node 4','MarkerSize',9);
+ pp5 = plot(out.tout,error(:,6),'Color',color(2,:),'DisplayName','Node 5','MarkerSize',9);
+ xlabel('Time [s]')
+ ylabel('Difference [\%]')
+ legend(pp1.DisplayName,pp2.DisplayName,pp3.DisplayName,pp4.DisplayName,...
+     pp5.DisplayName,'Location','east')
+save_fig(fig,'ex1-5')
 
 function [A,B] = StateSpace(thermal)
 
@@ -213,9 +252,6 @@ function T = Temperatures(T,thermal,RHS,t_vect)
  T(:,7) = To;
 
 end
-
-
-
 
 
 

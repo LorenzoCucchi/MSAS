@@ -1,0 +1,915 @@
+#1
+char Aclass(3,24)
+Adymosim
+1.4
+Modelica experiment file
+
+
+#    Experiment parameters
+double experiment(7,1)
+       0                   # StartTime    Time at which integration starts
+                           #              (and linearization and trimming time)
+     400                   # StopTime     Time at which integration stops
+       0                   # Increment    Communication step size, if > 0
+     500                   # nInterval    Number of communication intervals, if > 0
+  1.0000000000000000E-04   # Tolerance    Relative precision of signals for
+                           #              simulation, linearization and trimming
+       0                   # MaxFixedStep Maximum step size of fixed step size
+                           #              integrators, if > 0.0
+       8                   # Algorithm    Integration algorithm as integer (1...28)
+                           #
+                           #             | model|       |        | dense | state |
+                           # Algorithm   | typ  | stiff | order  | output| event |
+                           # ------------+------+-------+--------+-------+-------+
+                           #  1 | deabm  |  ode |   no  |  1-12  |  yes  |   no  |
+                           #  2 | lsode1 |  ode |   no  |  1-12  |  yes  |   no  |
+                           #  3 | lsode2 |  ode |  yes  |  1-5   |  yes  |   no  |
+                           #  4 | lsodar |  ode |  both |1-12,1-5|  yes  |  yes  |
+                           #  5 | dopri5 |  ode |   no  |   5    |   no  |   no  |
+                           #  6 | dopri8 |  ode |   no  |   8    |   no  |   no  |
+                           #  7 | grk4t  |  ode |  yes  |   4    |   no  |   no  |
+                           #  8 | dassl  |  dae |  yes  |  1-5   |  yes  |  yes  |
+                           #  9 | odassl | hdae |  yes  |  1-5   |  yes  |  yes  |
+                           # 10 | mexx   | hdae |   no  |  2-24  |   no  |   no  |
+                           # 11 | euler  |  ode |   no  |   1    |   no  |  yes  |
+                           # 12 | rkfix2 |  ode |   no  |   2    |   no  |  yes  |
+                           # 13 | rkfix3 |  ode |   no  |   3    |   no  |  yes  |
+                           # 14 | rkfix4 |  ode |   no  |   4    |   no  |  yes  |
+                           #>=14| others |  ode |yes/no |  2-5   |   yes |  yes  |
+                           # ---+--------+------+-------+--------+-------+-------+
+                           # euler and rkfix have fixed stepsize.
+
+
+#    Method tuning parameters
+double method(27,1)
+       1                   # grid     type of communication time grid, defined by
+                           #          = 1: equidistant points ("Increment/nInterval")
+                           #          = 2: vector of grid points ("tgrid")
+                           #          = 3: variable step integrator (automatically)
+                           #          = 4: model (call of "increment" in Dymola, e.g.
+                           #                      incr=Time > 2 then 0 else 0.1
+                           #                      dummy=increment(incr))
+                           #          grid = 1,3 is stopped by "StopTime"
+                           #          grid = 2   is stopped by "tgrid(last)"
+                           #          grid = 4   runs forever (stopped by model)
+       1                   # nt       Use every NT time instant, if grid = 3
+       3                   # dense    1/2/3 restart/step/interpolate GRID points
+       1                   # evgrid   0/1 do not/save event points in comm. time grid
+       1                   # evu      0/1 U-discontinuity does not/trigger events
+       0                   # evuord       U-discontinuity order to consider (0,1,...)
+       0                   # error    0/1/2 One message/warning/error messages
+       0                   # jac      0/1 Compute jacobian numerically/by BLOCKJ
+       0                   # xd0c     0/1 Compute/set XD0
+       0                   # f3       0/1 Ignore/use F3 of HDAE (= index 1)
+       0                   # f4       0/1 Ignore/use F4 of HDAE (= index 2)
+       0                   # f5       0/1 Ignore/use F5 of HDAE (= invar.)
+       0                   # debug    flags for debug information (1<<0 uses pdebug) 
+     100                   # pdebug       priority of debug information (1...100)
+       0                   # fmax     Maximum number of evaluations of BLOCKF, if > 0
+       0                   # ordmax   Maximum allowed integration order, if > 0
+       0                   # hmax     Maximum absolute stepsize, if > 0
+       0                   # hmin     Minimum absolute stepsize, if > 0 (use with care!)
+       0                   # h0       Stepsize to be attempted on first step, if > 0
+  2.0000000000000000E-14   # teps     Bound to check, if 2 equal time instants
+  1.0000000000000000E-10   # eveps    Hysteresis epsilon at event points
+      20                   # eviter   Maximum number of event iterations
+  9.9999999999999995E-07   # delaym   Minimum time increment in delay buffers
+       1                   # fexcep   0/1 floating exception crashes/stops dymosim
+       1                   # tscale   clock-time = tscale*simulation-time, if grid = 5
+                           #          > 1: simulation too slow
+                           #          = 1: simulation-time = real-time
+                           #          < 1: simulation too fast
+       1                   # shared   (not used)
+    2473                   # memkey   (not used)
+
+
+#    Output parameters
+int settings(13,1)
+ 0                         # lprec    0/1 do not/store result data in double
+ 1                         # lx       0/1 do not/store x  (state variables)
+ 1                         # lxd      0/1 do not/store xd (derivative of states)
+ 1                         # lu       0/1 do not/store u  (input     signals)
+ 1                         # ly       0/1 do not/store y  (output    signals)
+ 0                         # lz       0/1 do not/store z  (indicator signals)
+ 1                         # lw       0/1 do not/store w  (auxiliary signals)
+ 1                         # la       0/1 do not/store a  (alias     signals)
+ 0                         # lperf    0/1 do not/store performance indicators
+ 0                         # levent   0/1 do not/store event point
+ 1                         # lres     0/1 do not/store results on result file
+ 0                         # lshare   0/1 do not/store info data for shared memory on dsshare.txt
+ 1                         # lform    0/1 ASCII/Matlab-binary storage format of results
+                           #              (for simulation/linearization; not for trimming)
+
+
+#    Names of initial variables
+char initialName(190,45)
+signalVoltage.p.v
+signalVoltage.n.v
+ground.p.v
+resistor.R
+resistor.T_ref
+resistor.alpha
+resistor.v
+resistor.p.v
+resistor.useHeatPort
+resistor.T
+resistor.LossPower
+resistor.R_actual
+inductor.v
+inductor.p.v
+inductor.i
+inductor.der(i)
+inductor.L
+emf.useSupport
+emf.k
+emf.phi
+emf.tau
+emf.n.v
+emf.fixed.phi0
+inertia.flange_b.tau
+inertia.J
+inertia.stateSelect
+inertia.phi
+inertia.w
+inertia.der(w)
+ground1.p.v
+speedSensor.flange.phi
+speedSensor.flange.der(phi)
+speedSensor.flange.tau
+gearbox.useSupport
+gearbox.flange_b.tau
+gearbox.internalSupport.tau
+gearbox.fixed.phi0
+gearbox.fixed.flange.tau
+gearbox.ratio
+gearbox.lossTable[1, 1]
+gearbox.lossTable[1, 2]
+gearbox.lossTable[1, 3]
+gearbox.lossTable[1, 4]
+gearbox.lossTable[1, 5]
+gearbox.lossTable[2, 1]
+gearbox.lossTable[2, 2]
+gearbox.lossTable[2, 3]
+gearbox.lossTable[2, 4]
+gearbox.lossTable[2, 5]
+gearbox.lossTable[3, 1]
+gearbox.lossTable[3, 2]
+gearbox.lossTable[3, 3]
+gearbox.lossTable[3, 4]
+gearbox.lossTable[3, 5]
+gearbox.lossTable[4, 1]
+gearbox.lossTable[4, 2]
+gearbox.lossTable[4, 3]
+gearbox.lossTable[4, 4]
+gearbox.lossTable[4, 5]
+gearbox.c
+gearbox.d
+gearbox.b
+gearbox.stateSelect
+gearbox.useHeatPort
+gearbox.T
+gearbox.internalHeatPort.T
+gearbox.internalHeatPort.Q_flow
+gearbox.phi_rel
+gearbox.der(phi_rel)
+gearbox.w_rel
+gearbox.der(w_rel)
+gearbox.lossyGear.useSupport
+gearbox.lossyGear.flange_b.phi
+gearbox.lossyGear.ratio
+gearbox.lossyGear.lossTable[1, 1]
+gearbox.lossyGear.lossTable[1, 2]
+gearbox.lossyGear.lossTable[1, 3]
+gearbox.lossyGear.lossTable[1, 4]
+gearbox.lossyGear.lossTable[1, 5]
+gearbox.lossyGear.lossTable[2, 1]
+gearbox.lossyGear.lossTable[2, 2]
+gearbox.lossyGear.lossTable[2, 3]
+gearbox.lossyGear.lossTable[2, 4]
+gearbox.lossyGear.lossTable[2, 5]
+gearbox.lossyGear.lossTable[3, 1]
+gearbox.lossyGear.lossTable[3, 2]
+gearbox.lossyGear.lossTable[3, 3]
+gearbox.lossyGear.lossTable[3, 4]
+gearbox.lossyGear.lossTable[3, 5]
+gearbox.lossyGear.lossTable[4, 1]
+gearbox.lossyGear.lossTable[4, 2]
+gearbox.lossyGear.lossTable[4, 3]
+gearbox.lossyGear.lossTable[4, 4]
+gearbox.lossyGear.lossTable[4, 5]
+gearbox.lossyGear.useHeatPort
+gearbox.lossyGear.lossPower
+gearbox.lossyGear.phi_a
+gearbox.lossyGear.phi_b
+gearbox.lossyGear.der(phi_b)
+gearbox.lossyGear.der(phi_b, 2)
+gearbox.lossyGear.sa
+gearbox.lossyGear.interpolation_result[1, 1]
+gearbox.lossyGear.interpolation_result[1, 2]
+gearbox.lossyGear.interpolation_result[1, 3]
+gearbox.lossyGear.interpolation_result[1, 4]
+gearbox.lossyGear.eta_mf1
+gearbox.lossyGear.eta_mf2
+gearbox.lossyGear.tau_bf_a
+gearbox.lossyGear.tau_eta
+gearbox.lossyGear.tau_bf1
+gearbox.lossyGear.tau_bf2
+gearbox.lossyGear.quadrant1
+gearbox.lossyGear.quadrant2
+gearbox.lossyGear.quadrant3
+gearbox.lossyGear.quadrant4
+gearbox.lossyGear.quadrant1_p
+gearbox.lossyGear.quadrant2_p
+gearbox.lossyGear.quadrant3_m
+gearbox.lossyGear.quadrant4_m
+gearbox.lossyGear.tauLoss
+gearbox.lossyGear.tauLossMax
+gearbox.lossyGear.tauLossMin
+gearbox.lossyGear.tauLossMax_p
+gearbox.lossyGear.tauLossMin_m
+gearbox.lossyGear.tau_aPos
+gearbox.lossyGear.startForward
+gearbox.lossyGear.startBackward
+gearbox.lossyGear.locked
+gearbox.lossyGear.ideal
+gearbox.lossyGear.Unknown
+gearbox.lossyGear.Free
+gearbox.lossyGear.Forward
+gearbox.lossyGear.Stuck
+gearbox.lossyGear.Backward
+gearbox.lossyGear.mode
+gearbox.lossyGear.tau_eta_p
+gearbox.lossyGear.tau_eta_m
+gearbox.lossyGear.unitAngularAcceleration
+gearbox.lossyGear.unitTorque
+gearbox.lossyGear.eta_mf1_0
+gearbox.lossyGear.eta_mf2_0
+gearbox.lossyGear.tau_bf1_0
+gearbox.lossyGear.tau_bf2_0
+gearbox.lossyGear.tau_bf_a_0
+gearbox.elastoBacklash.c
+gearbox.elastoBacklash.d
+gearbox.elastoBacklash.b
+gearbox.elastoBacklash.phi_rel0
+gearbox.elastoBacklash.phi_nominal
+gearbox.elastoBacklash.stateSelect
+gearbox.elastoBacklash.useHeatPort
+gearbox.elastoBacklash.lossPower
+gearbox.elastoBacklash.bMax
+gearbox.elastoBacklash.bMin
+gearbox.elastoBacklash.tau_c
+gearbox.elastoBacklash.tau_d
+gearbox.elastoBacklash.bEps
+Propeller.flange_b.tau
+Propeller.J
+Propeller.stateSelect
+Propeller.w
+Propeller.der(w)
+quadraticSpeedDependentTorque.useSupport
+quadraticSpeedDependentTorque.phi_support
+quadraticSpeedDependentTorque.tau_nominal
+quadraticSpeedDependentTorque.TorqueDirection
+quadraticSpeedDependentTorque.w_nominal
+step.height
+step.y
+step.offset
+step.startTime
+PI.k
+PI.T
+PI.initType
+PI.x_start
+PI.y_start
+PI.u
+PI.y
+PI.x
+PI.der(x)
+thermalConductor.Q_flow
+thermalConductor.dT
+thermalConductor.G
+heatCapacitor.C
+heatCapacitor.T
+heatCapacitor.der(T)
+limiter.uMax
+limiter.uMin
+limiter.strict
+limiter.homotopyType
+
+double initialValue(190,6)
+  0       0                       0                       0                
+  6   260   # signalVoltage.p.v
+  0       0                       0                       0                
+  6   260   # signalVoltage.n.v
+  0       0                       0                       0                
+  6   260   # ground.p.v
+ -1  1.0000000000000001E-01       0                       0                
+  1   280   # resistor.R
+ -1  3.0014999999999998E+02       0                 1.0000000000000000E+100
+  1   280   # resistor.T_ref
+ -1       0                       0                       0                
+  1   280   # resistor.alpha
+  0       0                       0                       0                
+  6   256   # resistor.v
+  0       0                       0                       0                
+  6   260   # resistor.p.v
+  0       0                       0                       0                
+  6   769   # resistor.useHeatPort
+  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
+  6   256   # resistor.T
+  0       0                       0                       0                
+  6   256   # resistor.LossPower
+  0       0                       0                       0                
+  6   256   # resistor.R_actual
+  0       0                       0                       0                
+  6   256   # inductor.v
+  0       0                       0                       0                
+  6   260   # inductor.p.v
+ -1       0                       0                       0                
+  2   280   # inductor.i
+  0       0                       0                       0                
+  3   256   # inductor.der(i)
+ -1  1.0000000000000000E-02       0                       0                
+  1   280   # inductor.L
+  0       0                       0                       0                
+  6   769   # emf.useSupport
+ -1  2.9999999999999999E-01       0                       0                
+  1   280   # emf.k
+  0       0                       0                       0                
+  6   256   # emf.phi
+  0       0                       0                       0                
+  6   256   # emf.tau
+  0       0                       0                       0                
+  6   260   # emf.n.v
+ -1       0                       0                       0                
+  1  1304   # emf.fixed.phi0
+  0       0                       0                       0                
+  6   388   # inertia.flange_b.tau
+ -1  1.0000000000000000E-03       0                 1.0000000000000000E+100
+  1   280   # inertia.J
+  0       3                       1                       5                
+  6   770   # inertia.stateSelect
+  0       0                       0                       0                
+  6   256   # inertia.phi
+  0       0                       0                       0                
+  6   256   # inertia.w
+  0       0                       0                       0                
+  6   256   # inertia.der(w)
+  0       0                       0                       0                
+  6   260   # ground1.p.v
+ -1       0                       0                       0                
+  2   284   # speedSensor.flange.phi
+  0       0                       0                       0                
+  3   260   # speedSensor.flange.der(phi)
+  0       0                       0                       0                
+  6   388   # speedSensor.flange.tau
+  0       0                       0                       0                
+  6   769   # gearbox.useSupport
+  0       0                       0                       0                
+  6   388   # gearbox.flange_b.tau
+  0       0                       0                       0                
+  6  1412   # gearbox.internalSupport.tau
+ -1       0                       0                       0                
+  1  1304   # gearbox.fixed.phi0
+  0       0                       0                       0                
+  6  1412   # gearbox.fixed.flange.tau
+ -1       2                       0                       0                
+  1   280   # gearbox.ratio
+ -1       0                       0                       0                
+  1   280   # gearbox.lossTable[1, 1]
+ -1  9.8999999999999999E-01       0                       0                
+  1   280   # gearbox.lossTable[1, 2]
+ -1  9.8999999999999999E-01       0                       0                
+  1   280   # gearbox.lossTable[1, 3]
+ -1       0                       0                       0                
+  1   280   # gearbox.lossTable[1, 4]
+ -1       0                       0                       0                
+  1   280   # gearbox.lossTable[1, 5]
+ -1      50                       0                       0                
+  1   280   # gearbox.lossTable[2, 1]
+ -1  9.7999999999999998E-01       0                       0                
+  1   280   # gearbox.lossTable[2, 2]
+ -1  9.7999999999999998E-01       0                       0                
+  1   280   # gearbox.lossTable[2, 3]
+ -1  5.0000000000000000E-01       0                       0                
+  1   280   # gearbox.lossTable[2, 4]
+ -1  5.0000000000000000E-01       0                       0                
+  1   280   # gearbox.lossTable[2, 5]
+ -1     100                       0                       0                
+  1   280   # gearbox.lossTable[3, 1]
+ -1  9.6999999999999997E-01       0                       0                
+  1   280   # gearbox.lossTable[3, 2]
+ -1  9.6999999999999997E-01       0                       0                
+  1   280   # gearbox.lossTable[3, 3]
+ -1       1                       0                       0                
+  1   280   # gearbox.lossTable[3, 4]
+ -1       1                       0                       0                
+  1   280   # gearbox.lossTable[3, 5]
+ -1     210                       0                       0                
+  1   280   # gearbox.lossTable[4, 1]
+ -1  9.5999999999999996E-01       0                       0                
+  1   280   # gearbox.lossTable[4, 2]
+ -1  9.5999999999999996E-01       0                       0                
+  1   280   # gearbox.lossTable[4, 3]
+ -1  1.5000000000000000E+00       0                       0                
+  1   280   # gearbox.lossTable[4, 4]
+ -1  1.5000000000000000E+00       0                       0                
+  1   280   # gearbox.lossTable[4, 5]
+ -1  100000                  9.9999999999999997E-61 1.0000000000000000E+100
+  1   280   # gearbox.c
+ -1       0                       0                 1.0000000000000000E+100
+  1   280   # gearbox.d
+ -1       0                       0                 1.0000000000000000E+100
+  1   280   # gearbox.b
+  0       4                       1                       5                
+  6   770   # gearbox.stateSelect
+  0       1                       0                       0                
+  6   769   # gearbox.useHeatPort
+  0  2.9314999999999998E+02       0                 1.0000000000000000E+100
+  6   256   # gearbox.T
+  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
+  6  1284   # gearbox.internalHeatPort.T
+  0       0                       0                       0                
+  6  1412   # gearbox.internalHeatPort.Q_flow
+ -1       0                       0                       0                
+  2   280   # gearbox.phi_rel
+  0       0                       0                       0                
+  3   256   # gearbox.der(phi_rel)
+ -1       0                       0                       0                
+  2   280   # gearbox.w_rel
+  0       0                       0                       0                
+  3   256   # gearbox.der(w_rel)
+  0       1                       0                       0                
+  6   769   # gearbox.lossyGear.useSupport
+  0       0                       0                       0                
+  6   260   # gearbox.lossyGear.flange_b.phi
+  0       1                       0                       0                
+  6   256   # gearbox.lossyGear.ratio
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[1, 1]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[1, 2]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[1, 3]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[1, 4]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[1, 5]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[2, 1]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[2, 2]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[2, 3]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[2, 4]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[2, 5]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[3, 1]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[3, 2]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[3, 3]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[3, 4]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[3, 5]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[4, 1]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[4, 2]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[4, 3]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[4, 4]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossTable[4, 5]
+  0       1                       0                       0                
+  6   769   # gearbox.lossyGear.useHeatPort
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.lossPower
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.phi_a
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.phi_b
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.der(phi_b)
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.der(phi_b, 2)
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.sa
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.interpolation_result[1, 1]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.interpolation_result[1, 2]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.interpolation_result[1, 3]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.interpolation_result[1, 4]
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.eta_mf1
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.eta_mf2
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.tau_bf_a
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.tau_eta
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.tau_bf1
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.tau_bf2
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.quadrant1
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.quadrant2
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.quadrant3
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.quadrant4
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.quadrant1_p
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.quadrant2_p
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.quadrant3_m
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.quadrant4_m
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.tauLoss
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.tauLossMax
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.tauLossMin
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.tauLossMax_p
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.tauLossMin_m
+  0       1                       0                       0                
+  6   353   # gearbox.lossyGear.tau_aPos
+  0       0                       0                       0                
+  6   353   # gearbox.lossyGear.startForward
+  0       0                       0                       0                
+  6   353   # gearbox.lossyGear.startBackward
+  0       0                       0                       0                
+  6   353   # gearbox.lossyGear.locked
+  0       0                       0                       0                
+  6   257   # gearbox.lossyGear.ideal
+  0       3                       0                       0                
+  6   258   # gearbox.lossyGear.Unknown
+  0       2                       0                       0                
+  6   258   # gearbox.lossyGear.Free
+  0       1                       0                       0                
+  6   258   # gearbox.lossyGear.Forward
+  0       0                       0                       0                
+  6   258   # gearbox.lossyGear.Stuck
+  0      -1                       0                       0                
+  6   258   # gearbox.lossyGear.Backward
+  0       2                      -1                       3                
+  6   330   # gearbox.lossyGear.mode
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.tau_eta_p
+  0       0                       0                       0                
+  6   256   # gearbox.lossyGear.tau_eta_m
+  0       1                       0                       0                
+  6  1280   # gearbox.lossyGear.unitAngularAcceleration
+  0       1                       0                       0                
+  6  1280   # gearbox.lossyGear.unitTorque
+  0       0                       0                       0                
+  6  1280   # gearbox.lossyGear.eta_mf1_0
+  0       0                       0                       0                
+  6  1280   # gearbox.lossyGear.eta_mf2_0
+  0       0                       0                       0                
+  6  1280   # gearbox.lossyGear.tau_bf1_0
+  0       0                       0                       0                
+  6  1280   # gearbox.lossyGear.tau_bf2_0
+  0       0                       0                       0                
+  6  1280   # gearbox.lossyGear.tau_bf_a_0
+  0  100000                  9.9999999999999997E-61 1.0000000000000000E+100
+  6   256   # gearbox.elastoBacklash.c
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # gearbox.elastoBacklash.d
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # gearbox.elastoBacklash.b
+  0       0                       0                       0                
+  6   256   # gearbox.elastoBacklash.phi_rel0
+  0  1.0000000000000000E-04       0                 1.0000000000000000E+100
+  6   256   # gearbox.elastoBacklash.phi_nominal
+  0       4                       1                       5                
+  6   770   # gearbox.elastoBacklash.stateSelect
+  0       1                       0                       0                
+  6   769   # gearbox.elastoBacklash.useHeatPort
+  0       0                       0                       0                
+  6   256   # gearbox.elastoBacklash.lossPower
+  0       0                       0                       0                
+  6  1280   # gearbox.elastoBacklash.bMax
+  0       0                       0                       0                
+  6  1280   # gearbox.elastoBacklash.bMin
+  0       0                       0                       0                
+  6  1280   # gearbox.elastoBacklash.tau_c
+  0       0                       0                       0                
+  6  1280   # gearbox.elastoBacklash.tau_d
+  0  1.0000000000000000E-10       0                       0                
+  6  1280   # gearbox.elastoBacklash.bEps
+  0       0                       0                       0                
+  6   388   # Propeller.flange_b.tau
+ -1  1.0900000000000001E+00       0                 1.0000000000000000E+100
+  1   280   # Propeller.J
+  0       3                       1                       5                
+  6   770   # Propeller.stateSelect
+ -1       0                       0                       0                
+  2   280   # Propeller.w
+  0       0                       0                       0                
+  3   256   # Propeller.der(w)
+  0       0                       0                       0                
+  6   769   # quadraticSpeedDependentTorque.useSupport
+  0       0                       0                       0                
+  6  1280   # quadraticSpeedDependentTorque.phi_support
+ -1    -100                       0                       0                
+  1   280   # quadraticSpeedDependentTorque.tau_nominal
+  0       0                       0                       0                
+  6   257   # quadraticSpeedDependentTorque.TorqueDirection
+ -1     210                  1.0000000000000001E-15 1.0000000000000000E+100
+  1   280   # quadraticSpeedDependentTorque.w_nominal
+ -1     210                       0                       0                
+  1   280   # step.height
+  0       0                       0                       0                
+  6   320   # step.y
+ -1       0                       0                       0                
+  1   280   # step.offset
+ -1       5                       0                       0                
+  1   280   # step.startTime
+ -1  1.4000000000000001E-01       0                       0                
+  1   280   # PI.k
+ -1  1.0000000000000001E-01  9.9999999999999997E-61 1.0000000000000000E+100
+  1   280   # PI.T
+  0       3                       1                       4                
+  6   258   # PI.initType
+ -1       0                       0                       0                
+  1   280   # PI.x_start
+ -1       0                       0                       0                
+  1   280   # PI.y_start
+  0       0                       0                       0                
+  6   256   # PI.u
+  0       0                       0                       0                
+  6   256   # PI.y
+ -1       0                       0                       0                
+  2   272   # PI.x
+  0       0                       0                       0                
+  3   256   # PI.der(x)
+  0       0                       0                       0                
+  6   256   # thermalConductor.Q_flow
+  0       0                       0                       0                
+  6   256   # thermalConductor.dT
+ -1     100                       0                       0                
+  1   280   # thermalConductor.G
+ -1    3000                       0                       0                
+  1   280   # heatCapacitor.C
+ -1  2.9314999999999998E+02       0                 1.0000000000000000E+100
+  2   280   # heatCapacitor.T
+  0       0                       0                       0                
+  3   256   # heatCapacitor.der(T)
+ -1     200                       0                       0                
+  1   280   # limiter.uMax
+ -1       0                       0                       0                
+  1   280   # limiter.uMin
+  0       0                       0                       0                
+  6   257   # limiter.strict
+  0       2                       1                       4                
+  6   258   # limiter.homotopyType
+
+
+# Matrix with 6 columns defining the initial value calculation
+# (columns 5 and 6 are not utilized for the calculation but are
+#  reported by dymosim via dymosim -i for user convenience):
+#
+# column 1: Type of initial value
+#           = -2: special case: for continuing simulation (column 2 = value)
+#           = -1: fixed value (column 2 = fixed value)
+#           =  0: free value, i.e., no restriction (column 2 = initial value)
+#           >  0: desired value (column 1 = weight for optimization
+#                                column 2 = desired value)
+#                 use weight=1, since automatic scaling usually
+#                 leads to equally weighted terms
+# column 2: fixed, free or desired value according to column 1.
+# column 3: Minimum value (ignored, if Minimum >= Maximum).
+# column 4: Maximum value (ignored, if Minimum >= Maximum).
+#           Minimum and maximum restrict the search range in initial
+#           value calculation. They might also be used for scaling.
+# column 5: Category of variable.
+#           = 1: parameter.
+#           = 2: state.
+#           = 3: state derivative.
+#           = 4: output.
+#           = 5: input.
+#           = 6: auxiliary variable.
+# column 6: Data type of variable and flags according to dsBaseType
+#  <value>&3= 0: real.
+#  <value>&3= 1: boolean.
+#  <value>&3= 2: integer.
+#
+# Initial values are calculated according to the following procedure:
+#
+# Initial values are calculated according to the following procedure:
+#
+# - If parameters, states and inputs are FIXED, and other variables
+#   are FREE, the initialization is performed in the normal way.
+#
+# - If parameters and inputs are FIXED, and all other variables
+#   have special case for continue (-2 in 1st column), or FREE
+#   the initialization is ignored and variables are set to these values.
+#   This is intended to continue the simulation.
+#
+#   Which variables will be important for initialization and continue
+#   is indicated by value in column 6 & dsStartMasks.
+#
+char initialDescription(190,163)
+Potential at the pin [V]
+Potential at the pin [V]
+Potential at the pin [V]
+Resistance at temperature T_ref [Ohm]
+Reference temperature [K|degC]
+Temperature coefficient of resistance (R_actual = R*(1 + alpha*(T_heatPort - T_ref)) [1/K]
+Voltage drop of the two pins (= p.v - n.v) [V]
+Potential at the pin [V]
+= true, if heatPort is enabled [:#(type=Boolean)]
+Fixed device temperature if useHeatPort = false [K|degC]
+Loss power leaving component via heatPort [W]
+Actual resistance = R*(1 + alpha*(T_heatPort - T_ref)) [Ohm]
+Voltage drop of the two pins (= p.v - n.v) [V]
+Potential at the pin [V]
+Current flowing from pin p to pin n [A]
+der(Current flowing from pin p to pin n) [A/s]
+Inductance [H]
+= true, if support flange enabled, otherwise implicitly grounded [:#(type=Boolean)]
+Transformation coefficient [N.m/A]
+Angle of shaft flange with respect to support (= flange.phi - support.phi) [rad|deg]
+Torque of flange [N.m]
+Potential at the pin [V]
+Fixed offset angle of housing [rad|deg]
+Cut torque in the flange [N.m]
+Moment of inertia [kg.m2]
+Priority to use phi and w as states [:#(type=StateSelect)]
+Absolute rotation angle of component [rad|deg]
+Absolute angular velocity of component (= der(phi)) [rad/s]
+der(Absolute angular velocity of component (= der(phi))) [rad/s2]
+Potential at the pin [V]
+Absolute rotation angle of flange [rad|deg]
+der(Absolute rotation angle of flange) [rad/s]
+Cut torque in the flange [N.m]
+= true, if support flange enabled, otherwise implicitly grounded [:#(type=Boolean)]
+Cut torque in the flange [N.m]
+Cut torque in the flange [N.m]
+Fixed offset angle of housing [rad|deg]
+Cut torque in the flange [N.m]
+Transmission ratio (flange_a.phi/flange_b.phi)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Array for mesh efficiencies and bearing friction depending on speed (see docu of LossyGear)
+Gear elasticity (spring constant) [N.m/rad]
+Gear damping (relative damping) [N.m.s/rad]
+Total backlash [rad|deg]
+Priority to use phi_rel and w_rel as states [:#(type=StateSelect)]
+= true, if HeatPort is enabled [:#(type=Boolean)]
+Fixed device temperature if useHeatPort = false [K|degC]
+Port temperature [K|degC]
+Heat flow rate (positive if flowing from outside into the component) [W]
+Relative rotation angle over gear elasticity (= flange_b.phi - lossyGear.flange_b.phi) [rad|deg]
+der(Relative rotation angle over gear elasticity (= flange_b.phi - lossyGear.flange_b.phi)) [rad/s]
+Relative angular velocity over gear elasticity (= der(phi_rel)) [rad/s]
+der(Relative angular velocity over gear elasticity (= der(phi_rel))) [rad/s2]
+= true, if support flange enabled, otherwise implicitly grounded [:#(type=Boolean)]
+Absolute rotation angle of flange [rad|deg]
+Transmission ratio (flange_a.phi/flange_b.phi)
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+Array for mesh efficiencies and bearing friction depending on speed
+= true, if heatPort is enabled [:#(type=Boolean)]
+Loss power leaving component via heatPort (> 0, if heat is flowing out of component) [W]
+Angle between left shaft flange and support [rad|deg]
+Angle between right shaft flange and support [rad|deg]
+der(Angle between right shaft flange and support) [rad/s]
+der(Angle between right shaft flange and support2) [rad/s2]
+Path parameter for acceleration and torque loss [1]
+Result of interpolation in lossTable (= [eta_mf1, eta_mf2, tau_bf1, tau_bf2])
+Result of interpolation in lossTable (= [eta_mf1, eta_mf2, tau_bf1, tau_bf2])
+Result of interpolation in lossTable (= [eta_mf1, eta_mf2, tau_bf1, tau_bf2])
+Result of interpolation in lossTable (= [eta_mf1, eta_mf2, tau_bf1, tau_bf2])
+Mesh efficiency in case that flange_a is driving [1]
+Mesh efficiency in case that flange_b is driving [1]
+Bearing friction torque on flange_a side [N.m]
+Torque that determines the driving side (= if forwardSliding then flange_a.tau-tau_bf_a else if backwardSliding then flange_a.tau+tau_bf_a else flange_a.tau) [N.m]
+Absolute resultant bearing friction torque with respect to flange_a in case that flange_a is driving (= |tau_bf_a*eta_mf1 + tau_bf_b/i|) [N.m]
+Absolute resultant bearing friction torque with respect to flange_a in case that flange_b is driving (= |tau_bf_a/eta_mf2 + tau_bf_b/i|) [N.m]
+Torque loss if w_a > 0 and flange_a.tau >= 0 [N.m]
+Torque loss if w_a > 0 and flange_a.tau < 0 [N.m]
+Torque loss if w_a < 0 and flange_a.tau >= 0 [N.m]
+Torque loss if w_a < 0 and flange_a.tau < 0 [N.m]
+Torque loss at w_a = 0+ to determine driving side (flange_a.tau >= 0) [N.m]
+Torque loss at w_a = 0+ to determine driving side (flange_a.tau < 0) [N.m]
+Torque loss at w_a = 0- to determine driving side (flange_a.tau >=0) [N.m]
+Torque loss at w_a = 0- to determine driving side (flange_a.tau < 0) [N.m]
+Torque loss due to friction in the gear teeth and in the bearings [N.m]
+Torque loss for positive speed [N.m]
+Torque loss for negative speed [N.m]
+Torque loss for positive speed [N.m]
+Torque loss for negative speed [N.m]
+Only for backwards compatibility (was previously: true, if torque of flange_a is not negative) [:#(type=Boolean)]
+= true, if starting to roll forward [:#(type=Boolean)]
+= true, if starting to roll backward [:#(type=Boolean)]
+= true, if gear is locked [:#(type=Boolean)]
+= true, if losses are neglected (that is lossTable = [0, 1, 1, 0, 0]) [:#(type=Boolean)]
+Value of mode is not known [:#(type=Integer)]
+Element is not active [:#(type=Integer)]
+w_a > 0 (forward rolling) [:#(type=Integer)]
+w_a = 0 (forward rolling, locked or backward rolling) [:#(type=Integer)]
+w_a < 0 (backward rolling) [:#(type=Integer)]
+Mode of friction element (unknown, not active, forward/backward rolling, stuck) [:#(type=Integer)]
+tau_eta assuming positive omega [N.m]
+tau_eta assuming negative omega [N.m]
+[rad/s2]
+[N.m]
+[1]
+[1]
+[N.m]
+[N.m]
+[N.m]
+Spring constant (c > 0 required) [N.m/rad]
+Damping constant [N.m.s/rad]
+Total backlash [rad|deg]
+Unstretched spring angle [rad|deg]
+Nominal value of phi_rel (used for scaling) [rad|rad]
+Priority to use phi_rel and w_rel as states [:#(type=StateSelect)]
+= true, if heatPort is enabled [:#(type=Boolean)]
+Loss power leaving component via heatPort (> 0, if heat is flowing out of component) [W]
+Backlash in range bMin <= phi_rel - phi_rel0 <= bMax [rad|deg]
+Backlash in range bMin <= phi_rel - phi_rel0 <= bMax [rad|deg]
+[N.m]
+[N.m]
+Minimum backlash [rad|deg]
+Cut torque in the flange [N.m]
+Moment of inertia [kg.m2]
+Priority to use phi and w as states [:#(type=StateSelect)]
+Absolute angular velocity of component (= der(phi)) [rad/s]
+der(Absolute angular velocity of component (= der(phi))) [rad/s2]
+= true, if support flange enabled, otherwise implicitly grounded [:#(type=Boolean)]
+Absolute angle of support flange [rad|deg]
+Nominal torque (if negative, torque is acting as load in positive direction of rotation) [N.m]
+Same direction of torque in both directions of rotation [:#(type=Boolean)]
+Nominal speed [rad/s]
+Height of step
+Connector of Real output signal
+Offset of output signal y
+Output y = offset for time < startTime [s]
+Gain [1]
+Time Constant (T>0 required) [s]
+Type of initialization (1: no init, 2: steady state, 3: initial state, 4: initial output) [:#(type=Modelica.Blocks.Types.Init)]
+Initial or guess value of state
+Initial value of output
+Connector of Real input signal
+Connector of Real output signal
+State of block
+der(State of block)
+Heat flow rate from port_a -> port_b [W]
+port_a.T - port_b.T [K,]
+Constant thermal conductance of material [W/K]
+Heat capacity of element (= cp*m) [J/K]
+Temperature of element [K|degC]
+der(Temperature of element) [K/s]
+Upper limits of input signals
+Lower limits of input signals
+= true, if strict limits with noEvent(..) [:#(type=Boolean)]
+Simplified model for homotopy-based initialization [:#(type=Modelica.Blocks.Types.LimiterHomotopy)]
+

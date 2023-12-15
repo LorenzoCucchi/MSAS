@@ -1,0 +1,14 @@
+﻿openModel("Assignment2.mo")
+
+checkModel(problem="Assignment2")
+
+translateModel(problem="Assignment2")
+
+starTime := 0.0;
+stopTime := 1000.0;
+stepTime := 10000;
+
+simulateModel(problem="Assignment2",startTime=startTime, stopTime=stopTime,numberOfIntervals=stepTime, method="radau",tolerance=1e-4,resultFile="model2");
+Simulation->Show Log       
+closeModel();
+          

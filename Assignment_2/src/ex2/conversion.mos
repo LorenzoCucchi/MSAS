@@ -1,0 +1,1 @@
+﻿DataFiles.convertMATtoCSV("model.mat",{"signalVoltage.v","signalVoltage.i","speedSensor.w"},"out.csv")

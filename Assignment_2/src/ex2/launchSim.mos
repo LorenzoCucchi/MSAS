@@ -1,0 +1,21 @@
+﻿openModel("Assignment.mo")
+
+checkModel(problem="Assignment")  
+
+translateModel(problem="Assignment")
+
+// Set simulation parameters
+startTime := 0.0;
+stopTime := 120.0;
+stepTime := 12000;
+// ,numberOfIntervals=stepTime
+// Run the simulation and save results
+simulateModel(problem="Assignment",startTime=startTime, stopTime=stopTime,numberOfIntervals=stepTime, method="Esdirk45a",tolerance=1e-12,resultFile="model");
+          
+   
+vars = {"step.y","signalVoltage.v","signalVoltage.i","speedSensor.w","lossyGear.heatPort.Q_flow",
+         "lossyGear.heatPort.T","lossyGear.w_a","heatCapacitor.port.T","heatCapacitor.port.Q_flow","emf.w","feedback.y"}          
+DataFiles.convertMATtoCSV("model.mat",vars,"out.csv")
+Simulation->Show Log
+
+closeModel();
