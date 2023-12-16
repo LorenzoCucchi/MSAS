@@ -43,20 +43,23 @@ plot(time,step.y,'--')
 hold on
 grid on
 plot(time,speedw)
-xlim([4,10])
-title("Step Response")
+xlim([4.5, 6.5])
+xlabel("Time [s]")
+ylabel("Angular velocity [rad/s]")
 legend('step','w','Location','best')
 
 stepinfo(speedw,time-step.st)
 
 figure()
 plot(time,voltage.v,'--')
+ylabel("Voltage [V]")
 hold on
-grid on
 yyaxis right
-plot(time,voltage.i,'-.')
-xlim([4,10])
-title("Step Response")
+plot(time,-voltage.i,'-.')
+ylabel("Current [A]")
+xlim([4.5, 6.5])
+xlabel("Time [s]")
+grid on
 legend('Tension [v]','Current [A]','Location','best')
 
 
@@ -65,8 +68,20 @@ plot(time,step.y,'--')
 hold on
 grid on
 plot(time,gearBox.Q)
-xlim([4,10])
-title("Step Response")
+xlim([4.5, 6.5])
 legend('step','Q','Location','best')
+xlabel("Time [s]")
+ylabel("Power [W]")
 stepinfo(gearBox.Q,time-step.st)
+
+figure()
+plot(time,gearBox.T-273.15,'--')
+hold on
+grid on
+plot(time,heatcap.T-273.15,'-.')
+xlim([0, 120])
+xlabel("Time [s]")
+ylabel("Temperature [$^\circ$C]")
+legend('lossygear','heat capacitor','Location','best')
+
 

@@ -1,31 +1,62 @@
+DASSL
 Integration terminated successfully at T = 120
-   CPU-time for integration                  : 0.053 seconds
-   CPU-time for initialization               : 0.001 seconds
+   CPU-time for integration                : 0.028 seconds
+   CPU-time for one grid interval          : 0.00233 milliseconds
+   CPU-time for initialization             : 0 seconds
+   Number of result points                 : 12007
+   Number of grid points                   : 12001
+   Number of accepted steps                : 1648
+   Number of f-evaluations (dynamics)      : 1932
+   Number of crossing function evaluations : 13657
+   Number of Jacobian-evaluations          : 137
+   Number of model time events             : 1
+   Number of input time events             : 0
+   Number of state events                  : 2
+   Number of step events                   : 0
+   Minimum integration stepsize            : 3.52e-16
+   Maximum integration stepsize            : 41.4
+   Maximum integration order               : 5
+Calling terminal section
+... "dsfinal.txt" creating (final states)
+
+SUCCESSFUL simulation of Assignment
+
+Esdirk45a
+Integration terminated successfully at T = 120
+   CPU-time for integration                  : 0.059 seconds
+   CPU-time for initialization               : 0 seconds
    Number of result points                   : 12006
    Number of grid points                     : 12001
-   Number of accepted steps                  : 571
-   Number of rejected steps                  : 15
-   Number of f-evaluations (dynamics)        : 8252
-   Number of crossing function evaluations   : 1750
-   Number of Jacobian-evaluations            : 93
+   Number of accepted steps                  : 888
+   Number of rejected steps                  : 14
+   Number of f-evaluations (dynamics)        : 11915
+   Number of crossing function evaluations   : 2693
+   Number of Jacobian-evaluations            : 156
    Number of model time events               : 1
    Number of state events                    : 2
    Number of step events                     : 0
 
 SUCCESSFUL simulation of Assignment
 
+Lsodar
 Integration terminated successfully at T = 120
-   CPU-time for integration                  : 0.026 seconds
-   CPU-time for initialization               : 0.001 seconds
-   Number of result points                   : 507
-   Number of grid points                     : 501
-   Number of accepted steps                  : 571
-   Number of rejected steps                  : 15
-   Number of f-evaluations (dynamics)        : 8252
-   Number of crossing function evaluations   : 1750
-   Number of Jacobian-evaluations            : 93
-   Number of model time events               : 1
-   Number of state events                    : 2
-   Number of step events                     : 0
+   CPU-time for integration                : 0.044 seconds
+   CPU-time for one grid interval          : 0.00367 milliseconds
+   CPU-time for initialization             : 0 seconds
+   Number of result points                 : 12007
+   Number of grid points                   : 12001
+   Number of accepted steps                : 1240
+   Number of f-evaluations (dynamics)      : 2495
+   Number of crossing function evaluations : 13253
+   Number of Jacobian-evaluations          : 81
+   Number of model time events             : 1
+   Number of input time events             : 0
+   Number of state events                  : 2
+   Number of step events                   : 0
+   Minimum integration stepsize            : 3.17e-10
+   Maximum integration stepsize            : 39.7
+   Maximum integration order               : 5
+Calling terminal section
+... "dsfinal.txt" creating (final states)
 
 SUCCESSFUL simulation of Assignment

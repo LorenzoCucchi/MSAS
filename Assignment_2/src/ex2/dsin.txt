@@ -9,14 +9,14 @@ Modelica experiment file
 double experiment(7,1)
        0                   # StartTime    Time at which integration starts
                            #              (and linearization and trimming time)
-     120                   # StopTime     Time at which integration stops
+    1000                   # StopTime     Time at which integration stops
        0                   # Increment    Communication step size, if > 0
-   12000                   # nInterval    Number of communication intervals, if > 0
-  9.9999999999999998E-13   # Tolerance    Relative precision of signals for
+  100000                   # nInterval    Number of communication intervals, if > 0
+  1.0000000000000000E-04   # Tolerance    Relative precision of signals for
                            #              simulation, linearization and trimming
        0                   # MaxFixedStep Maximum step size of fixed step size
                            #              integrators, if > 0.0
-      17                   # Algorithm    Integration algorithm as integer (1...28)
+       8                   # Algorithm    Integration algorithm as integer (1...28)
                            #
                            #             | model|       |        | dense | state |
                            # Algorithm   | typ  | stiff | order  | output| event |
@@ -102,462 +102,549 @@ int settings(13,1)
 
 
 #    Names of initial variables
-char initialName(151,45)
-signalVoltage.p.v
-signalVoltage.n.v
-ground.p.v
-ground.p.i
-resistor.R
-resistor.T_ref
-resistor.alpha
-resistor.v
-resistor.p.v
-resistor.useHeatPort
-resistor.T
-resistor.LossPower
-resistor.R_actual
-inductor.v
-inductor.p.v
-inductor.i
-inductor.der(i)
-inductor.L
-emf.useSupport
-emf.k
-emf.phi
-emf.tau
-emf.n.v
-emf.fixed.phi0
-inertia.flange_b.tau
-inertia.J
-inertia.stateSelect
-inertia.phi
-inertia.der(phi)
-inertia.w
-inertia.der(w)
-speedSensor.flange.phi
-speedSensor.flange.tau
-Propeller.flange_a.tau
-Propeller.flange_b.tau
-Propeller.J
-Propeller.stateSelect
-Propeller.w
-Propeller.der(w)
-quadraticSpeedDependentTorque.useSupport
-quadraticSpeedDependentTorque.phi_support
-quadraticSpeedDependentTorque.tau_nominal
-quadraticSpeedDependentTorque.TorqueDirection
-quadraticSpeedDependentTorque.w_nominal
-step.height
-step.y
-step.offset
-step.startTime
-feedback.y
-thermalConductor.Q_flow
-thermalConductor.dT
-thermalConductor.port_a.T
-thermalConductor.G
+char initialName(180,35)
 heatCapacitor.C
 heatCapacitor.T
 heatCapacitor.der(T)
-limiter.uMax
-limiter.uMin
-limiter.strict
-limiter.homotopyType
-limiter.u
-lossyGear.useSupport
-lossyGear.ratio
-lossyGear.lossTable[1, 1]
-lossyGear.lossTable[1, 2]
-lossyGear.lossTable[1, 3]
-lossyGear.lossTable[1, 4]
-lossyGear.lossTable[1, 5]
-lossyGear.lossTable[2, 1]
-lossyGear.lossTable[2, 2]
-lossyGear.lossTable[2, 3]
-lossyGear.lossTable[2, 4]
-lossyGear.lossTable[2, 5]
-lossyGear.lossTable[3, 1]
-lossyGear.lossTable[3, 2]
-lossyGear.lossTable[3, 3]
-lossyGear.lossTable[3, 4]
-lossyGear.lossTable[3, 5]
-lossyGear.lossTable[4, 1]
-lossyGear.lossTable[4, 2]
-lossyGear.lossTable[4, 3]
-lossyGear.lossTable[4, 4]
-lossyGear.lossTable[4, 5]
-lossyGear.useHeatPort
-lossyGear.phi_a
-lossyGear.phi_b
-lossyGear.sa
-lossyGear.interpolation_result[1, 1]
-lossyGear.interpolation_result[1, 2]
-lossyGear.interpolation_result[1, 3]
-lossyGear.interpolation_result[1, 4]
-lossyGear.tau_bf_a
-lossyGear.tau_eta
-lossyGear.tau_bf1
-lossyGear.tau_bf2
-lossyGear.quadrant1
-lossyGear.quadrant2
-lossyGear.quadrant3
-lossyGear.quadrant4
-lossyGear.quadrant1_p
-lossyGear.quadrant2_p
-lossyGear.quadrant3_m
-lossyGear.quadrant4_m
-lossyGear.tauLoss
-lossyGear.tauLossMax
-lossyGear.tauLossMin
-lossyGear.tauLossMax_p
-lossyGear.tauLossMin_m
-lossyGear.tau_aPos
-lossyGear.startForward
-lossyGear.startBackward
-lossyGear.locked
-lossyGear.ideal
-lossyGear.Unknown
-lossyGear.Free
-lossyGear.Forward
-lossyGear.Stuck
-lossyGear.Backward
-lossyGear.mode
-lossyGear.unitAngularAcceleration
-lossyGear.unitTorque
-lossyGear.eta_mf1_0
-lossyGear.eta_mf2_0
-lossyGear.tau_bf1_0
-lossyGear.tau_bf2_0
-lossyGear.tau_bf_a_0
-fixed.phi0
-fixed.flange.tau
-I.k
-I.use_reset
-I.use_set
-I.initType
-I.y_start
-I.y
-I.der(y)
-I.local_reset
-I.local_set
-D.k
-D.T
-D.initType
-D.x_start
-D.y_start
-D.y
-D.x
-D.der(x)
-D.zeroGain
-Add.k1
-Add.k2
-Add.k3
-Add.u1
-P1.k
+heatCapacitor.port.Q_flow
+fixedHeatFlow.Q_flow
+fixedHeatFlow.T_ref
+fixedHeatFlow.alpha
+fixedHeatFlow.port.T
+fixedHeatFlow.port.Q_flow
+thermalConductor.dT
+thermalConductor.G
+pipe.medium.rho
+pipe.medium.cp
+pipe.medium.cv
+pipe.medium.lambda
+pipe.medium.nu
+pipe.m
+pipe.T0
+pipe.T0fixed
+pipe.tapT
+pipe.dp
+pipe.V_flow
+pipe.Q_flow
+pipe.T
+pipe.der(T)
+pipe.T_a
+pipe.T_b
+pipe.dT
+pipe.T_q
+pipe.h
+pipe.flowPort_a.medium.rho
+pipe.flowPort_a.medium.cp
+pipe.flowPort_a.medium.cv
+pipe.flowPort_a.medium.lambda
+pipe.flowPort_a.medium.nu
+pipe.flowPort_a.p
+pipe.flowPort_a.h
+pipe.flowPort_a.H_flow
+pipe.flowPort_b.medium.rho
+pipe.flowPort_b.medium.cp
+pipe.flowPort_b.medium.cv
+pipe.flowPort_b.medium.lambda
+pipe.flowPort_b.medium.nu
+pipe.flowPort_b.p
+pipe.flowPort_b.h
+pipe.flowPort_b.H_flow
+pipe.V_flowLaminar
+pipe.dpLaminar
+pipe.V_flowNominal
+pipe.dpNominal
+pipe.frictionLoss
+pipe.pressureDrop
+pipe.Q_friction
+pipe.dpNomMin
+pipe.k
+pipe.useHeatPort
+pipe.h_g
+pipe.g
+pipe.Q_flowHeatPort
+convection.dT
+const.k
+volumeFlow.medium.rho
+volumeFlow.medium.cp
+volumeFlow.medium.cv
+volumeFlow.medium.lambda
+volumeFlow.medium.nu
+volumeFlow.m
+volumeFlow.T0
+volumeFlow.T0fixed
+volumeFlow.tapT
+volumeFlow.dp
+volumeFlow.V_flow
+volumeFlow.Q_flow
+volumeFlow.T
+volumeFlow.der(T)
+volumeFlow.T_a
+volumeFlow.T_b
+volumeFlow.dT
+volumeFlow.h
+volumeFlow.flowPort_a.medium.rho
+volumeFlow.flowPort_a.medium.cp
+volumeFlow.flowPort_a.medium.cv
+volumeFlow.flowPort_a.medium.lambda
+volumeFlow.flowPort_a.medium.nu
+volumeFlow.flowPort_a.p
+volumeFlow.flowPort_a.h
+volumeFlow.flowPort_a.H_flow
+volumeFlow.flowPort_b.medium.rho
+volumeFlow.flowPort_b.medium.cp
+volumeFlow.flowPort_b.medium.cv
+volumeFlow.flowPort_b.medium.lambda
+volumeFlow.flowPort_b.medium.nu
+volumeFlow.useVolumeFlowInput
+volumeFlow.constantVolumeFlow
+temperatureSensor.T
+temperatureSensor.port.Q_flow
+hysteresisT.uLow
+hysteresisT.uHigh
+hysteresisT.pre_y_start
+hysteresisT.y
+switch1.y
+const1.k
+const7.k
+hysteresisT3.uLow
+hysteresisT3.uHigh
+hysteresisT3.pre_y_start
+hysteresisT3.y
+prescribedHeatFlow2.T_ref
+prescribedHeatFlow2.alpha
+prescribedHeatFlow2.Q_flow
+prescribedHeatFlow2.port.Q_flow
+const8.k
+openTank1.medium.rho
+openTank1.medium.cp
+openTank1.medium.cv
+openTank1.medium.lambda
+openTank1.medium.nu
+openTank1.T0
+openTank1.T0fixed
+openTank1.T_port
+openTank1.T
+openTank1.flowPort.medium.rho
+openTank1.flowPort.medium.cp
+openTank1.flowPort.medium.cv
+openTank1.flowPort.medium.lambda
+openTank1.flowPort.medium.nu
+openTank1.Exchange
+openTank1.h
+openTank1.ATank
+openTank1.hTank
+openTank1.pAmbient
+openTank1.g
+openTank1.useHeatPort
+openTank1.m
+openTank1.der(m)
+openTank1.H
+openTank1.der(H)
+openTank1.level
+openTank3.medium.rho
+openTank3.medium.cp
+openTank3.medium.cv
+openTank3.medium.lambda
+openTank3.medium.nu
+openTank3.T0
+openTank3.T0fixed
+openTank3.T_port
+openTank3.T
+openTank3.flowPort.medium.rho
+openTank3.flowPort.medium.cp
+openTank3.flowPort.medium.cv
+openTank3.flowPort.medium.lambda
+openTank3.flowPort.medium.nu
+openTank3.Exchange
+openTank3.h
+openTank3.ATank
+openTank3.hTank
+openTank3.pAmbient
+openTank3.g
+openTank3.useHeatPort
+openTank3.m
+openTank3.der(m)
+openTank3.H
+openTank3.der(H)
+openTank3.Q_flow
+openTank3.level
+prescribedHeatFlow3.T_ref
+prescribedHeatFlow3.alpha
+prescribedHeatFlow3.Q_flow
+hysteresis.uLow
+hysteresis.uHigh
+hysteresis.pre_y_start
+hysteresis.y
+product1.u1
+feedback.y
+hysteresis1.uLow
+hysteresis1.uHigh
+hysteresis1.pre_y_start
+hysteresis1.y
+booleanToReal.realTrue
+booleanToReal.realFalse
 
-double initialValue(151,6)
-  0       0                       0                       0                
-  6   260   # signalVoltage.p.v
-  0       0                       0                       0                
-  6   260   # signalVoltage.n.v
-  0       0                       0                       0                
-  6   260   # ground.p.v
-  0       0                       0                       0                
-  6   388   # ground.p.i
- -1  1.0000000000000001E-01       0                       0                
-  1   280   # resistor.R
- -1  3.0014999999999998E+02       0                 1.0000000000000000E+100
-  1   280   # resistor.T_ref
- -1       0                       0                       0                
-  1   280   # resistor.alpha
-  0       0                       0                       0                
-  6   256   # resistor.v
-  0       0                       0                       0                
-  6   260   # resistor.p.v
-  0       0                       0                       0                
-  6   769   # resistor.useHeatPort
-  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
-  6   256   # resistor.T
-  0       0                       0                       0                
-  6   256   # resistor.LossPower
-  0       0                       0                       0                
-  6   256   # resistor.R_actual
-  0       0                       0                       0                
-  6   256   # inductor.v
-  0       0                       0                       0                
-  6   260   # inductor.p.v
- -1       0                       0                       0                
-  2   280   # inductor.i
-  0       0                       0                       0                
-  3   256   # inductor.der(i)
- -1  1.0000000000000000E-02       0                       0                
-  1   280   # inductor.L
-  0       0                       0                       0                
-  6   769   # emf.useSupport
- -1  2.9999999999999999E-01       0                       0                
-  1   280   # emf.k
-  0       0                       0                       0                
-  6   256   # emf.phi
-  0       0                       0                       0                
-  6   256   # emf.tau
-  0       0                       0                       0                
-  6   260   # emf.n.v
- -1       0                       0                       0                
-  1  1304   # emf.fixed.phi0
-  0       0                       0                       0                
-  6   388   # inertia.flange_b.tau
- -1  1.0000000000000000E-03       0                 1.0000000000000000E+100
-  1   280   # inertia.J
-  0       3                       1                       5                
-  6   770   # inertia.stateSelect
- -1       0                       0                       0                
-  2   280   # inertia.phi
-  0       0                       0                       0                
-  3   256   # inertia.der(phi)
-  0       0                       0                       0                
-  6   256   # inertia.w
-  0       0                       0                       0                
-  6   256   # inertia.der(w)
-  0       0                       0                       0                
-  6   260   # speedSensor.flange.phi
-  0       0                       0                       0                
-  6   388   # speedSensor.flange.tau
-  0       0                       0                       0                
-  6   388   # Propeller.flange_a.tau
-  0       0                       0                       0                
-  6   388   # Propeller.flange_b.tau
- -1  5.3499999999999999E-02       0                 1.0000000000000000E+100
-  1   280   # Propeller.J
-  0       3                       1                       5                
-  6   770   # Propeller.stateSelect
- -1       0                       0                       0                
-  2   272   # Propeller.w
-  0       0                       0                       0                
-  3   256   # Propeller.der(w)
-  0       0                       0                       0                
-  6   769   # quadraticSpeedDependentTorque.useSupport
-  0       0                       0                       0                
-  6  1280   # quadraticSpeedDependentTorque.phi_support
- -1    -100                       0                       0                
-  1   280   # quadraticSpeedDependentTorque.tau_nominal
-  0       0                       0                       0                
-  6   257   # quadraticSpeedDependentTorque.TorqueDirection
- -1     210                  1.0000000000000001E-15 1.0000000000000000E+100
-  1   280   # quadraticSpeedDependentTorque.w_nominal
- -1     210                       0                       0                
-  1   280   # step.height
-  0       0                       0                       0                
-  6   320   # step.y
- -1       0                       0                       0                
-  1   280   # step.offset
- -1       5                       0                       0                
-  1   280   # step.startTime
-  0       0                       0                       0                
-  6   256   # feedback.y
-  0       0                       0                       0                
-  6   256   # thermalConductor.Q_flow
-  0       0                       0                       0                
-  6   256   # thermalConductor.dT
-  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
-  6   260   # thermalConductor.port_a.T
- -1     100                       0                       0                
-  1   280   # thermalConductor.G
+double initialValue(180,6)
  -1    3000                       0                       0                
   1   280   # heatCapacitor.C
- -1  2.9314999999999998E+02       0                 1.0000000000000000E+100
+ -1  3.5814999999999998E+02       0                 1.0000000000000000E+100
   2   280   # heatCapacitor.T
   0       0                       0                       0                
   3   256   # heatCapacitor.der(T)
- -1     200                       0                       0                
-  1   280   # limiter.uMax
+  0       0                       0                       0                
+  6   388   # heatCapacitor.port.Q_flow
+ -1  2.4145000000000000E+03       0                       0                
+  1   280   # fixedHeatFlow.Q_flow
+ -1  3.5814999999999998E+02       0                 1.0000000000000000E+100
+  1   280   # fixedHeatFlow.T_ref
  -1       0                       0                       0                
-  1   280   # limiter.uMin
+  1   280   # fixedHeatFlow.alpha
+  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
+  6   260   # fixedHeatFlow.port.T
   0       0                       0                       0                
-  6   257   # limiter.strict
-  0       2                       1                       4                
-  6   258   # limiter.homotopyType
+  6   388   # fixedHeatFlow.port.Q_flow
   0       0                       0                       0                
-  6   256   # limiter.u
+  6   256   # thermalConductor.dT
+ -1     100                       0                       0                
+  1   280   # thermalConductor.G
+ -1  9.9970000000000005E+02       0                 1.0000000000000000E+100
+  1   280   # pipe.medium.rho
+ -1    4192                       0                       0                
+  1   280   # pipe.medium.cp
+ -1    4192                       0                       0                
+  1   280   # pipe.medium.cv
+ -1  5.8799999999999997E-01       0                       0                
+  1   280   # pipe.medium.lambda
+ -1  1.3069999999999999E-06       0                 1.0000000000000000E+100
+  1   280   # pipe.medium.nu
+  0  5.0265482457436694E-01       0                 1.0000000000000000E+100
+  6   256   # pipe.m
+ -1  2.8064999999999998E+02       0                 1.0000000000000000E+100
+  1   280   # pipe.T0
   0       1                       0                       0                
-  6   769   # lossyGear.useSupport
-  0       2                       0                       0                
-  6   256   # lossyGear.ratio
+  6   257   # pipe.T0fixed
+ -1       1                       0                       1                
+  1   280   # pipe.tapT
   0       0                       0                       0                
-  6   256   # lossyGear.lossTable[1, 1]
-  0  9.8999999999999999E-01       0                       0                
-  6   256   # lossyGear.lossTable[1, 2]
-  0  9.8999999999999999E-01       0                       0                
-  6   256   # lossyGear.lossTable[1, 3]
+  6   256   # pipe.dp
   0       0                       0                       0                
-  6   256   # lossyGear.lossTable[1, 4]
+  6   256   # pipe.V_flow
   0       0                       0                       0                
-  6   256   # lossyGear.lossTable[1, 5]
-  0      50                       0                       0                
-  6   256   # lossyGear.lossTable[2, 1]
-  0  9.7999999999999998E-01       0                       0                
-  6   256   # lossyGear.lossTable[2, 2]
-  0  9.7999999999999998E-01       0                       0                
-  6   256   # lossyGear.lossTable[2, 3]
-  0  5.0000000000000000E-01       0                       0                
-  6   256   # lossyGear.lossTable[2, 4]
-  0  5.0000000000000000E-01       0                       0                
-  6   256   # lossyGear.lossTable[2, 5]
-  0     100                       0                       0                
-  6   256   # lossyGear.lossTable[3, 1]
-  0  9.6999999999999997E-01       0                       0                
-  6   256   # lossyGear.lossTable[3, 2]
-  0  9.6999999999999997E-01       0                       0                
-  6   256   # lossyGear.lossTable[3, 3]
-  0       1                       0                       0                
-  6   256   # lossyGear.lossTable[3, 4]
-  0       1                       0                       0                
-  6   256   # lossyGear.lossTable[3, 5]
-  0     210                       0                       0                
-  6   256   # lossyGear.lossTable[4, 1]
-  0  9.5999999999999996E-01       0                       0                
-  6   256   # lossyGear.lossTable[4, 2]
-  0  9.5999999999999996E-01       0                       0                
-  6   256   # lossyGear.lossTable[4, 3]
-  0  1.5000000000000000E+00       0                       0                
-  6   256   # lossyGear.lossTable[4, 4]
-  0  1.5000000000000000E+00       0                       0                
-  6   256   # lossyGear.lossTable[4, 5]
-  0       1                       0                       0                
-  6   769   # lossyGear.useHeatPort
+  6   256   # pipe.Q_flow
+ -1       0                       0                 1.0000000000000000E+100
+  2   272   # pipe.T
   0       0                       0                       0                
-  6   256   # lossyGear.phi_a
+  3   256   # pipe.der(T)
+  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
+  6   256   # pipe.T_a
+  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
+  6   256   # pipe.T_b
   0       0                       0                       0                
-  6   256   # lossyGear.phi_b
+  6   256   # pipe.dT
+  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
+  6   256   # pipe.T_q
   0       0                       0                       0                
-  6   256   # lossyGear.sa
+  6  1280   # pipe.h
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # pipe.flowPort_a.medium.rho
   0       0                       0                       0                
-  6   256   # lossyGear.interpolation_result[1, 1]
+  6   256   # pipe.flowPort_a.medium.cp
   0       0                       0                       0                
-  6   256   # lossyGear.interpolation_result[1, 2]
+  6   256   # pipe.flowPort_a.medium.cv
   0       0                       0                       0                
-  6   256   # lossyGear.interpolation_result[1, 3]
+  6   256   # pipe.flowPort_a.medium.lambda
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # pipe.flowPort_a.medium.nu
   0       0                       0                       0                
-  6   256   # lossyGear.interpolation_result[1, 4]
+  6   260   # pipe.flowPort_a.p
   0       0                       0                       0                
-  6   256   # lossyGear.tau_bf_a
+  6   260   # pipe.flowPort_a.h
   0       0                       0                       0                
-  6   256   # lossyGear.tau_eta
+  6   388   # pipe.flowPort_a.H_flow
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # pipe.flowPort_b.medium.rho
   0       0                       0                       0                
-  6   256   # lossyGear.tau_bf1
+  6   256   # pipe.flowPort_b.medium.cp
   0       0                       0                       0                
-  6   256   # lossyGear.tau_bf2
+  6   256   # pipe.flowPort_b.medium.cv
   0       0                       0                       0                
-  6   256   # lossyGear.quadrant1
+  6   256   # pipe.flowPort_b.medium.lambda
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # pipe.flowPort_b.medium.nu
   0       0                       0                       0                
-  6   256   # lossyGear.quadrant2
+  6   260   # pipe.flowPort_b.p
   0       0                       0                       0                
-  6   256   # lossyGear.quadrant3
+  6   260   # pipe.flowPort_b.h
   0       0                       0                       0                
-  6   256   # lossyGear.quadrant4
-  0       0                       0                       0                
-  6   256   # lossyGear.quadrant1_p
-  0       0                       0                       0                
-  6   256   # lossyGear.quadrant2_p
-  0       0                       0                       0                
-  6   256   # lossyGear.quadrant3_m
-  0       0                       0                       0                
-  6   256   # lossyGear.quadrant4_m
-  0       0                       0                       0                
-  6   256   # lossyGear.tauLoss
-  0       0                       0                       0                
-  6   256   # lossyGear.tauLossMax
-  0       0                       0                       0                
-  6   256   # lossyGear.tauLossMin
-  0       0                       0                       0                
-  6   256   # lossyGear.tauLossMax_p
-  0       0                       0                       0                
-  6   256   # lossyGear.tauLossMin_m
-  0       1                       0                       0                
-  6   353   # lossyGear.tau_aPos
-  0       0                       0                       0                
-  6   353   # lossyGear.startForward
-  0       0                       0                       0                
-  6   353   # lossyGear.startBackward
-  0       0                       0                       0                
-  6   353   # lossyGear.locked
-  0       0                       0                       0                
-  6   257   # lossyGear.ideal
-  0       3                       0                       0                
-  6   258   # lossyGear.Unknown
-  0       2                       0                       0                
-  6   258   # lossyGear.Free
-  0       1                       0                       0                
-  6   258   # lossyGear.Forward
-  0       0                       0                       0                
-  6   258   # lossyGear.Stuck
-  0      -1                       0                       0                
-  6   258   # lossyGear.Backward
-  0       2                      -1                       3                
-  6   330   # lossyGear.mode
-  0       1                       0                       0                
-  6  1280   # lossyGear.unitAngularAcceleration
-  0       1                       0                       0                
-  6  1280   # lossyGear.unitTorque
-  0  9.8999999999999999E-01       0                       0                
-  6  1280   # lossyGear.eta_mf1_0
-  0  9.8999999999999999E-01       0                       0                
-  6  1280   # lossyGear.eta_mf2_0
-  0       0                       0                       0                
-  6  1280   # lossyGear.tau_bf1_0
-  0       0                       0                       0                
-  6  1280   # lossyGear.tau_bf2_0
-  0       0                       0                       0                
-  6  1280   # lossyGear.tau_bf_a_0
+  6   388   # pipe.flowPort_b.H_flow
+  0  1.0000000000000001E-01  9.9999999999999997E-61 1.0000000000000000E+100
+  6   256   # pipe.V_flowLaminar
  -1       0                       0                       0                
-  1   280   # fixed.phi0
-  0       0                       0                       0                
-  6   388   # fixed.flange.tau
- -1       7                       0                       0                
-  1   280   # I.k
-  0       0                       0                       0                
-  6   769   # I.use_reset
-  0       0                       0                       0                
-  6   769   # I.use_set
-  0       1                       1                       4                
-  6   258   # I.initType
- -1       0                       0                       0                
-  1   280   # I.y_start
- -1       0                       0                       0                
-  2   272   # I.y
-  0       0                       0                       0                
-  3   256   # I.der(y)
-  0       0                       0                       0                
-  6   769   # I.local_reset
-  0       0                       0                       0                
-  6   768   # I.local_set
- -1  1.7000000000000001E-02       0                       0                
-  1   280   # D.k
- -1  1.7000000000000001E-04  9.9999999999999997E-61 1.0000000000000000E+100
-  1   280   # D.T
-  0       1                       1                       4                
-  6   258   # D.initType
- -1       0                       0                       0                
-  1   280   # D.x_start
- -1       0                       0                       0                
-  1   280   # D.y_start
-  0       0                       0                       0                
-  6   256   # D.y
- -1       0                       0                       0                
-  2   272   # D.x
-  0       0                       0                       0                
-  3   256   # D.der(x)
-  0       0                       0                       0                
-  6  1281   # D.zeroGain
+  1   280   # pipe.dpLaminar
  -1       1                       0                       0                
-  1   280   # Add.k1
+  1   280   # pipe.V_flowNominal
+ -1       0                       0                       0                
+  1   280   # pipe.dpNominal
+ -1       0                       0                       1                
+  1   280   # pipe.frictionLoss
+  0       0                       0                       0                
+  6   256   # pipe.pressureDrop
+  0       0                       0                       0                
+  6   256   # pipe.Q_friction
+  0       0                       0                       0                
+  6  1280   # pipe.dpNomMin
+  0       0                       0                       0                
+  6  1280   # pipe.k
+  0       1                       0                       0                
+  6   769   # pipe.useHeatPort
+ -1       0                       0                       0                
+  1   280   # pipe.h_g
+ -1  9.8066499999999994E+00       0                 1.0000000000000000E+100
+  1   280   # pipe.g
+  0       0                       0                       0                
+  6  1280   # pipe.Q_flowHeatPort
+  0       0                       0                       0                
+  6   256   # convection.dT
+ -1     300                       0                       0                
+  1   280   # const.k
+ -1  9.9970000000000005E+02       0                 1.0000000000000000E+100
+  1   280   # volumeFlow.medium.rho
+ -1    4192                       0                       0                
+  1   280   # volumeFlow.medium.cp
+ -1    4192                       0                       0                
+  1   280   # volumeFlow.medium.cv
+ -1  5.8799999999999997E-01       0                       0                
+  1   280   # volumeFlow.medium.lambda
+ -1  1.3069999999999999E-06       0                 1.0000000000000000E+100
+  1   280   # volumeFlow.medium.nu
+  0  5.0265482457436694E-01       0                 1.0000000000000000E+100
+  6   256   # volumeFlow.m
+ -1  2.8064999999999998E+02       0                 1.0000000000000000E+100
+  1   280   # volumeFlow.T0
+  0       1                       0                       0                
+  6   257   # volumeFlow.T0fixed
+  0       1                       0                       1                
+  6   256   # volumeFlow.tapT
+  0       0                       0                       0                
+  6   256   # volumeFlow.dp
+  0       0                       0                       0                
+  6   320   # volumeFlow.V_flow
+  0       0                       0                       0                
+  6   256   # volumeFlow.Q_flow
+ -1       0                       0                 1.0000000000000000E+100
+  2   272   # volumeFlow.T
+  0       0                       0                       0                
+  3   256   # volumeFlow.der(T)
+  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
+  6   256   # volumeFlow.T_a
+  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
+  6   256   # volumeFlow.T_b
+  0       0                       0                       0                
+  6   256   # volumeFlow.dT
+  0       0                       0                       0                
+  6  1280   # volumeFlow.h
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # volumeFlow.flowPort_a.medium.rho
+  0       0                       0                       0                
+  6   256   # volumeFlow.flowPort_a.medium.cp
+  0       0                       0                       0                
+  6   256   # volumeFlow.flowPort_a.medium.cv
+  0       0                       0                       0                
+  6   256   # volumeFlow.flowPort_a.medium.lambda
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # volumeFlow.flowPort_a.medium.nu
+  0       0                       0                       0                
+  6   260   # volumeFlow.flowPort_a.p
+  0       0                       0                       0                
+  6   260   # volumeFlow.flowPort_a.h
+  0       0                       0                       0                
+  6   388   # volumeFlow.flowPort_a.H_flow
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # volumeFlow.flowPort_b.medium.rho
+  0       0                       0                       0                
+  6   256   # volumeFlow.flowPort_b.medium.cp
+  0       0                       0                       0                
+  6   256   # volumeFlow.flowPort_b.medium.cv
+  0       0                       0                       0                
+  6   256   # volumeFlow.flowPort_b.medium.lambda
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # volumeFlow.flowPort_b.medium.nu
+  0       1                       0                       0                
+  6   257   # volumeFlow.useVolumeFlowInput
+ -1       0                       0                       0                
+  1   280   # volumeFlow.constantVolumeFlow
+  0       0                       0                       0                
+  6   256   # temperatureSensor.T
+  0       0                       0                       0                
+  6   388   # temperatureSensor.port.Q_flow
+ -1      42                       0                       0                
+  1   280   # hysteresisT.uLow
+ -1      59                       0                       0                
+  1   280   # hysteresisT.uHigh
+ -1       0                       0                       0                
+  1   281   # hysteresisT.pre_y_start
+  0       0                       0                       0                
+  6   321   # hysteresisT.y
+  0       0                       0                       0                
+  6   320   # switch1.y
+ -1  2.0000000000000002E-05       0                       0                
+  1   280   # const1.k
+ -1   -2800                       0                       0                
+  1   280   # const7.k
+ -1  2.7914999999999998E+02       0                       0                
+  1   280   # hysteresisT3.uLow
+ -1  2.8214999999999998E+02       0                       0                
+  1   280   # hysteresisT3.uHigh
  -1       1                       0                       0                
-  1   280   # Add.k2
+  1   281   # hysteresisT3.pre_y_start
+  0       0                       0                       0                
+  6   321   # hysteresisT3.y
+ -1  2.9314999999999998E+02       0                 1.0000000000000000E+100
+  1   280   # prescribedHeatFlow2.T_ref
+ -1       0                       0                       0                
+  1   280   # prescribedHeatFlow2.alpha
+  0       0                       0                       0                
+  6   320   # prescribedHeatFlow2.Q_flow
+  0       0                       0                       0                
+  6   388   # prescribedHeatFlow2.port.Q_flow
+ -1       0                       0                       0                
+  1   280   # const8.k
+ -1  9.9970000000000005E+02       0                 1.0000000000000000E+100
+  1   280   # openTank1.medium.rho
+ -1    4192                       0                       0                
+  1   280   # openTank1.medium.cp
+ -1    4192                       0                       0                
+  1   280   # openTank1.medium.cv
+ -1  5.8799999999999997E-01       0                       0                
+  1   280   # openTank1.medium.lambda
+ -1  1.3069999999999999E-06       0                 1.0000000000000000E+100
+  1   280   # openTank1.medium.nu
+ -1  2.8064999999999998E+02       0                 1.0000000000000000E+100
+  1   280   # openTank1.T0
+  0       1                       0                       0                
+  6   257   # openTank1.T0fixed
+  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
+  6   256   # openTank1.T_port
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # openTank1.T
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # openTank1.flowPort.medium.rho
+  0       0                       0                       0                
+  6   256   # openTank1.flowPort.medium.cp
+  0       0                       0                       0                
+  6   256   # openTank1.flowPort.medium.cv
+  0       0                       0                       0                
+  6   256   # openTank1.flowPort.medium.lambda
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # openTank1.flowPort.medium.nu
+  0       1                       0                       0                
+  6   769   # openTank1.Exchange
+  0       0                       0                       0                
+  6  1280   # openTank1.h
+ -1  1.0000000000000000E-02       0                       0                
+  1   280   # openTank1.ATank
+ -1  8.0000000000000004E-01       0                       0                
+  1   280   # openTank1.hTank
+ -1  100000                       0                       0                
+  1   280   # openTank1.pAmbient
+ -1  9.8066499999999994E+00       0                 1.0000000000000000E+100
+  1   280   # openTank1.g
+  0       1                       0                       0                
+  6   769   # openTank1.useHeatPort
+ -1       0                       0                 1.0000000000000000E+100
+  2   272   # openTank1.m
+  0       0                       0                       0                
+  3   256   # openTank1.der(m)
+ -1       0                       0                       0                
+  2  1296   # openTank1.H
+  0       0                       0                       0                
+  3  1280   # openTank1.der(H)
+  0  8.0000000000000004E-01       0                       0                
+  6   264   # openTank1.level
+ -1  9.9970000000000005E+02       0                 1.0000000000000000E+100
+  1   280   # openTank3.medium.rho
+ -1    4192                       0                       0                
+  1   280   # openTank3.medium.cp
+ -1    4192                       0                       0                
+  1   280   # openTank3.medium.cv
+ -1  5.8799999999999997E-01       0                       0                
+  1   280   # openTank3.medium.lambda
+ -1  1.3069999999999999E-06       0                 1.0000000000000000E+100
+  1   280   # openTank3.medium.nu
+ -1  2.8064999999999998E+02       0                 1.0000000000000000E+100
+  1   280   # openTank3.T0
+  0       1                       0                       0                
+  6   257   # openTank3.T0fixed
+  0  2.8814999999999998E+02       0                 1.0000000000000000E+100
+  6   256   # openTank3.T_port
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # openTank3.T
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # openTank3.flowPort.medium.rho
+  0       0                       0                       0                
+  6   256   # openTank3.flowPort.medium.cp
+  0       0                       0                       0                
+  6   256   # openTank3.flowPort.medium.cv
+  0       0                       0                       0                
+  6   256   # openTank3.flowPort.medium.lambda
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # openTank3.flowPort.medium.nu
+  0       1                       0                       0                
+  6   769   # openTank3.Exchange
+  0       0                       0                       0                
+  6  1280   # openTank3.h
+ -1  1.0000000000000000E-02       0                       0                
+  1   280   # openTank3.ATank
+ -1  8.0000000000000004E-01       0                       0                
+  1   280   # openTank3.hTank
+ -1  100000                       0                       0                
+  1   280   # openTank3.pAmbient
+ -1  9.8066499999999994E+00       0                 1.0000000000000000E+100
+  1   280   # openTank3.g
+  0       1                       0                       0                
+  6   769   # openTank3.useHeatPort
+ -1       0                       0                 1.0000000000000000E+100
+  2   272   # openTank3.m
+  0       0                       0                       0                
+  3   256   # openTank3.der(m)
+ -1       0                       0                       0                
+  2  1296   # openTank3.H
+  0       0                       0                       0                
+  3  1280   # openTank3.der(H)
+  0       0                       0                       0                
+  6  1280   # openTank3.Q_flow
+  0  1.0000000000000000E-04       0                       0                
+  6   264   # openTank3.level
+ -1  2.9314999999999998E+02       0                 1.0000000000000000E+100
+  1   280   # prescribedHeatFlow3.T_ref
+ -1       0                       0                       0                
+  1   280   # prescribedHeatFlow3.alpha
+  0       0                       0                       0                
+  6   320   # prescribedHeatFlow3.Q_flow
+ -1  2.7914999999999998E+02       0                       0                
+  1   280   # hysteresis.uLow
+ -1  2.8214999999999998E+02       0                       0                
+  1   280   # hysteresis.uHigh
+ -1       0                       0                       0                
+  1   281   # hysteresis.pre_y_start
+  0       0                       0                       0                
+  6   321   # hysteresis.y
+  0       0                       0                       0                
+  6   320   # product1.u1
+  0       0                       0                       0                
+  6   256   # feedback.y
+ -1 -7.9900000000000004E-01       0                       0                
+  1   280   # hysteresis1.uLow
+ -1  7.9900000000000004E-01       0                       0                
+  1   280   # hysteresis1.uHigh
+ -1       1                       0                       0                
+  1   281   # hysteresis1.pre_y_start
+  0       0                       0                       0                
+  6   321   # hysteresis1.y
+ -1       1                       0                       0                
+  1   280   # booleanToReal.realTrue
  -1      -1                       0                       0                
-  1   280   # Add.k3
-  0       0                       0                       0                
-  6   256   # Add.u1
- -1  1.4999999999999999E-01       0                       0                
-  1   280   # P1.k
+  1   280   # booleanToReal.realFalse
 
 
 # Matrix with 6 columns defining the initial value calculation
@@ -604,156 +691,185 @@ double initialValue(151,6)
 #   Which variables will be important for initialization and continue
 #   is indicated by value in column 6 & dsStartMasks.
 #
-char initialDescription(151,163)
-Potential at the pin [V]
-Potential at the pin [V]
-Potential at the pin [V]
-Current flowing into the pin [A]
-Resistance at temperature T_ref [Ohm]
-Reference temperature [K|degC]
-Temperature coefficient of resistance (R_actual = R*(1 + alpha*(T_heatPort - T_ref)) [1/K]
-Voltage drop of the two pins (= p.v - n.v) [V]
-Potential at the pin [V]
-= true, if heatPort is enabled [:#(type=Boolean)]
-Fixed device temperature if useHeatPort = false [K|degC]
-Loss power leaving component via heatPort [W]
-Actual resistance = R*(1 + alpha*(T_heatPort - T_ref)) [Ohm]
-Voltage drop of the two pins (= p.v - n.v) [V]
-Potential at the pin [V]
-Current flowing from pin p to pin n [A]
-der(Current flowing from pin p to pin n) [A/s]
-Inductance [H]
-= true, if support flange enabled, otherwise implicitly grounded [:#(type=Boolean)]
-Transformation coefficient [N.m/A]
-Angle of shaft flange with respect to support (= flange.phi - support.phi) [rad|deg]
-Torque of flange [N.m]
-Potential at the pin [V]
-Fixed offset angle of housing [rad|deg]
-Cut torque in the flange [N.m]
-Moment of inertia [kg.m2]
-Priority to use phi and w as states [:#(type=StateSelect)]
-Absolute rotation angle of component [rad|deg]
-der(Absolute rotation angle of component) [rad/s]
-Absolute angular velocity of component (= der(phi)) [rad/s]
-der(Absolute angular velocity of component (= der(phi))) [rad/s2]
-Absolute rotation angle of flange [rad|deg]
-Cut torque in the flange [N.m]
-Cut torque in the flange [N.m]
-Cut torque in the flange [N.m]
-Moment of inertia [kg.m2]
-Priority to use phi and w as states [:#(type=StateSelect)]
-Absolute angular velocity of component (= der(phi)) [rad/s]
-der(Absolute angular velocity of component (= der(phi))) [rad/s2]
-= true, if support flange enabled, otherwise implicitly grounded [:#(type=Boolean)]
-Absolute angle of support flange [rad|deg]
-Nominal torque (if negative, torque is acting as load in positive direction of rotation) [N.m]
-Same direction of torque in both directions of rotation [:#(type=Boolean)]
-Nominal speed [rad/s]
-Height of step [rad/s]
-Connector of Real output signal [rad/s]
-Offset of output signal y [rad/s]
-Output y = offset for time < startTime [s]
-[rad/s]
-Heat flow rate from port_a -> port_b [W]
-port_a.T - port_b.T [K,]
-Port temperature [K|degC]
-Constant thermal conductance of material [W/K]
+char initialDescription(180,72)
 Heat capacity of element (= cp*m) [J/K]
 Temperature of element [K|degC]
 der(Temperature of element) [K/s]
-Upper limits of input signals
-Lower limits of input signals
-= true, if strict limits with noEvent(..) [:#(type=Boolean)]
-Simplified model for homotopy-based initialization [:#(type=Modelica.Blocks.Types.LimiterHomotopy)]
-Connector of Real input signal
-= true, if support flange enabled, otherwise implicitly grounded [:#(type=Boolean)]
-Transmission ratio (flange_a.phi/flange_b.phi) [1]
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-Array for mesh efficiencies and bearing friction depending on speed
-= true, if heatPort is enabled [:#(type=Boolean)]
-Angle between left shaft flange and support [rad|deg]
-Angle between right shaft flange and support [rad|deg]
-Path parameter for acceleration and torque loss [1]
-Result of interpolation in lossTable (= [eta_mf1, eta_mf2, tau_bf1, tau_bf2])
-Result of interpolation in lossTable (= [eta_mf1, eta_mf2, tau_bf1, tau_bf2])
-Result of interpolation in lossTable (= [eta_mf1, eta_mf2, tau_bf1, tau_bf2])
-Result of interpolation in lossTable (= [eta_mf1, eta_mf2, tau_bf1, tau_bf2])
-Bearing friction torque on flange_a side [N.m]
-Torque that determines the driving side (= if forwardSliding then flange_a.tau-tau_bf_a else if backwardSliding then flange_a.tau+tau_bf_a else flange_a.tau) [N.m]
-Absolute resultant bearing friction torque with respect to flange_a in case that flange_a is driving (= |tau_bf_a*eta_mf1 + tau_bf_b/i|) [N.m]
-Absolute resultant bearing friction torque with respect to flange_a in case that flange_b is driving (= |tau_bf_a/eta_mf2 + tau_bf_b/i|) [N.m]
-Torque loss if w_a > 0 and flange_a.tau >= 0 [N.m]
-Torque loss if w_a > 0 and flange_a.tau < 0 [N.m]
-Torque loss if w_a < 0 and flange_a.tau >= 0 [N.m]
-Torque loss if w_a < 0 and flange_a.tau < 0 [N.m]
-Torque loss at w_a = 0+ to determine driving side (flange_a.tau >= 0) [N.m]
-Torque loss at w_a = 0+ to determine driving side (flange_a.tau < 0) [N.m]
-Torque loss at w_a = 0- to determine driving side (flange_a.tau >=0) [N.m]
-Torque loss at w_a = 0- to determine driving side (flange_a.tau < 0) [N.m]
-Torque loss due to friction in the gear teeth and in the bearings [N.m]
-Torque loss for positive speed [N.m]
-Torque loss for negative speed [N.m]
-Torque loss for positive speed [N.m]
-Torque loss for negative speed [N.m]
-Only for backwards compatibility (was previously: true, if torque of flange_a is not negative) [:#(type=Boolean)]
-= true, if starting to roll forward [:#(type=Boolean)]
-= true, if starting to roll backward [:#(type=Boolean)]
-= true, if gear is locked [:#(type=Boolean)]
-= true, if losses are neglected (that is lossTable = [0, 1, 1, 0, 0]) [:#(type=Boolean)]
-Value of mode is not known [:#(type=Integer)]
-Element is not active [:#(type=Integer)]
-w_a > 0 (forward rolling) [:#(type=Integer)]
-w_a = 0 (forward rolling, locked or backward rolling) [:#(type=Integer)]
-w_a < 0 (backward rolling) [:#(type=Integer)]
-Mode of friction element (unknown, not active, forward/backward rolling, stuck) [:#(type=Integer)]
-[rad/s2]
-[N.m]
-[1]
-[1]
-[N.m]
-[N.m]
-[N.m]
-Fixed offset angle of housing [rad|deg]
-Cut torque in the flange [N.m]
-Integrator gain [1]
-= true, if reset port enabled [:#(type=Boolean)]
-= true, if set port enabled and used as reinitialization value when reset [:#(type=Boolean)]
-Type of initialization (1: no init, 2: steady state, 3,4: initial output) [:#(type=Modelica.Blocks.Types.Init)]
-Initial or guess value of output (= state) [rad]
-Connector of Real output signal [rad]
-der(Connector of Real output signal) [rad/s]
+Heat flow rate (positive if flowing from outside into the component) [W]
+Fixed heat flow rate at port [W]
+Reference temperature [K|degC]
+Temperature coefficient of heat flow rate [1/K]
+Port temperature [K|degC]
+Heat flow rate (positive if flowing from outside into the component) [W]
+port_a.T - port_b.T [K,]
+Constant thermal conductance of material [W/K]
+Density [kg/m3|g/cm3]
+Specific heat capacity at constant pressure [J/(kg.K)]
+Specific heat capacity at constant volume [J/(kg.K)]
+Thermal conductivity [W/(m.K)]
+Kinematic viscosity [m2/s]
+Mass of medium [kg]
+Initial temperature of medium [K|K]
+Initial temperature guess value or fixed [:#(type=Boolean)]
+Defines temperature of heatPort between inlet and outlet temperature
+Pressure drop a->b [Pa|bar]
+Volume flow a->b [m3/s]
+Heat exchange with ambient [W]
+Outlet temperature of medium [K|degC]
+der(Outlet temperature of medium) [K/s]
+Temperature at flowPort_a [K|degC]
+Temperature at flowPort_b [K|degC]
+Temperature increase of coolant in flow direction [K,]
+Temperature relevant for heat exchange with ambient [K|degC]
+Medium's specific enthalpy [J/kg]
+Density [kg/m3|g/cm3]
+Specific heat capacity at constant pressure [J/(kg.K)]
+Specific heat capacity at constant volume [J/(kg.K)]
+Thermal conductivity [W/(m.K)]
+Kinematic viscosity [m2/s]
+[Pa|bar]
+[J/kg]
+[W]
+Density [kg/m3|g/cm3]
+Specific heat capacity at constant pressure [J/(kg.K)]
+Specific heat capacity at constant volume [J/(kg.K)]
+Thermal conductivity [W/(m.K)]
+Kinematic viscosity [m2/s]
+[Pa|bar]
+[J/kg]
+[W]
+Laminar volume flow [m3/s]
+Laminar pressure drop [Pa|bar]
+Nominal volume flow [m3/s]
+Nominal pressure drop [Pa|bar]
+Part of friction losses fed to medium [1]
+[Pa|bar]
+[W]
+[Pa|bar]
+[Pa.s2/m6]
+= true, if HeatPort is enabled [:#(type=Boolean)]
+Geodetic height (height difference from flowPort_a to flowPort_b) [m]
+Gravitation [m/s2]
+Heat flow at conditional heatPort [W]
+= solid.T - fluid.T [K,]
+Constant output value [W/K]
+Density [kg/m3|g/cm3]
+Specific heat capacity at constant pressure [J/(kg.K)]
+Specific heat capacity at constant volume [J/(kg.K)]
+Thermal conductivity [W/(m.K)]
+Kinematic viscosity [m2/s]
+Mass of medium [kg]
+Initial temperature of medium [K|K]
+Initial temperature guess value or fixed [:#(type=Boolean)]
+Defines temperature of heatPort between inlet and outlet temperature
+Pressure drop a->b [Pa|bar]
+Volume flow a->b [m3/s]
+Heat exchange with ambient [W]
+Outlet temperature of medium [K|degC]
+der(Outlet temperature of medium) [K/s]
+Temperature at flowPort_a [K|degC]
+Temperature at flowPort_b [K|degC]
+Temperature increase of coolant in flow direction [K,]
+Medium's specific enthalpy [J/kg]
+Density [kg/m3|g/cm3]
+Specific heat capacity at constant pressure [J/(kg.K)]
+Specific heat capacity at constant volume [J/(kg.K)]
+Thermal conductivity [W/(m.K)]
+Kinematic viscosity [m2/s]
+[Pa|bar]
+[J/kg]
+[W]
+Density [kg/m3|g/cm3]
+Specific heat capacity at constant pressure [J/(kg.K)]
+Specific heat capacity at constant volume [J/(kg.K)]
+Thermal conductivity [W/(m.K)]
+Kinematic viscosity [m2/s]
+Enable / disable volume flow input [:#(type=Boolean)]
+Volume flow rate [m3/s]
+Absolute temperature in degree Celsius as output signal [degC]
+Heat flow rate (positive if flowing from outside into the component) [W]
+If y=true and u<uLow, switch to y=false
+If y=false and u>uHigh, switch to y=true
+Value of pre(y) at initial time [:#(type=Boolean)]
 [:#(type=Boolean)]
-
-Gains [1]
-Time constants (T>0 required; T=0 is ideal derivative block) [s]
-Type of initialization (1: no init, 2: steady state, 3: initial state, 4: initial output) [:#(type=Modelica.Blocks.Types.Init)]
-Initial or guess value of state [rad/s]
-Initial value of output (= state) [rad/s2]
-Connector of Real output signal [rad/s2]
-State of block [rad/s]
-der(State of block) [rad/s2]
+Connector of Real output signal [W]
+Constant output value [W]
+Constant output value [W]
+If y=true and u<uLow, switch to y=false
+If y=false and u>uHigh, switch to y=true
+Value of pre(y) at initial time [:#(type=Boolean)]
 [:#(type=Boolean)]
-Gain of input signal 1
-Gain of input signal 2
-Gain of input signal 3
-Connector of Real input signal 1 [rad/s]
-Gain value multiplied with input signal [1]
+Reference temperature [K|degC]
+Temperature coefficient of heat flow rate [1/K]
+[W]
+Heat flow rate (positive if flowing from outside into the component) [W]
+Constant output value [W]
+Density [kg/m3|g/cm3]
+Specific heat capacity at constant pressure [J/(kg.K)]
+Specific heat capacity at constant volume [J/(kg.K)]
+Thermal conductivity [W/(m.K)]
+Kinematic viscosity [m2/s]
+Initial temperature of medium [K|K]
+Initial temperature guess value or fixed [:#(type=Boolean)]
+Temperature at flowPort_a [K|degC]
+Outlet temperature of medium [K|degC]
+Density [kg/m3|g/cm3]
+Specific heat capacity at constant pressure [J/(kg.K)]
+Specific heat capacity at constant volume [J/(kg.K)]
+Thermal conductivity [W/(m.K)]
+Kinematic viscosity [m2/s]
+Exchange of medium via flowport [:#(type=Boolean)]
+Specific enthalpy in the volume [J/kg]
+Cross section of tank [m2]
+Height of tank [m]
+Ambient pressure [Pa|bar]
+Gravitation [m/s2]
+= true, if HeatPort is enabled [:#(type=Boolean)]
+Mass of medium in tank [kg]
+der(Mass of medium in tank) [kg/s]
+Enthalpy of medium [J]
+der(Enthalpy of medium) [W]
+Level of medium in tank [m]
+Density [kg/m3|g/cm3]
+Specific heat capacity at constant pressure [J/(kg.K)]
+Specific heat capacity at constant volume [J/(kg.K)]
+Thermal conductivity [W/(m.K)]
+Kinematic viscosity [m2/s]
+Initial temperature of medium [K|K]
+Initial temperature guess value or fixed [:#(type=Boolean)]
+Temperature at flowPort_a [K|degC]
+Outlet temperature of medium [K|degC]
+Density [kg/m3|g/cm3]
+Specific heat capacity at constant pressure [J/(kg.K)]
+Specific heat capacity at constant volume [J/(kg.K)]
+Thermal conductivity [W/(m.K)]
+Kinematic viscosity [m2/s]
+Exchange of medium via flowport [:#(type=Boolean)]
+Specific enthalpy in the volume [J/kg]
+Cross section of tank [m2]
+Height of tank [m]
+Ambient pressure [Pa|bar]
+Gravitation [m/s2]
+= true, if HeatPort is enabled [:#(type=Boolean)]
+Mass of medium in tank [kg]
+der(Mass of medium in tank) [kg/s]
+Enthalpy of medium [J]
+der(Enthalpy of medium) [W]
+Heat flow at the optional heatPort [W]
+Level of medium in tank [m]
+Reference temperature [K|degC]
+Temperature coefficient of heat flow rate [1/K]
+[W]
+If y=true and u<uLow, switch to y=false
+If y=false and u>uHigh, switch to y=true
+Value of pre(y) at initial time [:#(type=Boolean)]
+[:#(type=Boolean)]
+Connector of Real input signal 1 [N.kg-2.s4]
+[m]
+If y=true and u<uLow, switch to y=false
+If y=false and u>uHigh, switch to y=true
+Value of pre(y) at initial time [:#(type=Boolean)]
+[:#(type=Boolean)]
+Output signal for true Boolean input [N.kg-2.s4]
+Output signal for false Boolean input [N.kg-2.s4]
 
